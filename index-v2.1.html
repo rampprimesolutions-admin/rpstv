@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RPSTV - Streaming VIP v2.1</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- HLS.js Motor -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <!-- Google Cast SDK -->
+  <script type="text/javascript" src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
+  
+  <style>
+    .gold-gradient {
+      background: linear-gradient(135deg, #bf953f 0%, #fcf6ba 25%, #b38728 50%, #fbf5b7 75%, #aa771c 100%);
+    }
+    .gold-text {
+      background: linear-gradient(135deg, #d4af37, #f3e5ab, #aa771c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .custom-scroll::-webkit-scrollbar { width: 6px; }
+    .custom-scroll::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.6); }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
+
+  <!-- ENCABEZADO -->
+  <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full gold-gradient p-0.5 flex items-center justify-center shadow-lg">
+          <div class="w-full h-full bg-slate-950 rounded-full flex items-center justify-center font-bold text-amber-400">📺</div>
+        </div>
+        <div>
+          <h1 class="text-lg font-bold tracking-tight gold-text">RPSTV - Streaming VIP v2.1</h1>
+          <p class="text-xs text-slate-400">TV & Multi-Cámara Directa</p>
+        </div>
+      </div>
+      
+      <!-- Controles Superiores -->
+      <div class="flex items-center gap-2">
+        <button id="toggleFavFilterBtn" onclick="toggleFavoriteFilter()" class="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-lg text-slate-300 text-xs transition">
+          <i data-lucide="star" class="w-4 h-4 text-amber-400"></i>
+          <span id="favFilterText">Ver Favoritos</span>
+        </button>
+        <button onclick="launchCast()" class="flex items-center gap-1.5 bg-slate-800 hover:bg-amber-500/20 border border-slate-700 hover:border-amber-500/50 px-3 py-1.5 rounded-lg text-slate-300 hover:text-amber-400 text-xs transition">
+          <i data-lucide="cast" class="w-4 h-4"></i>
+          <span>Enviar a TV</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full grid grid-cols-1 lg:grid-cols-3 gap-8">
+    
+    <!-- REPRODUCTOR DE VIDEO (STICKY) -->
+    <section class="lg:col-span-2">
+      <div class="sticky top-20 space-y-4">
+        
+        <!-- Contenedor del Visor -->
+        <div class="relative w-full aspect-video bg-black rounded-2xl overflow-hidden border border-slate-800 shadow-2xl flex items-center justify-center">
+          <video id="hlsPlayer" controls autoplay muted playsinline class="w-full h-full object-contain"></video>
+        </div>
+        
+        <!-- Barra de Control de Canales (Canal -, Pre-CH, Canal +) -->
+        <div class="grid grid-cols-3 gap-2">
+          <button onclick="changeChannelRelative(-1)" class="flex items-center justify-center gap-1 bg-slate-900 hover:bg-slate-800 border border-slate-800 py-2 rounded-xl text-xs font-semibold text-slate-300 transition">
+            <i data-lucide="chevron-left" class="w-4 h-4"></i> Canal Anterior
+          </button>
+          <button id="preChannelBtn" onclick="goToPreviousChannel()" disabled class="flex items-center justify-center gap-1 bg-slate-900 hover:bg-slate-800 border border-slate-800 py-2 rounded-xl text-xs font-semibold text-amber-400 disabled:opacity-40 disabled:cursor-not-allowed transition">
+            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Pre-Channel
+          </button>
+          <button onclick="changeChannelRelative(1)" class="flex items-center justify-center gap-1 bg-slate-900 hover:bg-slate-800 border border-slate-800 py-2 rounded-xl text-xs font-semibold text-slate-300 transition">
+            Siguiente Canal <i data-lucide="chevron-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- Información del Canal Activo -->
+        <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-4 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <img id="activeLogo" src="" class="w-12 h-12 object-contain rounded-md bg-slate-800/50 p-1 hidden" alt="Logo" />
+            <div>
+              <!-- 1.ª línea: Categoría en Ámbar Pequeño -->
+              <span id="activeCategory" class="text-xs font-semibold uppercase tracking-wider text-amber-400 block">
+                CARGANDO...
+              </span>
+              <!-- 2.ª línea: Nombre del Canal Grande -->
+              <h2 id="activeTitle" class="text-xl font-extrabold text-white mt-0.5">Seleccione un canal</h2>
+            </div>
+          </div>
+          
+          <div class="flex items-center gap-3">
+            <button id="activeFavBtn" onclick="toggleFavorite(currentStream?.id)" class="p-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-400 hover:text-amber-400 transition">
+              <i data-lucide="star" class="w-5 h-5"></i>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- LISTA DE CANALES -->
+    <aside class="space-y-4">
+      <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center justify-between">
+        <span class="flex items-center gap-2">
+          <i data-lucide="signal" class="w-4 h-4 text-amber-400"></i> <span id="listTitle">Lista de Canales</span>
+        </span>
+        <span id="channelCount" class="text-xs font-normal text-slate-500">0 canales</span>
+      </h3>
+
+      <div class="space-y-2.5 max-h-[calc(100vh-12rem)] overflow-y-auto pr-1 custom-scroll" id="streamList"></div>
+    </aside>
+
+  </main>
+
+  <footer class="border-t border-slate-800 py-4 text-center text-xs text-slate-500">
+    <p>©2026 RAMP Prime Solutions — División Audio-Visual v2.1</p>
+  </footer>
+
+  <script>
+    let streams = [];
+    let hlsInstance = null;
+    let currentStream = null;
+    let previousStreamId = null;
+    let showingOnlyFavorites = false;
+    
+    // Cargar Favoritos guardados en LocalStorage
+    let favorites = JSON.parse(localStorage.getItem('rpstv_favorites')) || [];
+
+    const videoElement = document.getElementById('hlsPlayer');
+
+	// CARGA REMOTA ROBUSTA (Compatible con Navegadores + Kodular WebView)
+	async function fetchStreams() {
+	  const cloudUrl = 'https://gist.githubusercontent.com/rampprimesolutions-admin/7c2e780742d4285ce388cd18ceacb227/raw/8ec8168341da2ceca87aab6e7da78ef2e5054263/channels.json'; // Tu URL de Gist Raw
+
+	  try {
+		// Intentar carga estándar vía fetch
+		const response = await fetch(cloudUrl);
+		if (!response.ok) throw new Error("Error en respuesta HTTP");
+		streams = await response.json();
+	  } catch (error) {
+		console.warn("Fetch bloqueado por WebView/CORS. Intentando carga alternativa...", error);
+		
+		// Método de Respaldo para Android/Kodular: Inyección de Script sin restricciones CORS
+		try {
+		  await loadGistScriptFallback(cloudUrl);
+		} catch (fallbackError) {
+		  console.error("No se pudo cargar la lista remota. Usando lista de respaldo integrada.", fallbackError);
+		  streams = [
+			{ id: 1, name: "Willax (Perú)", location: "Canal Auxiliar 4", logoUrl: "", hlsUrl: "", active: true }
+		  ];
+		}
+	  }
+
+	  renderStreams();
+	  const initial = streams.find(s => s.active) || streams[0];
+	  if (initial) selectStream(initial.id, false);
+	}
+
+	// Función auxiliar de respaldo para Kodular
+	function loadGistScriptFallback(url) {
+	  return new Promise((resolve, reject) => {
+		const script = document.createElement('script');
+		// Forzamos la descarga del JSON como texto ejecutable
+		fetch(url)
+		  .then(r => r.text())
+		  .then(textData => {
+			streams = JSON.parse(textData);
+			resolve();
+		  })
+		  .catch(err => reject(err));
+	  });
+	}
+
+    // 2. REPRODUCTOR HLS
+    function loadHlsStream(url) {
+      if (Hls.isSupported()) {
+        if (hlsInstance) hlsInstance.destroy();
+        hlsInstance = new Hls({ enableWorker: true, lowLatencyMode: true });
+        hlsInstance.loadSource(url);
+        hlsInstance.attachMedia(videoElement);
+        hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => videoElement.play().catch(() => {}));
+      } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+        videoElement.src = url;
+        videoElement.addEventListener('loadedmetadata', () => videoElement.play());
+      }
+    }
+
+    // 3. RENDERIZADO DE LISTA
+	function renderStreams() {
+	  const container = document.getElementById('streamList');
+	  container.innerHTML = '';
+
+	  const listToRender = showingOnlyFavorites 
+		? streams.filter(s => favorites.includes(s.id))
+		: streams;
+
+	  document.getElementById('channelCount').textContent = `${listToRender.length} canales`;
+
+	  listToRender.forEach(stream => {
+		const isFav = favorites.includes(stream.id);
+		const card = document.createElement('div');
+		
+		card.className = `w-full p-3 rounded-xl border transition-all duration-200 flex items-center justify-between gap-2 ${
+		  stream.active 
+			? 'bg-amber-500/10 border-amber-500/50 shadow-md' 
+			: 'bg-slate-900/40 border-slate-800 hover:border-slate-700 hover:bg-slate-900'
+		}`;
+
+		card.innerHTML = `
+		  <div class="flex items-center gap-3 cursor-pointer flex-1 min-w-0" onclick="selectStream(${stream.id})">
+			<div class="w-11 h-11 rounded-lg bg-slate-800 flex items-center justify-center overflow-hidden border border-slate-700 flex-shrink-0">
+			  ${stream.logoUrl 
+				? `<img src="${stream.logoUrl}" class="w-full h-full object-contain p-1" onerror="this.onerror=null; this.src='https://via.placeholder.com/50?text=TV';"/>`
+				: `<span class="font-bold text-slate-400 text-xs">${stream.id}</span>`
+			  }
+			</div>
+			<div class="truncate">
+			  <!-- Línea 1 (Grande / Ámbar): Muestra "location" (Willax) -->
+			  <div class="font-bold text-base truncate ${stream.active ? 'text-amber-400' : 'text-slate-100'}">${stream.location}</div>
+			  <!-- Línea 2 (Pequeño / Gris): Muestra "name" (Canal Auxiliar 4) -->
+			  <div class="text-xs text-slate-400 truncate">${stream.name}</div>
+			</div>
+		  </div>
+		  
+		  <button onclick="toggleFavorite(${stream.id}); event.stopPropagation();" class="p-1.5 rounded-lg hover:bg-slate-800 text-slate-500 transition">
+			<i data-lucide="star" class="w-4 h-4 ${isFav ? 'fill-amber-400 text-amber-400' : ''}"></i>
+		  </button>
+		`;
+
+		container.appendChild(card);
+	  });
+
+	  lucide.createIcons();
+	}
+
+    // 4. SELECCIÓN DE CANAL Y GESTIÓN DE PRE-CHANNEL
+    function selectStream(id, recordHistory = true) {
+	  if (currentStream && currentStream.id !== id && recordHistory) {
+		previousStreamId = currentStream.id;
+		document.getElementById('preChannelBtn').disabled = false;
+	  }
+
+	  streams.forEach(s => s.active = (s.id === id));
+	  currentStream = streams.find(s => s.id === id);
+	  
+	  // AHORA:
+	  // Línea 1 (Grande / Ámbar): Muestra "location" (Willax)
+	  document.getElementById('activeCategory').textContent = currentStream.location || '';
+	  document.getElementById('activeCategory').className = "text-xl font-extrabold text-amber-400 block tracking-wide uppercase";
+
+	  // Línea 2 (Pequeño / Blanco): Muestra "name" (Canal Auxiliar 4)
+	  document.getElementById('activeTitle').textContent = currentStream.name || '';
+	  document.getElementById('activeTitle').className = "text-xs font-semibold text-slate-300 tracking-wider mt-0.5";
+
+	  const activeLogo = document.getElementById('activeLogo');
+	  if (currentStream.logoUrl) {
+		activeLogo.src = currentStream.logoUrl;
+		activeLogo.classList.remove('hidden');
+	  } else {
+		activeLogo.classList.add('hidden');
+	  }
+
+	  updateActiveFavButton();
+	  loadHlsStream(currentStream.hlsUrl);
+	  renderStreams();
+	}
+
+    // 5. NAVEGACIÓN Y FAVORITOS
+    function changeChannelRelative(offset) {
+      const list = showingOnlyFavorites ? streams.filter(s => favorites.includes(s.id)) : streams;
+      if (list.length === 0) return;
+      const currentIndex = list.findIndex(s => s.id === currentStream.id);
+      let newIndex = currentIndex + offset;
+      
+      if (newIndex < 0) newIndex = list.length - 1;
+      if (newIndex >= list.length) newIndex = 0;
+
+      selectStream(list[newIndex].id);
+    }
+
+    function goToPreviousChannel() {
+      if (previousStreamId) selectStream(previousStreamId);
+    }
+
+    function toggleFavorite(id) {
+      if (!id) return;
+      if (favorites.includes(id)) {
+        favorites = favorites.filter(favId => favId !== id);
+      } else {
+        favorites.push(id);
+      }
+      localStorage.setItem('rpstv_favorites', JSON.stringify(favorites));
+      updateActiveFavButton();
+      renderStreams();
+    }
+
+    function updateActiveFavButton() {
+      const btn = document.getElementById('activeFavBtn');
+      if (!currentStream) return;
+      const isFav = favorites.includes(currentStream.id);
+      btn.innerHTML = `<i data-lucide="star" class="w-5 h-5 ${isFav ? 'fill-amber-400 text-amber-400' : ''}"></i>`;
+      lucide.createIcons();
+    }
+
+    function toggleFavoriteFilter() {
+      showingOnlyFavorites = !showingOnlyFavorites;
+      const text = document.getElementById('favFilterText');
+      const title = document.getElementById('listTitle');
+      
+      if (showingOnlyFavorites) {
+        text.textContent = 'Ver Todos';
+        title.textContent = 'Canales Favoritos';
+      } else {
+        text.textContent = 'Ver Favoritos';
+        title.textContent = 'Lista de Canales';
+      }
+      renderStreams();
+    }
+
+    // 6. TRANSMISIÓN SEGURA A TV (Evita bloqueos en Android)
+    function launchCast() {
+      if (window.chrome && window.chrome.cast && window.chrome.cast.isAvailable) {
+        const castSession = cast.framework.CastContext.getInstance().getCurrentSession();
+        if (castSession && currentStream) {
+          const mediaInfo = new chrome.cast.media.MediaInfo(currentStream.hlsUrl, 'application/x-mpegurl');
+          const request = new chrome.cast.media.LoadRequest(mediaInfo);
+          castSession.loadMedia(request);
+        } else {
+          cast.framework.CastContext.getInstance().requestSession();
+        }
+      } else {
+        alert("Tu navegador móvil no tiene habilitado el protocolo directo de Cast/DLNA en esta pestaña. Para transmitir a tu Smart TV, utiliza el icono nativo de transmisión del navegador (Chrome) o la app Web Video Caster.");
+      }
+    }
+
+	// ATACUS DE TECLADO (Funciona también en Pantalla Completa)
+	document.addEventListener('keydown', (event) => {
+	  // Evita interferir si el usuario está escribiendo en un campo de texto
+	  if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+
+	  switch (event.key) {
+		case 'ArrowUp':
+		case 'w':
+		case 'W':
+		  changeChannelRelative(-1); // Canal Anterior
+		  break;
+
+		case 'ArrowDown':
+		case 's':
+		case 'S':
+		  changeChannelRelative(1); // Siguiente Canal
+		  break;
+
+		case 'p':
+		case 'P':
+		case 'Backspace':
+		  if (previousStreamId) goToPreviousChannel(); // Pre-Channel
+		  break;
+	  }
+	});
+
+    document.addEventListener('DOMContentLoaded', fetchStreams);
+  </script>
+</body>
+</html>
