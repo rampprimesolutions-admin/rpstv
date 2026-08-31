@@ -340,32 +340,6 @@
       }
     }
 
-	// ATACUS DE TECLADO (Funciona también en Pantalla Completa)
-	document.addEventListener('keydown', (event) => {
-	  // Evita interferir si el usuario está escribiendo en un campo de texto
-	  if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
-
-	  switch (event.key) {
-		case 'ArrowUp':
-		case 'w':
-		case 'W':
-		  changeChannelRelative(-1); // Canal Anterior
-		  break;
-
-		case 'ArrowDown':
-		case 's':
-		case 'S':
-		  changeChannelRelative(1); // Siguiente Canal
-		  break;
-
-		case 'p':
-		case 'P':
-		case 'Backspace':
-		  if (previousStreamId) goToPreviousChannel(); // Pre-Channel
-		  break;
-	  }
-	});
-
     document.addEventListener('DOMContentLoaded', fetchStreams);
   </script>
 </body>
