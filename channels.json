@@ -1,0 +1,338 @@
+[
+  {
+    "id": 1,
+    "name": "Canal Central",
+    "location": "Crímenes Reales",
+    "logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQN23drHwkmFN6V5qHH4SHdi2fQ_dfl8DcNl6Ec8TiHJw&s",
+    "hlsUrl": "https://amg01796-amg01796c13-rakuten-gb-6739.playouts.now.amagi.tv/1080p/index.m3u8",
+    "active": true
+  },
+  {
+	"id": 2,
+	"name": "Canal Norte",
+	"location": "Nature Time",
+	"logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPUD4qx5sfzvcwMHvr8ayqm2nj8E-cg2YrKVNOHJIF6g&s=10",
+	"hlsUrl": "https://amg00090-amgnaturetimeemea-rakuten.amagi.tv/playlist.m3u8",
+	"active": false
+  },
+  {
+	"id": 3,
+	"name": "Canal Sur",
+	"location": "Cine Western",
+	"logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnwAfqwcwGVGfMI4PSLKFihBmOpVqpGPWYXQwbwUukOA&s=10",
+	"hlsUrl": "https://d2nq34q0i1r3la.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-awohw8g217ho8/CineWestern_ES.m3u8",
+	"active": false
+  },
+  {
+	"id": 4,
+	"name": "Canal Este",
+	"location": "West",
+	"logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-cOMmUkI66tiJYoX5SMLUvuln32F4nf8g_te3dLhJjg&s=10",
+	"hlsUrl": "https://cablered.iptvperu.tv:1936/cablered/west/playlist.m3u8",
+	"active": false
+  },
+  {
+	"id": 5,
+	"name": "Canal Oeste",
+	"location": "Todo Novelas",
+	"logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNJEHm4krSDt7rVYot5iFnDrP1GffxCts854W1U0mM0w&s=10",
+	"hlsUrl": "https://dtsszjrztq9ti.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-yshah5p4v45g1/ToDoNovelas_ES.m3u8",
+	"active": false
+  },
+  {
+	"id": 6,
+	"name": "Canal Auxiliar 1",
+	"location": "TL Novelas",
+	"logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT126CEJGI2O87CFj1Wv2tatQe4U3KKlBC9GHhHiPRswA&s=10",
+	"hlsUrl": "http://209.14.115.253:8081/TELENOVELAS/index.m3u8",
+	"active": false
+  },
+  {
+	"id": 7,
+	"name": "Canal Auxiliar 2",
+	"location": "Cops en Español",
+	"logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQw23r8Kheq_81sumtTyWIP4IKDPYLBh-a7VgLAqq0g2w&s=10",
+	"hlsUrl": "https://rightsboosterltd-cops-1-es.rakuten.wurl.tv/playlist.m3u8",
+	"active": false
+  },
+  {
+	"id": 8,
+	"name": "Canal Auxiliar 3",
+	"location": "Deutsche Welle",
+	"logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS4FpBPnMIGxzFoszM2deFsjEgePV4zNGAeSLtAViW2OA&s=10",
+	"hlsUrl": "https://scl.edge.grupoz.cl/transmision/live/playlist.m3u8",
+	"active": false
+  },
+  {
+	"id": 9,
+	"name": "Canal Auxiliar 4",
+	"location": "Willax",
+	"logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSFJxL7GriINdx10VMbm5Di_NPYiomUkeYkXBOOw4p6_w&s=10",
+	"hlsUrl": "http://187.102.210.46/WILLAX/index.m3u8",
+	"active": false
+  },
+  {
+	"id": 10,
+	"name": "Canal Auxiliar 5",
+	"location": "Latina",
+	"logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8_mZSIublUBul-RHfxSoZ6MyCfhZZBMabOXCl6lBA3Q&s",
+	"hlsUrl": "https://redirector.rudo.video/hls-video/567ffde3fa319fadf3419efda25619456231dfea/latina/latina.smil/playlist.m3u8",
+	"active": false
+  },
+  {
+	"id": 11,
+	"name": "Canal Auxiliar 6",
+	"location": "América Televisión",
+	"logoUrl": "https://static.wikia.nocookie.net/doblaje/images/a/ab/Am%C3%A9rica_Televisi%C3%B3n_logo_2016.png/revision/latest/scale-to-width-down/1000?cb=20241118164450&path-prefix=es",
+	"hlsUrl": "https://live-bd1.tv360.bitel.com.pe/manifest/america/master_clean_source.m3u8",
+	"active": false
+  },
+  {
+	"id": 12,
+	"name": "Canal Auxiliar 7",
+	"location": "Panamericana Televisión",
+	"logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuVL7hZDpHQ3qQC0_Z7t9uwh7cO703x-2Vvu4645Yo-g&s=10",
+	"hlsUrl": "http://bantel-cdn1.iptvperu.tv:1935/btnscrtn/panamericana.stream/playlist.m3u8",
+	"active": false
+  },
+  {
+	"id": 13,
+	"name": "Canal Auxiliar 8",
+	"location": "TV Perú",
+	"logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKG7dRk_1O9cffWyHema78ZpipRtlvqRyggP11AtIUoQ&s=10",
+	"hlsUrl": "http://190.93.224.42/TV-PERU/index.m3u8",
+	"active": false
+  },
+  {
+	"id": 14,
+	"name": "Canal Auxiliar 9",
+	"location": "ATV",
+	"logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSGXdNwxHofmMJC4L8spIOlYKPbZa1qG_SzAgCg1IdzPw&s",
+	"hlsUrl": "https://d19e55ehz2il4i.cloudfront.net/ts:abr.m3u8",
+	"active": false
+  },
+  {
+	"id": 15,
+	"name": "Canal Auxiliar 10",
+	"location": "ATV+",
+	"logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbwZaKAEMpC7CaDW23_jQ4-2JnxsvSYvYNbV7ybLGVMg&s=10",
+	"hlsUrl": "https://d26l0c7cli5gzs.cloudfront.net/ts:abr.m3u8",
+	"active": false
+  },
+  {
+	"id": 16,
+	"name": "Canal Auxiliar 11",
+	"location": "ATV Sur",
+	"logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgUoENbhxI4e62uL8kzgSw8Yd5qFVBCVfcP4QY0_RTAg&s=10",
+	"hlsUrl": "http://190.93.224.42/ATV-SUR/index.m3u8",
+	"active": false
+  },
+  {
+	"id": 17,
+	"name": "Canal Auxiliar 12",
+	"location": "Global TV",
+	"logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTiIZZldqYPp64BGsgZ9jXdQi113rzyCS-NmZIUdzY6tQ&s=10",
+	"hlsUrl": "http://bantel-cdn1.iptvperu.tv:1935/btnscrtn/global.stream/playlist.m3u8",
+	"active": false
+  },
+  {
+	"id": 18,
+	"name": "Canal Auxiliar 13",
+	"location": "RPP Noticias",
+	"logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTT7IzI7lIlmTuFFTMoXYTQ4aGrsl9QvK1TNwE2J5qNQQ&s",
+	"hlsUrl": "http://190.93.224.42/RPP/index.m3u8",
+	"active": false
+  },
+  {
+	"id": 19,
+	"name": "Canal Auxiliar 14",
+	"location": "Exitosa TV",
+	"logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZUJuEc-5pjeXY0MY-4HOpjLgiAdd6c5mPRC_Fd7HXdQ&s=10",
+	"hlsUrl": "http://190.93.224.42/EXITOSA/index.m3u8",
+	"active": false
+  },
+  {
+	"id": 20,
+	"name": "Canal Auxiliar 15",
+	"location": "PBO",
+	"logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8iMYzJwEwoy3MF_I0DqJevMtnhOyIp4gjcrtZup778g&s=10",
+	"hlsUrl": "http://190.93.224.42/PBO/index.m3u8",
+	"active": false
+  },
+  {
+	"id": 21,
+	"name": "Canal Auxiliar 16",
+	"location": "Liga 1 Max",
+	"logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQHSa7ZsqWDg_D5WbxgszVV3ViNQ3u6FtUMxa9OIpczB4wATZeg6l7w0eDw&s=10",
+	"hlsUrl": "http://190.93.224.42/LIGA-1-MAX/index.m3u8",
+	"active": false
+  },
+  {
+	"id": 22,
+	"name": "Canal Auxiliar 17",
+	"location": "Monterrico TV JCP",
+	"logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnOurbagaP7UHgzgLxzu8EP6zk7UYv2AytVVL3zth2WA&s=10",
+	"hlsUrl": "https://h.jcp.live.opencaster.com/play_src/index.m3u8",
+	"active": false
+  },
+  {
+	"id": 23,
+	"name": "Canal Auxiliar 18",
+	"location": "National Geographic",
+	"logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsLqwXknUmsex4XwO76rubOzJYW5hkotEFZf3jboEDZg&s=10",
+	"hlsUrl": "http://212.5.144.156:8080/natgeo/index.m3u8",
+	"active": false
+  },
+  {
+	"id": 24,
+	"name": "Canal Auxiliar 19",
+	"location": "History Channel",
+	"logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDTon9zjpYFwNROjkHAsUJLje59QgAbpB08uyc8Nlnfg&s=10",
+	"hlsUrl": "http://177.234.249.178:8888/HISTORY/index.m3u8",
+	"active": false
+  },
+  {
+	"id": 25,
+	"name": "Canal Auxiliar 20",
+	"location": "Universal Channel",
+	"logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4_EhrnP8IK_9CLlOKKJEyG0FXGlgilJFBpH4DHhXuVA&s=10",
+	"hlsUrl": "http://138.121.15.230:9002/UNIVERSAL-CHANNEL/index.m3u8",
+	"active": false
+  },
+  {
+	"id": 26,
+	"name": "Canal Auxiliar 21",
+	"location": "Studio Universal",
+	"logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTx0kKIV2vlQjcKFSC84WIV-7qSlxkkLlo54z8OCLBl-w&s=10",
+	"hlsUrl": "http://190.93.224.42/STUDIO-UNIVERSAL/index.m3u8",
+	"active": false
+  },
+  {
+	"id": 27,
+	"name": "Canal Auxiliar 22",
+	"location": "Cinecanal",
+	"logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTM8aO0BGAvfKjd53g_-hfZayOjramczn2WQBPfeFsVYw&s=10",
+	"hlsUrl": "http://45.162.193.35/CINECANAL/index.m3u8",
+	"active": false
+  },
+  {
+	"id": 28,
+	"name": "Canal Auxiliar 23",
+	"location": "Azteca Internacional",
+	"logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8aQOXI84_tLSzQesINDt5YRiNoWk0vhwcii7insyebA&s=10",
+	"hlsUrl": "https://azt-mun.otteravision.com/azt/mun/mun.m3u8",
+	"active": false
+  },
+  {
+	"id": 29,
+	"name": "Canal Auxiliar 24",
+	"location": "Canal de las Estrellas",
+	"logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTwE4UWq98obqTtesajOcevWCAPwCEwjR-QadZjN5xew&s=10",
+	"hlsUrl": "http://bantel-cdn1.iptvperu.tv:1935/btnscrtn/Canal_Las_Estrellas.stream/playlist.m3u8",
+	"active": false
+  },
+  {
+	"id": 30,
+	"name": "Canal Auxiliar 25",
+	"location": "A&E Latinoamérica",
+	"logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS_xxaZAG-TCpKoDDhHHNtr4fQanyP6D2sWoiIGdXsVPQ&s=10",
+	"hlsUrl": "http://23.239.31.26:8989/aande/index.m3u8",
+	"active": false
+  },
+  {
+	"id": 31,
+	"name": "Canal Auxiliar 26",
+	"location": "AXN Latinoamérica",
+	"logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQ8klMWgwjq-lh1STOUfL5re5fGV1V3YpfSPYZbeek8g&s=10",
+	"hlsUrl": "http://177.234.249.178:8888/AXN/index.m3u8",
+	"active": false
+  },
+  {
+	"id": 32,
+	"name": "Canal Auxiliar 27",
+	"location": "Sony Cine Latinoamérica",
+	"logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSILb-fvGDrBaBb9jf22joxkCzJ4i81SwDPQUMNs1iDFw&s",
+	"hlsUrl": "https://a-cdn.klowdtv.com/live1/cine_720p/playlist.m3u8",
+	"active": false
+  },
+  {
+	"id": 33,
+	"name": "Canal Auxiliar 28",
+	"location": "Sony Movies Latinoamérica",
+	"logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStd_x87fQO1xhhz6VCODWOU4dvQe3Ss3U5CZLYcpWssA&s=10",
+	"hlsUrl": "http://15.204.246.24:8080/SonyMoviesHD/index.m3u8",
+	"active": false
+  },
+  {
+	"id": 34,
+	"name": "Canal Auxiliar 29",
+	"location": "Cine Familiar",
+	"logoUrl": "https://timnetworks.tv/wp-content/uploads/2022/11/WhatsApp-Image-2022-11-09-at-8.04.23-PM-350x280.jpeg",
+	"hlsUrl": "http://bantel-cdn1.iptvperu.tv:1935/btnscrtn/cinefamiliar.stream/playlist.m3u8",
+	"active": false
+  },
+  {
+	"id": 35,
+	"name": "Canal Auxiliar 30",
+	"location": "Univisión Latinoamérica",
+	"logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRd4b8U7_gINnHaJuKsdXE9QSvEioCOxlqnYgUzeCRfXA&s=10",
+	"hlsUrl": "http://15.204.246.24:8080/UnivisionHD/index.m3u8",
+	"active": false
+  },
+  {
+	"id": 36,
+	"name": "Canal Auxiliar 31",
+	"location": "Telemundo Latinoamérica",
+	"logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5zA9I0Fi6zfQf8GrALSgvfSVlRy2tIZlUcI_cclypKQ&s=10",
+	"hlsUrl": "https://xumo-drct-ch836-57aiq.fast.nbcuni.com/live/master.m3u8",
+	"active": false
+  },
+  {
+	"id": 37,
+	"name": "Canal Auxiliar 32",
+	"location": "Estrella TV",
+	"logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTv9xAVbpsnCy_zaBJCiAisDg3SZzaV1hrUm06vuZyY_Q&s=10",
+	"hlsUrl": "https://estrellatv-xumo.amagi.tv/playlist.m3u8",
+	"active": false
+  },
+  {
+	"id": 38,
+	"name": "Canal Auxiliar 33",
+	"location": "Distrito Comedia",
+	"logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4accaD43ccNwhvly2CWNgED8MMmQfxUn2binCShJTCQ&s=10",
+	"hlsUrl": "http://181.119.66.28:8081/DISTRITO-COMEDIA/index.m3u8",
+	"active": false
+  },
+  {
+	"id": 39,
+	"name": "Canal Auxiliar 34",
+	"location": "Golden Edge",
+	"logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdFV_iNTxQUIvAxv8NpZNXxKp3IdUf1JsQ_ESRHd25cw&s=10",
+	"hlsUrl": "http://209.14.115.253:8081/GOLDEN-EDGE/index.m3u8",
+	"active": false
+  },
+  {
+	"id": 40,
+	"name": "Canal Auxiliar 35",
+	"location": "Disney Channel (Argentina)",
+	"logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTq7QqbywV8oaouDQYx7B0JTed7WdTECCiGO9Clo9y1fA&s=10",
+	"hlsUrl": "http://181.78.8.199:8000/play/a0dn/index.m3u8",
+	"active": false
+  },
+  {
+	"id": 41,
+	"name": "Canal Auxiliar 36",
+	"location": "TyC Sports",
+	"logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQlDSC5uoUu_b2kfvy1Fk0XPbuQ52L2D6dhebEf5vBKtg&s",
+	"hlsUrl": "http://45.181.87.106/TYCSPORTSHD/index.m3u8",
+	"active": false
+  },
+  {
+	"id": 42,
+	"name": "Canal Auxiliar 37",
+	"location": "AMC Latinomaérica",
+	"logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTADpWP39vfSNMTJTjJcxrL7rNDBQud9k2n7zmhcUarSA&s=10",
+	"hlsUrl": "http://15.204.246.24:8080/AMCHD/index.m3u8",
+	"active": false
+  }
+]
