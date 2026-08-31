@@ -137,8 +137,8 @@
 
 	// CARGA REMOTA ROBUSTA (Compatible con Navegadores + Kodular WebView)
 	async function fetchStreams() {
-	  const cloudUrl = 'https://gist.githubusercontent.com/rampprimesolutions-admin/7c2e780742d4285ce388cd18ceacb227/raw/8ec8168341da2ceca87aab6e7da78ef2e5054263/channels.json'; // Tu URL de Gist Raw
-
+	  //const cloudUrl = 'https://gist.githubusercontent.com/rampprimesolutions-admin/7c2e780742d4285ce388cd18ceacb227/raw/8ec8168341da2ceca87aab6e7da78ef2e5054263/channels.json'; // Tu URL de Gist Raw
+	  const cloudUrl = './channels.json';	
 	  try {
 		// Intentar carga estándar vía fetch
 		const response = await fetch(cloudUrl);
