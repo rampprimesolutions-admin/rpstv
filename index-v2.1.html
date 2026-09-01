@@ -135,24 +135,52 @@
 
     const videoElement = document.getElementById('hlsPlayer');
 
-	// CARGA REMOTA ROBUSTA (Compatible con Navegadores + Kodular WebView)
+	// CARGA REMOTA BLINDADA (Resuelve UNDEFINED)
 	async function fetchStreams() {
+	  const gistRawUrl = 'https://gist.githubusercontent.com/rampprimesolutions-admin/7c2e780742d4285ce388cd18ceacb227/raw/f6999bbf37d1c4391b7a8e9ebf1a49136ac217b8/channels.json';
+	  
 	  try {
-		// URL en modo RAW de tu GitHub Gist (reemplaza TU_CODIGO_GIST por el tuyo)
-		const rawGistUrl = 'https://gist.githubusercontent.com/rampprimesolutions-admin/7c2e780742d4285ce388cd18ceacb227/raw/f6999bbf37d1c4391b7a8e9ebf1a49136ac217b8/channels.json';
+		// Intentamos descargar directamente de Gist
+		let response = await fetch(gistRawUrl);
 		
-		// Proxy transparente para evitar bloqueos CORS en Android y Navegadores
-		const cloudUrl = 'https://corsproxy.io/?' + encodeURIComponent(rawGistUrl);
-		
-		const response = await fetch(cloudUrl);
-		streams = await response.json();
+		// Si la descarga directa falla o es bloqueada, probamos vía proxy
+		if (!response.ok) {
+		  response = await fetch('https://corsproxy.io/?' + encodeURIComponent(gistRawUrl));
+		}
+
+		const data = await response.json();
+
+		// Verificación de estructura para evitar "UNDEFINED":
+		if (Array.isArray(data)) {
+		  streams = data;
+		} else if (data && Array.isArray(data.record)) {
+		  streams = data.record;
+		} else if (data && Array.isArray(data.channels)) {
+		  streams = data.channels;
+		} else {
+		  throw new Error("Formato de JSON no válido como lista");
+		}
+
 	  } catch (error) {
-		console.warn("Error cargando canales remotos:", error);
+		console.warn("No se pudo cargar la lista remota. Cargando canales de respaldo local...", error);
+		
+		// Respaldo garantizado si falla internet o la respuesta
+		streams = [
+		  { id: 1, name: "Canal Auxiliar 4", location: "Willax", logoUrl: "", hlsUrl: "https://amg01796-amg01796c13-rakuten-gb-6739.playouts.now.amagi.tv/1080p/index.m3u8", active: true },
+		  { id: 2, name: "Canal Auxiliar 5", location: "Latina", logoUrl: "", hlsUrl: "", active: false }
+		];
 	  }
 
+	  // Aseguramos que streams sea un arreglo válido antes de contar
+	  const totalCount = Array.isArray(streams) ? streams.length : 0;
+	  document.getElementById('channelCount').textContent = `${totalCount} canales`;
+
 	  renderStreams();
-	  const initial = streams.find(s => s.active) || streams[0];
-	  if (initial) selectStream(initial.id, false);
+
+	  if (Array.isArray(streams) && streams.length > 0) {
+		const initial = streams.find(s => s.active) || streams[0];
+		if (initial) selectStream(initial.id, false);
+	  }
 	}
 
 	// Función auxiliar de respaldo para Kodular
