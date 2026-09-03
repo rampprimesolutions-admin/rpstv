@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RPSTV - Streaming VIP v2.2</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
+
+  <!-- ENCABEZADO -->
+  <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-amber-500 p-0.5 flex items-center justify-center shadow-lg">
+          <div class="w-full h-full bg-slate-950 rounded-full flex items-center justify-center font-bold text-amber-400">📺</div>
+        </div>
+        <div>
+          <h1 class="text-lg font-bold tracking-tight text-amber-400">RPSTV - Streaming VIP v2.2</h1>
+          <p class="text-xs text-slate-400">Monitoreo QoS & Telemetría Activa</p>
+        </div>
+      </div>
+      
+      <div class="flex items-center gap-2">
+        <button id="castBtn" onclick="castToTV()" class="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-lg text-slate-300 text-xs transition">
+          <i data-lucide="cast" class="w-4 h-4 text-amber-400"></i>
+          <span>Enviar a TV</span>
+        </button>
+
+        <button id="toggleFavFilterBtn" onclick="toggleFavoriteFilter()" class="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-lg text-slate-300 text-xs transition">
+          <i data-lucide="star" class="w-4 h-4 text-amber-400"></i>
+          <span id="favFilterText">Ver Favoritos</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full grid grid-cols-1 lg:grid-cols-3 gap-8">
+    
+    <section class="lg:col-span-2">
+      <div class="sticky top-20 space-y-4">
+        
+        <div class="relative w-full aspect-video bg-black rounded-2xl overflow-hidden border border-slate-800 shadow-2xl flex items-center justify-center">
+          <video id="hlsPlayer" controls autoplay muted playsinline class="w-full h-full object-contain"></video>
+        </div>
+        
+        <div class="grid grid-cols-3 gap-2">
+          <button onclick="changeChannelRelative(-1)" class="flex items-center justify-center gap-1 bg-slate-900 hover:bg-slate-800 border border-slate-800 py-2 rounded-xl text-xs font-semibold text-slate-300 transition">
+            <i data-lucide="chevron-left" class="w-4 h-4"></i> Canal Anterior
+          </button>
+          <button id="preChannelBtn" onclick="goToPreviousChannel()" disabled class="flex items-center justify-center gap-1 bg-slate-900 hover:bg-slate-800 border border-slate-800 py-2 rounded-xl text-xs font-semibold text-amber-400 disabled:opacity-40 disabled:cursor-not-allowed transition">
+            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Pre-Channel
+          </button>
+          <button onclick="changeChannelRelative(1)" class="flex items-center justify-center gap-1 bg-slate-900 hover:bg-slate-800 border border-slate-800 py-2 rounded-xl text-xs font-semibold text-slate-300 transition">
+            Siguiente Canal <i data-lucide="chevron-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-4 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <img id="activeLogo" src="" class="w-12 h-12 object-contain rounded-md bg-slate-800/50 p-1 hidden" alt="Logo" />
+            <div>
+              <span id="activeCategory" class="text-xl font-extrabold text-amber-400 block tracking-wide uppercase">CARGANDO...</span>
+              <h2 id="activeTitle" class="text-xs font-semibold text-slate-300 tracking-wider mt-0.5">Seleccione un canal</h2>
+            </div>
+          </div>
+          
+          <button id="activeFavBtn" onclick="toggleFavorite(currentStream?.id)" class="p-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-400 hover:text-amber-400 transition">
+            <i data-lucide="star" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <aside class="space-y-4">
+      <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center justify-between">
+        <span class="flex items-center gap-2">
+          <i data-lucide="signal" class="w-4 h-4 text-amber-400"></i> <span id="listTitle">Lista de Canales</span>
+        </span>
+        <span id="channelCount" class="text-xs font-normal text-slate-500">0 canales</span>
+      </h3>
+
+      <div class="space-y-2.5 max-h-[calc(100vh-12rem)] overflow-y-auto pr-1" id="streamList"></div>
+    </aside>
+
+  </main>
+
+  <script>
+    // ⚠️ REEMPLAZA CON TU WEBHOOK COMPLETO DE DISCORD:
+    const REPORT_WEBHOOK_URL = "https://discordapp.com/api/webhooks/1545153044843462766/Ksj7pXq78kwQNrQTUEPzVRRfiq0PymD2VoZZPixFYTqXPTFmbbTmt7BqIafa93oTWG33";
+
+    let streams = [];
+    let hlsInstance = null;
+    let currentStream = null;
+    let previousStreamId = null;
+    let showingOnlyFavorites = false;
+    let bufferCheckTimer = null;
+    let reportedChannels = new Set();
+
+    let favorites = JSON.parse(localStorage.getItem('rpstv_favorites')) || [];
+    const videoElement = document.getElementById('hlsPlayer');
+
+    function getDeviceDetails() {
+      const ua = navigator.userAgent;
+      if (/Android/i.test(ua)) {
+        return (/wv|Version\/[\d\.]+/i.test(ua)) ? "📱 App Android (Kodular APK)" : "📱 Móvil Android (Navegador)";
+      }
+      if (/iPhone|iPad|iPod/i.test(ua)) return "🍎 Dispositivo iOS (iPhone/iPad)";
+      if (/Windows/i.test(ua)) return "💻 PC / Laptop (Windows)";
+      if (/Macintosh|Mac OS X/i.test(ua)) return "💻 Laptop / Mac (macOS)";
+      return "🌐 Navegador Web Genérico";
+    }
+
+    function sendStreamAlert(channelName, errorType, details) {
+      if (!REPORT_WEBHOOK_URL || REPORT_WEBHOOK_URL.includes("https://discordapp.com/api/webhooks/1545153044843462766/Ksj7pXq78kwQNrQTUEPzVRRfiq0PymD2VoZZPixFYTqXPTFmbbTmt7BqIafa93oTWG33")) return;
+
+      const reportKey = `${channelName}_${errorType}`;
+      if (reportedChannels.has(reportKey)) return;
+      reportedChannels.add(reportKey);
+
+      const payload = {
+        content: `🚨 **ALERTA DE SEÑAL CAÍDA - RPSTV**`,
+        embeds: [{
+          title: `Canal: ${channelName}`,
+          color: 15158332,
+          fields: [
+            { name: "Tipo de Error", value: errorType, inline: true },
+            { name: "Origen / Dispositivo", value: getDeviceDetails(), inline: true },
+            { name: "Detalles Técnicos", value: details || "Sin detalles adicionales" }
+          ],
+          timestamp: new Date().toISOString()
+        }]
+      };
+
+      const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+      const sent = navigator.sendBeacon(REPORT_WEBHOOK_URL, blob);
+
+      if (!sent) {
+        fetch(REPORT_WEBHOOK_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        }).catch(err => console.warn("Fallo envio secundario:", err));
+      }
+    }
+
+    async function fetchStreams() {
+      // ⚠️ REEMPLAZA TU_CODIGO_GIST CON EL TUYO:
+      const gistRawUrl = 'https://gist.githubusercontent.com/rampprimesolutions-admin/7c2e780742d4285ce388cd18ceacb227/raw/f6999bbf37d1c4391b7a8e9ebf1a49136ac217b8/channels.json?v=' + new Date().getTime();
+      
+      try {
+        let response = await fetch(gistRawUrl, { cache: 'no-store' });
+        const data = await response.json();
+        streams = Array.isArray(data) ? data : (data.channels || []);
+      } catch (error) {
+        console.error("Error cargando Gist", error);
+      }
+
+      document.getElementById('channelCount').textContent = `${streams.length} canales`;
+      renderStreams();
+      if (streams.length > 0) selectStream(streams[0].id, false);
+    }
+
+    function loadHlsStream(url) {
+      if (!url || url.trim() === "" || !url.startsWith("http")) {
+        sendStreamAlert(currentStream ? currentStream.location : "Desconocido", "Enlace Inexistente / URL Vacía", "El canal no posee una URL de streaming configurada.");
+        if (hlsInstance) hlsInstance.destroy();
+        videoElement.src = "";
+        return;
+      }
+
+      if (Hls.isSupported()) {
+        if (hlsInstance) hlsInstance.destroy();
+        hlsInstance = new Hls({ enableWorker: true, lowLatencyMode: true });
+        
+        hlsInstance.loadSource(url);
+        hlsInstance.attachMedia(videoElement);
+
+        hlsInstance.on(Hls.Events.ERROR, (event, data) => {
+          if (data.fatal) {
+            const channelInfo = currentStream ? currentStream.location : "Desconocido";
+            if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
+              sendStreamAlert(channelInfo, "Señal Caída (Error de Red / 404 / Offline)", `Detalle: ${data.details}`);
+            } else if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
+              sendStreamAlert(channelInfo, "Fallo de Decodificación Media", `Detalle: ${data.details}`);
+              hlsInstance.recoverMediaError();
+            }
+          }
+        });
+
+      } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+        videoElement.src = url;
+      }
+    }
+
+    videoElement.addEventListener('waiting', () => {
+      bufferCheckTimer = setTimeout(() => {
+        if (!videoElement.paused && currentStream) {
+          sendStreamAlert(currentStream.location, "Congelamiento de Stream (Buffer Timeout)", "El video superó los 12 segundos de espera.");
+        }
+      }, 12000);
+    });
+
+    videoElement.addEventListener('playing', () => {
+      if (bufferCheckTimer) clearTimeout(bufferCheckTimer);
+    });
+
+    function selectStream(id, recordHistory = true) {
+      if (currentStream && currentStream.id !== id && recordHistory) {
+        previousStreamId = currentStream.id;
+        document.getElementById('preChannelBtn').disabled = false;
+      }
+
+      streams.forEach(s => s.active = (s.id === id));
+      currentStream = streams.find(s => s.id === id);
+      
+      document.getElementById('activeCategory').textContent = currentStream.location || '';
+      document.getElementById('activeTitle').textContent = currentStream.name || '';
+
+      const activeLogo = document.getElementById('activeLogo');
+      if (currentStream.logoUrl) {
+        activeLogo.src = currentStream.logoUrl;
+        activeLogo.classList.remove('hidden');
+      } else {
+        activeLogo.classList.add('hidden');
+      }
+
+      updateActiveFavButton();
+      loadHlsStream(currentStream.hlsUrl);
+      renderStreams();
+    }
+
+    function renderStreams() {
+      const container = document.getElementById('streamList');
+      container.innerHTML = '';
+
+      const listToRender = showingOnlyFavorites ? streams.filter(s => favorites.includes(s.id)) : streams;
+
+      listToRender.forEach(stream => {
+        const isFav = favorites.includes(stream.id);
+        const card = document.createElement('div');
+        
+        card.className = `w-full p-3 rounded-xl border transition-all duration-200 flex items-center justify-between gap-2 ${
+          stream.active ? 'bg-amber-500/10 border-amber-500/50 shadow-md' : 'bg-slate-900/40 border-slate-800 hover:bg-slate-900'
+        }`;
+
+        card.innerHTML = `
+          <div class="flex items-center gap-3 cursor-pointer flex-1 min-w-0" onclick="selectStream(${stream.id})">
+            <div class="w-11 h-11 rounded-lg bg-slate-800 flex items-center justify-center overflow-hidden border border-slate-700 flex-shrink-0">
+              ${stream.logoUrl 
+                ? `<img src="${stream.logoUrl}" class="w-full h-full object-contain p-1" onerror="this.onerror=null; this.src='https://via.placeholder.com/50?text=TV';"/>`
+                : `<span class="font-bold text-slate-400 text-xs">${stream.id}</span>`
+              }
+            </div>
+            <div class="truncate">
+              <div class="font-bold text-base truncate ${stream.active ? 'text-amber-400' : 'text-slate-100'}">${stream.location}</div>
+              <div class="text-xs text-slate-400 truncate">${stream.name}</div>
+            </div>
+          </div>
+          
+          <button onclick="toggleFavorite(${stream.id}); event.stopPropagation();" class="p-1.5 rounded-lg hover:bg-slate-800 text-slate-500 transition">
+            <i data-lucide="star" class="w-4 h-4 ${isFav ? 'fill-amber-400 text-amber-400' : ''}"></i>
+          </button>
+        `;
+
+        container.appendChild(card);
+      });
+
+      lucide.createIcons();
+    }
+
+    function castToTV() {
+      if (videoElement.remote && videoElement.remote.state !== 'disconnected') {
+        videoElement.remote.prompt();
+      } else if (videoElement.webkitShowPlaybackTargetPicker) {
+        videoElement.webkitShowPlaybackTargetPicker();
+      } else {
+        alert("Transmisión a Smart TV: Selecciona la opción 'Enviar/Cast' desde el menú de opciones de tu navegador Chrome.");
+      }
+    }
+
+    function changeChannelRelative(offset) {
+      const list = showingOnlyFavorites ? streams.filter(s => favorites.includes(s.id)) : streams;
+      if (list.length === 0) return;
+      const currentIndex = list.findIndex(s => s.id === currentStream.id);
+      let newIndex = (currentIndex + offset + list.length) % list.length;
+      selectStream(list[newIndex].id);
+    }
+
+    function goToPreviousChannel() {
+      if (previousStreamId) selectStream(previousStreamId);
+    }
+
+    function toggleFavorite(id) {
+      if (!id) return;
+      favorites = favorites.includes(id) ? favorites.filter(favId => favId !== id) : [...favorites, id];
+      localStorage.setItem('rpstv_favorites', JSON.stringify(favorites));
+      updateActiveFavButton();
+      renderStreams();
+    }
+
+    function updateActiveFavButton() {
+      const btn = document.getElementById('activeFavBtn');
+      if (!currentStream) return;
+      const isFav = favorites.includes(currentStream.id);
+      btn.innerHTML = `<i data-lucide="star" class="w-5 h-5 ${isFav ? 'fill-amber-400 text-amber-400' : ''}"></i>`;
+      lucide.createIcons();
+    }
+
+    function toggleFavoriteFilter() {
+      showingOnlyFavorites = !showingOnlyFavorites;
+      document.getElementById('favFilterText').textContent = showingOnlyFavorites ? 'Ver Todos' : 'Ver Favoritos';
+      document.getElementById('listTitle').textContent = showingOnlyFavorites ? 'Canales Favoritos' : 'Lista de Canales';
+      renderStreams();
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+      if (['ArrowUp', 'w', 'W'].includes(e.key)) changeChannelRelative(-1);
+      if (['ArrowDown', 's', 'S'].includes(e.key)) changeChannelRelative(1);
+      if (['p', 'P', 'Backspace'].includes(e.key)) goToPreviousChannel();
+    });
+
+    document.addEventListener('DOMContentLoaded', fetchStreams);
+  </script>
+</body>
+</html>
