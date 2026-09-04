@@ -533,13 +533,6 @@
 	  if (['r', 'R'].includes(e.key)) toggleClockVisibility(); // Toggle del Reloj
 	});
 
-    document.addEventListener('keydown', (e) => {
-      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
-      if (['ArrowUp', 'w', 'W'].includes(e.key)) changeChannelRelative(-1);
-      if (['ArrowDown', 's', 'S'].includes(e.key)) changeChannelRelative(1);
-      if (['p', 'P', 'Backspace'].includes(e.key)) goToPreviousChannel();
-    });
-
     document.addEventListener('DOMContentLoaded', fetchStreams);
   </script>
 </body>
