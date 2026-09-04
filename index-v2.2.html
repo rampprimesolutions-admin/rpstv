@@ -116,7 +116,8 @@
     }
 
 	function sendStreamAlert(channelName, errorType, details) {
-	  if (!REPORT_WEBHOOK_URL || REPORT_WEBHOOK_URL.includes("https://discordapp.com/api/webhooks/1545153044843462766/Ksj7pXq78kwQNrQTUEPzVRRfiq0PymD2VoZZPixFYTqXPTFmbbTmt7BqIafa93oTWG33")) {
+	  // Solo se cancela si el Webhook no está definido o contiene el texto de plantilla por defecto
+	  if (!REPORT_WEBHOOK_URL || REPORT_WEBHOOK_URL.includes("TU_WEBHOOK_AQUI")) {
 		console.warn("[Telemetría] URL de Webhook no configurada correctamente.");
 		return;
 	  }
@@ -156,7 +157,7 @@
 
     async function fetchStreams() {
       // 鈿狅笍 REEMPLAZA TU_CODIGO_GIST CON EL TUYO:
-      const gistRawUrl = 'https://gist.githubusercontent.com/rampprimesolutions-admin/7c2e780742d4285ce388cd18ceacb227/raw/f6999bbf37d1c4391b7a8e9ebf1a49136ac217b8/channels.json?v=' + new Date().getTime();
+      const gistRawUrl = 'https://gist.githubusercontent.com/rampprimesolutions-admin/7c2e780742d4285ce388cd18ceacb227/raw/channels.json?v=' + new Date().getTime();
       
       try {
         let response = await fetch(gistRawUrl, { cache: 'no-store' });
