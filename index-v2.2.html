@@ -104,16 +104,16 @@
     let favorites = JSON.parse(localStorage.getItem('rpstv_favorites')) || [];
     const videoElement = document.getElementById('hlsPlayer');
 
-    function getDeviceDetails() {
-      const ua = navigator.userAgent;
-      if (/Android/i.test(ua)) {
-        return (/wv|Version\/[\d\.]+/i.test(ua)) ? "馃摫 App Android (Kodular APK)" : "馃摫 M贸vil Android (Navegador)";
-      }
-      if (/iPhone|iPad|iPod/i.test(ua)) return "馃崕 Dispositivo iOS (iPhone/iPad)";
-      if (/Windows/i.test(ua)) return "馃捇 PC / Laptop (Windows)";
-      if (/Macintosh|Mac OS X/i.test(ua)) return "馃捇 Laptop / Mac (macOS)";
-      return "馃寪 Navegador Web Gen茅rico";
-    }
+	function getDeviceDetails() {
+	  const ua = navigator.userAgent;
+	  if (/Android/i.test(ua)) {
+		return (/wv|Version\/[\d\.]+/i.test(ua)) ? "App Android (Kodular APK)" : "Movil Android (Navegador)";
+	  }
+	  if (/iPhone|iPad|iPod/i.test(ua)) return "Dispositivo iOS (iPhone/iPad)";
+	  if (/Windows/i.test(ua)) return "PC / Laptop (Windows)";
+	  if (/Macintosh|Mac OS X/i.test(ua)) return "Laptop / Mac (macOS)";
+	  return "Navegador Web Generico";
+	}
 
 	function sendStreamAlert(channelName, errorType, details) {
 	  // Solo se cancela si el Webhook no está definido o contiene el texto de plantilla por defecto
