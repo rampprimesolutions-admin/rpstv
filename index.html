@@ -7,6 +7,21 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+	<style>
+	  /* Elimina bordes y redondeo sólo cuando playerContainer esta en Fullscreen */
+	  #playerContainer:fullscreen {
+		border: none !important;
+		border-radius: 0 !important;
+		width: 100vw !important;
+		height: 100vh !important;
+	  }
+	  #playerContainer:-webkit-full-screen {
+		border: none !important;
+		border-radius: 0 !important;
+		width: 100vw !important;
+		height: 100vh !important;
+	  }
+	</style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
 
@@ -240,6 +255,19 @@
       if (streams.length > 0) selectStream(streams[0].id, false);
       populateScheduleSelect();
     }
+	
+	// FORZAR MODO IMAGEN EN IMAGEN (PiP)
+	async function togglePictureInPicture() {
+	  try {
+		if (document.pictureInPictureElement) {
+		  await document.exitPictureInPicture();
+		} else if (document.pictureInPictureEnabled) {
+		  await videoElement.requestPictureInPicture();
+		}
+	  } catch (error) {
+		console.error("Error al activar Picture-in-Picture:", error);
+	  }
+	}
 
     function loadHlsStream(url) {
       if (bufferCheckTimer) clearTimeout(bufferCheckTimer);
@@ -534,6 +562,7 @@
 	  if (['p', 'P', 'Backspace'].includes(e.key)) goToPreviousChannel();
 	  if (['r', 'R'].includes(e.key)) toggleClockVisibility();
 	  if (['f', 'F'].includes(e.key)) toggleFullscreenWithClock();
+	  if (['i', 'I'].includes(e.key)) togglePictureInPicture();
 	});
 
     document.addEventListener('DOMContentLoaded', fetchStreams);
