@@ -15,11 +15,11 @@
     <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-4">
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-full bg-amber-500 p-0.5 flex items-center justify-center shadow-lg">
-          <div class="w-full h-full bg-slate-950 rounded-full flex items-center justify-center font-bold text-amber-400">📺</div>
+          <div class="w-full h-full bg-slate-950 rounded-full flex items-center justify-center font-bold text-amber-400">馃摵</div>
         </div>
         <div>
           <h1 class="text-lg font-bold tracking-tight text-amber-400">RPSTV - Streaming VIP v2.2</h1>
-          <p class="text-xs text-slate-400">Monitoreo QoS & Telemetría Activa</p>
+          <p class="text-xs text-slate-400">Monitoreo QoS & Telemetr铆a Activa</p>
         </div>
       </div>
       
@@ -90,7 +90,7 @@
   </main>
 
   <script>
-    // ⚠️ REEMPLAZA CON TU WEBHOOK COMPLETO DE DISCORD:
+    // 鈿狅笍 REEMPLAZA CON TU WEBHOOK COMPLETO DE DISCORD:
     const REPORT_WEBHOOK_URL = "https://discordapp.com/api/webhooks/1545153044843462766/Ksj7pXq78kwQNrQTUEPzVRRfiq0PymD2VoZZPixFYTqXPTFmbbTmt7BqIafa93oTWG33";
 
     let streams = [];
@@ -107,50 +107,55 @@
     function getDeviceDetails() {
       const ua = navigator.userAgent;
       if (/Android/i.test(ua)) {
-        return (/wv|Version\/[\d\.]+/i.test(ua)) ? "📱 App Android (Kodular APK)" : "📱 Móvil Android (Navegador)";
+        return (/wv|Version\/[\d\.]+/i.test(ua)) ? "馃摫 App Android (Kodular APK)" : "馃摫 M贸vil Android (Navegador)";
       }
-      if (/iPhone|iPad|iPod/i.test(ua)) return "🍎 Dispositivo iOS (iPhone/iPad)";
-      if (/Windows/i.test(ua)) return "💻 PC / Laptop (Windows)";
-      if (/Macintosh|Mac OS X/i.test(ua)) return "💻 Laptop / Mac (macOS)";
-      return "🌐 Navegador Web Genérico";
+      if (/iPhone|iPad|iPod/i.test(ua)) return "馃崕 Dispositivo iOS (iPhone/iPad)";
+      if (/Windows/i.test(ua)) return "馃捇 PC / Laptop (Windows)";
+      if (/Macintosh|Mac OS X/i.test(ua)) return "馃捇 Laptop / Mac (macOS)";
+      return "馃寪 Navegador Web Gen茅rico";
     }
 
-    function sendStreamAlert(channelName, errorType, details) {
-      if (!REPORT_WEBHOOK_URL || REPORT_WEBHOOK_URL.includes("https://discordapp.com/api/webhooks/1545153044843462766/Ksj7pXq78kwQNrQTUEPzVRRfiq0PymD2VoZZPixFYTqXPTFmbbTmt7BqIafa93oTWG33")) return;
+	function sendStreamAlert(channelName, errorType, details) {
+	  if (!REPORT_WEBHOOK_URL || REPORT_WEBHOOK_URL.includes("https://discordapp.com/api/webhooks/1545153044843462766/Ksj7pXq78kwQNrQTUEPzVRRfiq0PymD2VoZZPixFYTqXPTFmbbTmt7BqIafa93oTWG33")) {
+		console.warn("[Telemetría] URL de Webhook no configurada correctamente.");
+		return;
+	  }
 
-      const reportKey = `${channelName}_${errorType}`;
-      if (reportedChannels.has(reportKey)) return;
-      reportedChannels.add(reportKey);
+	  const reportKey = `${channelName}_${errorType}`;
+	  if (reportedChannels.has(reportKey)) return;
+	  reportedChannels.add(reportKey);
 
-      const payload = {
-        content: `🚨 **ALERTA DE SEÑAL CAÍDA - RPSTV**`,
-        embeds: [{
-          title: `Canal: ${channelName}`,
-          color: 15158332,
-          fields: [
-            { name: "Tipo de Error", value: errorType, inline: true },
-            { name: "Origen / Dispositivo", value: getDeviceDetails(), inline: true },
-            { name: "Detalles Técnicos", value: details || "Sin detalles adicionales" }
-          ],
-          timestamp: new Date().toISOString()
-        }]
-      };
+	  const payload = {
+		content: "🚨 **ALERTA DE SEÑAL CAÍDA - RPSTV**",
+		embeds: [{
+		  title: `Canal: ${channelName}`,
+		  color: 15158332,
+		  fields: [
+			{ name: "Tipo de Error", value: errorType, inline: true },
+			{ name: "Origen / Dispositivo", value: getDeviceDetails(), inline: true },
+			{ name: "Detalles Técnicos", value: details || "Sin detalles adicionales" }
+		  ],
+		  timestamp: new Date().toISOString()
+		}]
+	  };
 
-      const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
-      const sent = navigator.sendBeacon(REPORT_WEBHOOK_URL, blob);
-
-      if (!sent) {
-        fetch(REPORT_WEBHOOK_URL, {
-          method: "POST",
-          mode: "no-cors",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        }).catch(err => console.warn("Fallo envio secundario:", err));
-      }
-    }
+	  fetch(REPORT_WEBHOOK_URL, {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify(payload)
+	  })
+	  .then(res => {
+		if (res.ok) {
+		  console.log("[Telemetría] Alerta enviada con éxito a Discord.");
+		} else {
+		  console.error("[Telemetría] Discord respondió con error:", res.status);
+		}
+	  })
+	  .catch(err => console.error("[Telemetría] Error de red al enviar a Discord:", err));
+	}
 
     async function fetchStreams() {
-      // ⚠️ REEMPLAZA TU_CODIGO_GIST CON EL TUYO:
+      // 鈿狅笍 REEMPLAZA TU_CODIGO_GIST CON EL TUYO:
       const gistRawUrl = 'https://gist.githubusercontent.com/rampprimesolutions-admin/7c2e780742d4285ce388cd18ceacb227/raw/f6999bbf37d1c4391b7a8e9ebf1a49136ac217b8/channels.json?v=' + new Date().getTime();
       
       try {
@@ -168,7 +173,7 @@
 
     function loadHlsStream(url) {
       if (!url || url.trim() === "" || !url.startsWith("http")) {
-        sendStreamAlert(currentStream ? currentStream.location : "Desconocido", "Enlace Inexistente / URL Vacía", "El canal no posee una URL de streaming configurada.");
+        sendStreamAlert(currentStream ? currentStream.location : "Desconocido", "Enlace Inexistente / URL Vac铆a", "El canal no posee una URL de streaming configurada.");
         if (hlsInstance) hlsInstance.destroy();
         videoElement.src = "";
         return;
@@ -185,9 +190,9 @@
           if (data.fatal) {
             const channelInfo = currentStream ? currentStream.location : "Desconocido";
             if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
-              sendStreamAlert(channelInfo, "Señal Caída (Error de Red / 404 / Offline)", `Detalle: ${data.details}`);
+              sendStreamAlert(channelInfo, "Se帽al Ca铆da (Error de Red / 404 / Offline)", `Detalle: ${data.details}`);
             } else if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
-              sendStreamAlert(channelInfo, "Fallo de Decodificación Media", `Detalle: ${data.details}`);
+              sendStreamAlert(channelInfo, "Fallo de Decodificaci贸n Media", `Detalle: ${data.details}`);
               hlsInstance.recoverMediaError();
             }
           }
@@ -201,7 +206,7 @@
     videoElement.addEventListener('waiting', () => {
       bufferCheckTimer = setTimeout(() => {
         if (!videoElement.paused && currentStream) {
-          sendStreamAlert(currentStream.location, "Congelamiento de Stream (Buffer Timeout)", "El video superó los 12 segundos de espera.");
+          sendStreamAlert(currentStream.location, "Congelamiento de Stream (Buffer Timeout)", "El video super贸 los 12 segundos de espera.");
         }
       }, 12000);
     });
@@ -280,7 +285,7 @@
       } else if (videoElement.webkitShowPlaybackTargetPicker) {
         videoElement.webkitShowPlaybackTargetPicker();
       } else {
-        alert("Transmisión a Smart TV: Selecciona la opción 'Enviar/Cast' desde el menú de opciones de tu navegador Chrome.");
+        alert("Transmisi贸n a Smart TV: Selecciona la opci贸n 'Enviar/Cast' desde el men煤 de opciones de tu navegador Chrome.");
       }
     }
 
