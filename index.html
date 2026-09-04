@@ -502,19 +502,38 @@
       renderStreams();
     }
 	
-	// CONTROL DE VISIBILIDAD DEL RELOJ (TECLA R Y BOTÓN)
+	// CONTROL DE VISIBILIDAD DEL RELOJ (TECLA R / BOTÓN)
 	function toggleClockVisibility() {
 	  const clockBadge = document.getElementById('digitalClockBadge');
 	  clockBadge.classList.toggle('hidden');
 	}
 
-	// CAPTURA DE TECLADO MEJORADA (TECLA R)
+	// ACTIVAR PANTALLA COMPLETA CON RELOJ EN PANTALLA (TECLA F / DOBLE CLIC)
+	function toggleFullscreenWithClock() {
+	  const container = document.getElementById('playerContainer');
+	  if (!document.fullscreenElement) {
+		if (container.requestFullscreen) {
+		  container.requestFullscreen();
+		} else if (container.webkitRequestFullscreen) {
+		  container.webkitRequestFullscreen();
+		}
+	  } else {
+		if (document.exitFullscreen) {
+		  document.exitFullscreen();
+		}
+	  }
+	}
+
+	// CAPTURA UNIFICADA DE TECLADO (TODAS LAS TECLAS EN UN SOLO LUGAR)
 	document.addEventListener('keydown', (e) => {
+	  // Ignora si el usuario esta escribiendo en el buscador o inputs
 	  if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
+
 	  if (['ArrowUp', 'w', 'W'].includes(e.key)) changeChannelRelative(-1);
 	  if (['ArrowDown', 's', 'S'].includes(e.key)) changeChannelRelative(1);
 	  if (['p', 'P', 'Backspace'].includes(e.key)) goToPreviousChannel();
-	  if (['r', 'R'].includes(e.key)) toggleClockVisibility(); // Toggle del Reloj
+	  if (['r', 'R'].includes(e.key)) toggleClockVisibility();
+	  if (['f', 'F'].includes(e.key)) toggleFullscreenWithClock();
 	});
 
     document.addEventListener('DOMContentLoaded', fetchStreams);
