@@ -646,13 +646,14 @@
 	}
 
 	// Cargar video de barras/estática al detectar caída
+	// 1. FUNCIÓN UNIFICADA DE FALLO (ALERTA + CARTA DE AJUSTE)
 	function handleStreamError(hlsInstance) {
-	  if (typeof sendDiscordAlert === 'function') {
-		sendDiscordAlert(currentStream);
+	  if (typeof sendStreamAlert === 'function' && currentStream) {
+		sendStreamAlert(currentStream.location, "Señal Caída / Sin Respuesta", "Se activó la pantalla de estática por timeout o error HLS.");
 	  }
 
 	  if (hlsInstance) {
-		hlsInstance.destroy();
+		try { hlsInstance.destroy(); } catch(e) {}
 	  }
 	  
 	  const video = document.getElementById('hlsPlayer');
@@ -660,12 +661,29 @@
 		const fallbackHls = new Hls();
 		fallbackHls.loadSource(FALLBACK_VIDEO_URL);
 		fallbackHls.attachMedia(video);
-		fallbackHls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
+		fallbackHls.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(() => {}));
 	  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
 		video.src = FALLBACK_VIDEO_URL;
-		video.play();
+		video.play().catch(() => {});
 	  }
 	}
+
+	// 2. TIMEOUT DE ESPERA (Si el video se queda dando vueltas por más de 12 segundos)
+	videoElement.addEventListener('waiting', () => {
+	  if (bufferCheckTimer) clearTimeout(bufferCheckTimer);
+	  
+	  bufferCheckTimer = setTimeout(() => {
+		// Si sigue congelado o intentando cargar sin avanzar el tiempo
+		if (!videoElement.paused && videoElement.readyState < 3) {
+		  console.warn("[QoS] Stream congelado. Activando carta de ajuste...");
+		  handleStreamError(hlsInstance);
+		}
+	  }, 12000); // 12 segundos de tolerancia máxima
+	});
+
+	videoElement.addEventListener('playing', () => {
+	  if (bufferCheckTimer) clearTimeout(bufferCheckTimer);
+	});
 
 	// CAPTURA UNIFICADA DE TECLADO (TODAS LAS TECLAS EN UN SOLO LUGAR)
 	document.addEventListener('keydown', (e) => {
