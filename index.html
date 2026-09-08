@@ -299,45 +299,61 @@
 	  }
 	}
 
-    function loadHlsStream(url) {
-      if (bufferCheckTimer) clearTimeout(bufferCheckTimer);
+	let connectionWatchdog = null;
 
-      if (!url || url.trim() === "" || !url.startsWith("http")) {
-        sendStreamAlert(currentStream ? currentStream.location : "Desconocido", "Enlace inexistente/URL vacía", "El canal no posee una URL de streaming configurada.");
-        if (hlsInstance) hlsInstance.destroy();
-        videoElement.src = "";
-        return;
-      }
+	function loadHlsStream(url) {
+	  // Limpiar temporizadores activos anteriores
+	  if (bufferCheckTimer) clearTimeout(bufferCheckTimer);
+	  if (connectionWatchdog) clearTimeout(connectionWatchdog);
 
-      // Deteccion preventiva de Mixed Content
-      if (window.location.protocol === 'https:' && url.startsWith('http:')) {
-        console.warn("[QoS] Intento de carga HTTP en entorno HTTPS.");
-      }
+	  // 1. Validacion inicial de URL vacia/invalida
+	  if (!url || url.trim() === "" || !url.startsWith("http")) {
+		console.warn("[QoS] URL invalida o vacía. Activando fallback...");
+		handleStreamError(hlsInstance);
+		return;
+	  }
 
-      if (Hls.isSupported()) {
-        if (hlsInstance) hlsInstance.destroy();
-        hlsInstance = new Hls({ enableWorker: true, lowLatencyMode: true });
-        
-        hlsInstance.loadSource(url);
-        hlsInstance.attachMedia(videoElement);
+	  // Deteccion preventiva de Mixed Content
+	  if (window.location.protocol === 'https:' && url.startsWith('http:')) {
+		console.warn("[QoS] Intento de carga HTTP en entorno HTTPS.");
+	  }
 
-        hlsInstance.on(Hls.Events.ERROR, (event, data) => {
-          if (data.fatal) {
-			handleStreamError(hls)
-            const channelInfo = currentStream ? currentStream.location : "Desconocido";
-            if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
-              sendStreamAlert(channelInfo, "Señal Caída (Error de Red/404/Offline)", `Detalle: ${data.details}`);
-            } else if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
-              sendStreamAlert(channelInfo, "Fallo de Decodificación Media", `Detalle: ${data.details}`);
-              hlsInstance.recoverMediaError();
-            }
-          }
-        });
+	  // 2. WATCHDOG TIMER (12 Segundos de limite estricto para arrancar)
+	  connectionWatchdog = setTimeout(() => {
+		if (videoElement.currentTime === 0 || videoElement.readyState < 2) {
+		  console.warn("[QoS] Timeout estricto de conexión (12s sin reproducción). Activando carta de ajuste...");
+		  handleStreamError(hlsInstance);
+		}
+	  }, 12000);
 
-      } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
-        videoElement.src = url;
-      }
-    }
+	  // 3. Inicialización HLS
+	  if (Hls.isSupported()) {
+		if (hlsInstance) hlsInstance.destroy();
+		hlsInstance = new Hls({ enableWorker: true, lowLatencyMode: true });
+		
+		hlsInstance.loadSource(url);
+		hlsInstance.attachMedia(videoElement);
+
+		hlsInstance.on(Hls.Events.ERROR, (event, data) => {
+		  if (data.fatal) {
+			if (data.type === Hls.ErrorTypes.NETWORK_ERROR || data.type === Hls.ErrorTypes.MEDIA_ERROR) {
+			  if (connectionWatchdog) clearTimeout(connectionWatchdog);
+			  handleStreamError(hlsInstance);
+			}
+		  }
+		});
+
+	  } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+		videoElement.src = url;
+	  }
+	}
+
+	// Cancelar el Watchdog en cuanto el video comience a avanzar
+	videoElement.addEventListener('timeupdate', () => {
+	  if (videoElement.currentTime > 0 && connectionWatchdog) {
+		clearTimeout(connectionWatchdog);
+	  }
+	});
 
     // TIMEOUT DE BUFFER AJUSTADO A 20 SEGUNDOS (MENOS FALSOS POSITIVOS)
     videoElement.addEventListener('waiting', () => {
