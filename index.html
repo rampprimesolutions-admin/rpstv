@@ -160,12 +160,12 @@
 
       <div class="space-y-3">
         <div>
-          <label class="block text-xs text-slate-400 mb-1">Seleccionar Canal:</label>
+          <label class="block text-xs text-slate-400 mb-1">SELECCIONAR CANAL</label>
           <select id="scheduleChannelSelect" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500"></select>
         </div>
 
         <div>
-          <label class="block text-xs text-slate-400 mb-1">Hora de Ejecución (HOY):</label>
+          <label class="block text-xs text-slate-400 mb-1">HORA DE EJECUCIÓN (HOY)</label>
           <input type="time" id="scheduleTimeInput" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500" />
         </div>
       </div>
@@ -464,16 +464,31 @@
       document.getElementById('scheduleModal').classList.add('hidden');
     }
 
-    function populateScheduleSelect() {
-      const select = document.getElementById('scheduleChannelSelect');
-      select.innerHTML = '';
-      streams.forEach(s => {
-        const opt = document.createElement('option');
-        opt.value = s.id;
-        opt.textContent = `${s.location} - ${s.name}`;
-        select.appendChild(opt);
-      });
-    }
+	function populateScheduleSelect() {
+	  const select = document.getElementById('scheduleChannelSelect');
+	  if (!select) return;
+	  select.innerHTML = '';
+
+	  // Extraer lista de países únicos desde allStreams
+	  const countries = [...new Set(allStreams.map(item => item.name).filter(Boolean))].sort();
+
+	  countries.forEach(country => {
+		const optgroup = document.createElement('optgroup');
+		optgroup.label = `📍 ${country}`;
+
+		// Obtener canales de este país
+		const countryChannels = allStreams.filter(s => s.name === country);
+		
+		countryChannels.forEach(s => {
+		  const opt = document.createElement('option');
+		  opt.value = s.id;
+		  opt.textContent = `${s.location}`;
+		  optgroup.appendChild(opt);
+		});
+
+		select.appendChild(optgroup);
+	  });
+	}
 
     function setChannelSchedule() {
       const channelId = parseInt(document.getElementById('scheduleChannelSelect').value);
@@ -503,7 +518,7 @@
         setTimeout(hideScheduleNotice, 8000);
       }, msToWait);
 
-      const targetStream = streams.find(s => s.id === channelId);
+      const targetStream = allStreams.find(s => s.id === channelId);
       showScheduleNotice(`Programado: ${targetStream ? targetStream.location : 'Canal'} a las ${timeValue}`);
       closeScheduleModal();
     }
