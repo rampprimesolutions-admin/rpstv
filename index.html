@@ -490,38 +490,49 @@
 	  });
 	}
 
-    function setChannelSchedule() {
-      const channelId = parseInt(document.getElementById('scheduleChannelSelect').value);
-      const timeValue = document.getElementById('scheduleTimeInput').value;
+	function setChannelSchedule() {
+	  const channelId = parseInt(document.getElementById('scheduleChannelSelect').value);
+	  const timeValue = document.getElementById('scheduleTimeInput').value;
 
-      if (!timeValue) {
-        alert("Por favor, selecciona una hora válida.");
-        return;
-      }
+	  if (!timeValue) {
+		alert("Por favor selecciona una hora válida.");
+		return;
+	  }
 
-      const [hours, minutes] = timeValue.split(':').map(Number);
-      const now = new Date();
-      const targetTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes, 0);
+	  const [hours, minutes] = timeValue.split(':').map(Number);
+	  const now = new Date();
+	  const targetTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes, 0);
 
-      if (targetTime <= now) {
-        alert("La hora seleccionada ya transcurrió hoy. Elige una hora futura.");
-        return;
-      }
+	  if (targetTime <= now) {
+		alert("La hora seleccionada ya transcurrió hoy. Elige una hora futura.");
+		return;
+	  }
 
-      const msToWait = targetTime - now;
+	  const msToWait = targetTime - now;
 
-      if (scheduledTimer) clearTimeout(scheduledTimer);
+	  if (scheduledTimer) clearTimeout(scheduledTimer);
 
-      scheduledTimer = setTimeout(() => {
-        selectStream(channelId);
-        showScheduleNotice(`Auto-Switch ejecutado`);
-        setTimeout(hideScheduleNotice, 8000);
-      }, msToWait);
+	  // Buscar siempre en el arreglo maestro allStreams
+	  const targetStream = allStreams.find(s => s.id === channelId);
 
-      const targetStream = allStreams.find(s => s.id === channelId);
-      showScheduleNotice(`Programado: ${targetStream ? targetStream.location : 'Canal'} a las ${timeValue}`);
-      closeScheduleModal();
-    }
+	  scheduledTimer = setTimeout(() => {
+		if (targetStream) {
+		  // Si hay un filtro activo que ocultaría el canal, reseteamos el filtro a ALL
+		  const countryFilter = document.getElementById('countryFilter');
+		  if (countryFilter && countryFilter.value !== 'ALL') {
+			countryFilter.value = 'ALL';
+			filterStreams();
+		  }
+		  
+		  selectStream(targetStream.id);
+		  showScheduleNotice(`Auto-Switch ejecutado: ${targetStream.location}`);
+		  setTimeout(hideScheduleNotice, 8000);
+		}
+	  }, msToWait);
+
+	  showScheduleNotice(`Programado: ${targetStream ? targetStream.location : 'Canal'} a las ${timeValue}`);
+	  closeScheduleModal();
+	}
 
     function showScheduleNotice(text) {
       const notice = document.getElementById('schedulerNotice');
