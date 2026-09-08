@@ -199,7 +199,7 @@
     // RELOJ EN TIEMPO REAL
     function updateClock() {
       const now = new Date();
-      document.getElementById('digitalClock').textContent = now.toLocaleTimeString('es-ES', { hour12: true });
+      document.getElementById('digitalClock').textContent = now.toLocaleTimeString('es-ES', { hour12: false });
     }
     setInterval(updateClock, 1000);
     updateClock();
