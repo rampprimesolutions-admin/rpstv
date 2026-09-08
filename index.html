@@ -134,6 +134,13 @@
             <i data-lucide="x" class="w-3.5 h-3.5"></i>
           </button>
         </div>
+		
+		<!-- FILTRO POR PAÍS / CATEGORÍA (Colocar junto al buscador) -->
+		<div class="mb-3">
+		  <select id="countryFilter" onchange="filterStreams()" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs font-semibold text-slate-300 focus:outline-none focus:border-amber-400">
+			<option value="ALL">🌎 Todos los Países (A-Z)</option>
+		  </select>
+		</div>
       </div>
 
       <div class="space-y-2.5 max-h-[calc(100vh-16rem)] overflow-y-auto pr-1" id="streamList"></div>
@@ -185,6 +192,9 @@
 
     let favorites = JSON.parse(localStorage.getItem('rpstv_favorites')) || [];
     const videoElement = document.getElementById('hlsPlayer');
+	
+	let allStreams = []; // Guarda la lista completa sin filtrar
+	const FALLBACK_VIDEO_URL = "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"; // Video de barras/estática
 
     // RELOJ EN TIEMPO REAL
     function updateClock() {
@@ -218,12 +228,12 @@
       const payload = {
         content: "🚩 **ALERTA DE SEÑAL CAÍDA (RPSTV)**",
         embeds: [{
-          title: `CANAL: ${channelName}`,
+          title: `**CANAL:** ${channelName}`,
           color: 15158332,
           fields: [
-            { name: "TIPO DE ERROR", value: errorType, inline: true },
-            { name: "ORIGEN / DISPOSITIVO", value: getDeviceDetails(), inline: true },
-            { name: "DETALLES TÉCNICOS", value: details || "Sin detalles adicionales" }
+            { name: "**TIPO DE ERROR**", value: errorType, inline: true },
+            { name: "**ORIGEN/DISPOSITIVO**", value: getDeviceDetails(), inline: true },
+            { name: "**DETALLES TÉCNICOS**", value: details || "Sin detalles adicionales" }
           ],
           timestamp: new Date().toISOString()
         }]
@@ -241,35 +251,36 @@
     }
     
 	// 1. CARGA DE CANALES CON ORDENAMIENTO ALFABÉTICO (A-Z) Y AUTORRESTAURACIÓN
-    async function fetchStreams() {
-      const gistRawUrl = 'https://gist.githubusercontent.com/rampprimesolutions-admin/7c2e780742d4285ce388cd18ceacb227/raw/channels.json?v=' + new Date().getTime();
-      
+	async function fetchStreams() {
+	  const gistRawUrl = 'https://gist.githubusercontent.com/rampprimesolutions-admin/7c2e780742d4285ce388cd18ceacb227/raw/channels.json?v=' + new Date().getTime();
+	  
 	  try {
-	  	  let response = await fetch(gistRawUrl, { cache: 'no-store' });
-		  const data = await response.json();
-		  let rawStreams = Array.isArray(data) ? data : (data.channels || []);
+		let response = await fetch(gistRawUrl, { cache: 'no-store' });
+		const data = await response.json();
+		let rawStreams = Array.isArray(data) ? data : (data.channels || []);
 		
-		  // ORDENAMIENTO ALFABÉTICO POR UBICACIÓN / NOMBRE (A-Z)
-		  streams = rawStreams.sort((a, b) => {
-		    const nameA = (a.location || a.name || '').toLowerCase();
-		    const nameB = (b.location || b.name || '').toLowerCase();
-		    return nameA.localeCompare(nameB, 'es', { sensitivity: 'base' });
-		  });
+		// Guardar y ordenar alfabéticamente A-Z por location
+		allStreams = rawStreams.sort((a, b) => {
+		  const nameA = (a.location || '').toLowerCase();
+		  const nameB = (b.location || '').toLowerCase();
+		  return nameA.localeCompare(nameB, 'es', { sensitivity: 'base' });
+		});
+
+		populateCountryFilter(allStreams);
+		filterStreams();
 
 	  } catch (error) {
 		console.error("Error cargando Gist", error);
 	  }
 
-	  renderStreams();
-
-	  // RECUPERAR ÚLTIMO CANAL VISTO O CARGAR EL PRIMERO POR DEFECTO
+	  // Restaurar último canal visto
 	  const savedChannelId = localStorage.getItem('rpstv_last_channel');
-	  const targetChannel = streams.find(s => s.id == savedChannelId);
+	  const targetChannel = allStreams.find(s => s.id == savedChannelId);
 
 	  if (targetChannel) {
 		selectStream(targetChannel.id, false);
-	  } else if (streams.length > 0) {
-		selectStream(streams[0].id, false);
+	  } else if (allStreams.length > 0) {
+		selectStream(allStreams[0].id, false);
 	  }
 
 	  populateScheduleSelect();
@@ -312,6 +323,7 @@
 
         hlsInstance.on(Hls.Events.ERROR, (event, data) => {
           if (data.fatal) {
+			handleStreamError(hls)
             const channelInfo = currentStream ? currentStream.location : "Desconocido";
             if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
               sendStreamAlert(channelInfo, "Señal Caída (Error de Red/404/Offline)", `Detalle: ${data.details}`);
@@ -575,16 +587,69 @@
 		}
 	  }
 	}
+	
+	// Llenar el combo desplegable con los países detectados en 'name'
+	function populateCountryFilter(data) {
+	  const select = document.getElementById('countryFilter');
+	  if (!select) return;
+	  select.innerHTML = '<option value="ALL">🌎 Todos los Países (A-Z)</option>';
+	  
+	  const countries = [...new Set(data.map(item => item.name).filter(Boolean))].sort();
+	  
+	  countries.forEach(country => {
+		const opt = document.createElement('option');
+		opt.value = country;
+		opt.textContent = `📍 ${country}`;
+		select.appendChild(opt);
+	  });
+	}
+
+	// Filtrar canales por país + búsqueda de texto
+	function filterStreams() {
+	  const selectedCountry = document.getElementById('countryFilter')?.value || 'ALL';
+	  const searchInput = (document.getElementById('searchInput')?.value || '').toLowerCase();
+
+	  streams = allStreams.filter(stream => {
+		const matchesCountry = (selectedCountry === 'ALL') || (stream.name === selectedCountry);
+		const matchesSearch = (stream.location || '').toLowerCase().includes(searchInput) ||
+							  (stream.name || '').toLowerCase().includes(searchInput);
+		return matchesCountry && matchesSearch;
+	  });
+
+	  renderStreams();
+	}
+
+	// Cargar video de barras/estática al detectar caída
+	function handleStreamError(hlsInstance) {
+	  if (typeof sendDiscordAlert === 'function') {
+		sendDiscordAlert(currentStream);
+	  }
+
+	  if (hlsInstance) {
+		hlsInstance.destroy();
+	  }
+	  
+	  const video = document.getElementById('hlsPlayer');
+	  if (Hls.isSupported()) {
+		const fallbackHls = new Hls();
+		fallbackHls.loadSource(FALLBACK_VIDEO_URL);
+		fallbackHls.attachMedia(video);
+		fallbackHls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
+	  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+		video.src = FALLBACK_VIDEO_URL;
+		video.play();
+	  }
+	}
 
 	// CAPTURA UNIFICADA DE TECLADO (TODAS LAS TECLAS EN UN SOLO LUGAR)
 	document.addEventListener('keydown', (e) => {
 	  // Ignora si el usuario está escribiendo en el buscador o inputs
 	  if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
 
-	  if (['ArrowUp', 'w', 'W'].includes(e.key)) changeChannelRelative(-1);
-	  if (['ArrowDown', 's', 'S'].includes(e.key)) changeChannelRelative(1);
+	  if (['ArrowUp', 'PgUp', 'w', 'W'].includes(e.key)) changeChannelRelative(-1);
+	  if (['ArrowDown', 'PgDown', 's', 'S'].includes(e.key)) changeChannelRelative(1);
 	  if (['p', 'P', 'Backspace'].includes(e.key)) goToPreviousChannel();
-	  if (['r', 'R'].includes(e.key)) toggleClockVisibility();
+	  if (['r', 'R', 'h', 'H'].includes(e.key)) toggleClockVisibility();
 	  if (['f', 'F'].includes(e.key)) toggleFullscreenWithClock();
 	  if (['i', 'I'].includes(e.key)) togglePictureInPicture();
 	});
