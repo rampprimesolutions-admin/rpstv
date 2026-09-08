@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RPSTV - Streaming VIP v2.3</title>
+  <title>RPSTV - Streaming VIP v2.3.1</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 	<style>
-	  /* Elimina bordes y redondeo sólo cuando playerContainer esta en Fullscreen */
+	  /* Elimina bordes y redondeo sólo cuando playerContainer está en Fullscreen */
 	  #playerContainer:fullscreen {
 		border: none !important;
 		border-radius: 0 !important;
@@ -30,10 +30,10 @@
     <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-4">
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-full bg-amber-500 p-0.5 flex items-center justify-center shadow-lg">
-          <div class="w-full h-full bg-slate-950 rounded-full flex items-center justify-center font-bold text-amber-400">📺</div>
+          <div class="w-full h-full bg-slate-950 rounded-full flex items-center justify-center font-bold text-amber-400">▶</div>
         </div>
         <div>
-          <h1 class="text-lg font-bold tracking-tight text-amber-400">RPSTV - Streaming VIP v2.3</h1>
+          <h1 class="text-lg font-bold tracking-tight text-amber-400">RPSTV - Streaming VIP v2.3.1</h1>
           <p class="text-xs text-slate-400">Monitoreo QoS, Telemetría y Auto-Programación</p>
         </div>
       </div>
@@ -158,14 +158,14 @@
         </div>
 
         <div>
-          <label class="block text-xs text-slate-400 mb-1">Hora de Ejecucion (Hoy):</label>
+          <label class="block text-xs text-slate-400 mb-1">Hora de Ejecución (HOY):</label>
           <input type="time" id="scheduleTimeInput" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500" />
         </div>
       </div>
 
       <div class="flex justify-end gap-2 pt-2">
         <button onclick="closeScheduleModal()" class="px-3 py-1.5 rounded-lg border border-slate-800 text-xs text-slate-400 hover:bg-slate-800">Cancelar</button>
-        <button onclick="setChannelSchedule()" class="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold">Guardar Programacion</button>
+        <button onclick="setChannelSchedule()" class="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold">Guardar Programación</button>
       </div>
     </div>
   </div>
@@ -189,7 +189,7 @@
     // RELOJ EN TIEMPO REAL
     function updateClock() {
       const now = new Date();
-      document.getElementById('digitalClock').textContent = now.toLocaleTimeString('es-ES', { hour12: false });
+      document.getElementById('digitalClock').textContent = now.toLocaleTimeString('es-ES', { hour12: true });
     }
     setInterval(updateClock, 1000);
     updateClock();
@@ -197,17 +197,17 @@
     function getDeviceDetails() {
       const ua = navigator.userAgent;
       if (/Android/i.test(ua)) {
-        return (/wv|Version\/[\d\.]+/i.test(ua)) ? "App Android (Kodular APK)" : "Movil Android (Navegador)";
+        return (/wv|Version\/[\d\.]+/i.test(ua)) ? "App Android (APK)" : "Móvil Android (Navegador)";
       }
       if (/iPhone|iPad|iPod/i.test(ua)) return "Dispositivo iOS (iPhone/iPad)";
-      if (/Windows/i.test(ua)) return "PC / Laptop (Windows)";
-      if (/Macintosh|Mac OS X/i.test(ua)) return "Laptop / Mac (macOS)";
-      return "Navegador Web Generico";
+      if (/Windows/i.test(ua)) return "PC/Laptop (Windows)";
+      if (/Macintosh|Mac OS X/i.test(ua)) return "Laptop/MAC (macOS)";
+      return "Navegador Web Genérico";
     }
 
     function sendStreamAlert(channelName, errorType, details) {
       if (!REPORT_WEBHOOK_URL || REPORT_WEBHOOK_URL.includes("TU_WEBHOOK_AQUI")) {
-        console.warn("[Telemetria] URL de Webhook no configurada.");
+        console.warn("[Telemetría] URL de Webhook no configurada.");
         return;
       }
 
@@ -216,14 +216,14 @@
       reportedChannels.add(reportKey);
 
       const payload = {
-        content: "🚨 **ALERTA DE SEÑAL CAÍDA - RPSTV**",
+        content: "馃毃 **ALERTA DE SEÑAL CAÍDA - RPSTV**",
         embeds: [{
-          title: `Canal: ${channelName}`,
+          title: `CANAL: ${channelName}`,
           color: 15158332,
           fields: [
-            { name: "Tipo de Error", value: errorType, inline: true },
-            { name: "Origen / Dispositivo", value: getDeviceDetails(), inline: true },
-            { name: "Detalles Tecnicos", value: details || "Sin detalles adicionales" }
+            { name: "TIPO DE ERROR", value: errorType, inline: true },
+            { name: "ORIGEN / DISPOSITIVO", value: getDeviceDetails(), inline: true },
+            { name: "DETALLES TÉCNICOS", value: details || "Sin detalles adicionales" }
           ],
           timestamp: new Date().toISOString()
         }]
@@ -235,26 +235,45 @@
         body: JSON.stringify(payload)
       })
       .then(res => {
-        if (res.ok) console.log("[Telemetria] Alerta enviada con exito a Discord.");
+        if (res.ok) console.log("[Telemetría] Alerta enviada con éxito a Discord.");
       })
-      .catch(err => console.error("[Telemetria] Error de red al enviar a Discord:", err));
+      .catch(err => console.error("[Telemetría] Error de red al enviar a Discord:", err));
     }
-
+    
+	// 1. CARGA DE CANALES CON ORDENAMIENTO ALFABÉTICO (A-Z) Y AUTORRESTAURACIÓN
     async function fetchStreams() {
       const gistRawUrl = 'https://gist.githubusercontent.com/rampprimesolutions-admin/7c2e780742d4285ce388cd18ceacb227/raw/channels.json?v=' + new Date().getTime();
       
-      try {
-        let response = await fetch(gistRawUrl, { cache: 'no-store' });
-        const data = await response.json();
-        streams = Array.isArray(data) ? data : (data.channels || []);
-      } catch (error) {
-        console.error("Error cargando Gist", error);
-      }
+	  try {
+	  	  let response = await fetch(gistRawUrl, { cache: 'no-store' });
+		  const data = await response.json();
+		  let rawStreams = Array.isArray(data) ? data : (data.channels || []);
+		
+		  // ORDENAMIENTO ALFABÉTICO POR UBICACIÓN / NOMBRE (A-Z)
+		  streams = rawStreams.sort((a, b) => {
+		    const nameA = (a.location || a.name || '').toLowerCase();
+		    const nameB = (b.location || b.name || '').toLowerCase();
+		    return nameA.localeCompare(nameB, 'es', { sensitivity: 'base' });
+		  });
 
-      renderStreams();
-      if (streams.length > 0) selectStream(streams[0].id, false);
-      populateScheduleSelect();
-    }
+	  } catch (error) {
+		console.error("Error cargando Gist", error);
+	  }
+
+	  renderStreams();
+
+	  // RECUPERAR ÚLTIMO CANAL VISTO O CARGAR EL PRIMERO POR DEFECTO
+	  const savedChannelId = localStorage.getItem('rpstv_last_channel');
+	  const targetChannel = streams.find(s => s.id == savedChannelId);
+
+	  if (targetChannel) {
+		selectStream(targetChannel.id, false);
+	  } else if (streams.length > 0) {
+		selectStream(streams[0].id, false);
+	  }
+
+	  populateScheduleSelect();
+	}
 	
 	// FORZAR MODO IMAGEN EN IMAGEN (PiP)
 	async function togglePictureInPicture() {
@@ -273,7 +292,7 @@
       if (bufferCheckTimer) clearTimeout(bufferCheckTimer);
 
       if (!url || url.trim() === "" || !url.startsWith("http")) {
-        sendStreamAlert(currentStream ? currentStream.location : "Desconocido", "Enlace Inexistente / URL Vacia", "El canal no posee una URL de streaming configurada.");
+        sendStreamAlert(currentStream ? currentStream.location : "Desconocido", "Enlace inexistente/URL vacía", "El canal no posee una URL de streaming configurada.");
         if (hlsInstance) hlsInstance.destroy();
         videoElement.src = "";
         return;
@@ -295,9 +314,9 @@
           if (data.fatal) {
             const channelInfo = currentStream ? currentStream.location : "Desconocido";
             if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
-              sendStreamAlert(channelInfo, "Señal Caida (Error de Red / 404 / Offline)", `Detalle: ${data.details}`);
+              sendStreamAlert(channelInfo, "Señal Caída (Error de Red/404/Offline)", `Detalle: ${data.details}`);
             } else if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
-              sendStreamAlert(channelInfo, "Fallo de Decodificacion Media", `Detalle: ${data.details}`);
+              sendStreamAlert(channelInfo, "Fallo de Decodificación Media", `Detalle: ${data.details}`);
               hlsInstance.recoverMediaError();
             }
           }
@@ -313,7 +332,7 @@
       if (bufferCheckTimer) clearTimeout(bufferCheckTimer);
       bufferCheckTimer = setTimeout(() => {
         if (!videoElement.paused && currentStream && videoElement.readyState < 3) {
-          sendStreamAlert(currentStream.location, "Congelamiento de Stream (Buffer Timeout 20s)", "El video supero los 20 segundos de espera sin buffer.");
+          sendStreamAlert(currentStream.location, "Congelamiento de Stream (Buffer Timeout 20s)", "El video superó los 20 segundos de espera sin buffer.");
         }
       }, 20000);
     });
@@ -331,6 +350,11 @@
       streams.forEach(s => s.active = (s.id === id));
       currentStream = streams.find(s => s.id === id);
       
+	  // Guardar inmediatamente el canal actual para persistencia
+	  if (currentStream) {
+		localStorage.setItem('rpstv_last_channel', currentStream.id);
+	  }
+	  
       document.getElementById('activeCategory').textContent = currentStream.location || '';
       document.getElementById('activeTitle').textContent = currentStream.name || '';
 
@@ -347,7 +371,7 @@
       renderStreams();
     }
 
-    // RENDERIZADO CON BUSCADOR Y CONTADOR DINAMICO
+    // RENDERIZADO CON BUSCADOR Y CONTADOR DINAÁMICO
     function renderStreams() {
       const container = document.getElementById('streamList');
       container.innerHTML = '';
@@ -444,7 +468,7 @@
       const timeValue = document.getElementById('scheduleTimeInput').value;
 
       if (!timeValue) {
-        alert("Por favor selecciona una hora valida.");
+        alert("Por favor, selecciona una hora válida.");
         return;
       }
 
@@ -536,7 +560,7 @@
 	  clockBadge.classList.toggle('hidden');
 	}
 
-	// ACTIVAR PANTALLA COMPLETA CON RELOJ EN PANTALLA (TECLA F / DOBLE CLIC)
+	// ACTIVAR PANTALLA COMPLETA CON RELOJ EN PANTALLA (TECLA 'F' O DOBLE CLIC)
 	function toggleFullscreenWithClock() {
 	  const container = document.getElementById('playerContainer');
 	  if (!document.fullscreenElement) {
@@ -554,7 +578,7 @@
 
 	// CAPTURA UNIFICADA DE TECLADO (TODAS LAS TECLAS EN UN SOLO LUGAR)
 	document.addEventListener('keydown', (e) => {
-	  // Ignora si el usuario esta escribiendo en el buscador o inputs
+	  // Ignora si el usuario está escribiendo en el buscador o inputs
 	  if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
 
 	  if (['ArrowUp', 'w', 'W'].includes(e.key)) changeChannelRelative(-1);
