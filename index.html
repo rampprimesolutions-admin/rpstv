@@ -194,7 +194,7 @@
     const videoElement = document.getElementById('hlsPlayer');
 	
 	let allStreams = []; // Guarda la lista completa sin filtrar
-	const FALLBACK_VIDEO_URL = "https://github.com/rampprimesolutions-admin/rpstv/raw/refs/heads/main/estatica.mp4"; // Video de barras/estática
+	const FALLBACK_VIDEO_URL = "https://cdn.jsdelivr.net/gh/rampprimesolutions-admin/rpstv@main/estatica.mp4";
 
     // RELOJ EN TIEMPO REAL
     function updateClock() {
@@ -668,20 +668,16 @@
 		sendStreamAlert(currentStream.location, "Señal Caída / Sin Respuesta", "Se activó la pantalla de estática por timeout o error HLS.");
 	  }
 
+	  // 1. Destruir la instancia HLS activa para liberar la transmisión caída
 	  if (hlsInstance) {
 		try { hlsInstance.destroy(); } catch(e) {}
 	  }
 	  
+	  // 2. Cargar el MP4 de estática directamente en el reproductor HTML5
 	  const video = document.getElementById('hlsPlayer');
-	  if (Hls.isSupported()) {
-		const fallbackHls = new Hls();
-		fallbackHls.loadSource(FALLBACK_VIDEO_URL);
-		fallbackHls.attachMedia(video);
-		fallbackHls.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(() => {}));
-	  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-		video.src = FALLBACK_VIDEO_URL;
-		video.play().catch(() => {});
-	  }
+	  video.src = FALLBACK_VIDEO_URL;
+	  video.loop = true; // Reproducción en bucle infinito
+	  video.play().catch(e => console.warn("Auto-play prevenido:", e));
 	}
 
 	// 2. TIMEOUT DE ESPERA (Si el video se queda dando vueltas por más de 12 segundos)
