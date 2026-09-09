@@ -663,35 +663,44 @@
 
 	// Cargar video de barras/estática al detectar caída
 	// 1. FUNCIÓN UNIFICADA DE FALLO (ALERTA + CARTA DE AJUSTE)
+	
 	function handleStreamError(hlsInstance) {
 	  if (typeof sendStreamAlert === 'function' && currentStream) {
 		sendStreamAlert(currentStream.location, "Señal Caída / Sin Respuesta", "Se activó la pantalla de estática por timeout o error HLS.");
 	  }
 
-	  // 1. Destruir la instancia HLS activa para liberar la transmisión caída
+	  // 1. Destruir y limpiar la instancia de HLS
 	  if (hlsInstance) {
-		try { hlsInstance.destroy(); } catch(e) {}
+		try {
+		  hlsInstance.detachMedia();
+		  hlsInstance.destroy();
+		} catch(e) {}
 	  }
 	  
-	  // 2. Cargar el MP4 de estática directamente en el reproductor HTML5
 	  const video = document.getElementById('hlsPlayer');
-	  video.src = FALLBACK_VIDEO_URL;
-	  video.loop = true; // Reproducción en bucle infinito
-	  video.play().catch(e => console.warn("Auto-play prevenido:", e));
-	}
-
-	// 2. TIMEOUT DE ESPERA (Si el video se queda dando vueltas por más de 12 segundos)
-	videoElement.addEventListener('waiting', () => {
-	  if (bufferCheckTimer) clearTimeout(bufferCheckTimer);
 	  
-	  bufferCheckTimer = setTimeout(() => {
-		// Si sigue congelado o intentando cargar sin avanzar el tiempo
-		if (!videoElement.paused && videoElement.readyState < 3) {
-		  console.warn("[QoS] Stream congelado. Activando carta de ajuste...");
-		  handleStreamError(hlsInstance);
-		}
-	  }, 12000); // 12 segundos de tolerancia máxima
-	});
+	  // 2. Limpieza profunda del reproductor
+	  video.pause();
+	  video.removeAttribute('src'); // Remover fuente anterior rota
+	  video.load(); // Forzar reseteo del elemento video HTML5
+
+	  // 3. Asignar el nuevo archivo MP4 de estática
+	  video.src = FALLBACK_VIDEO_URL;
+	  video.loop = true;
+	  
+	  // 4. Cargar y reproducir con manejo de promesa
+	  video.load();
+	  const playPromise = video.play();
+	  
+	  if (playPromise !== undefined) {
+		playPromise.catch(error => {
+		  console.warn("Autoplay bloqueado o interrupción de reproducción:", error);
+		  // Reintentar reproducción silenciada en caso de políticas del navegador/WebView
+		  video.muted = true;
+		  video.play().catch(e => console.error("Error final al reproducir estática:", e));
+		});
+	  }
+	}
 
 	videoElement.addEventListener('playing', () => {
 	  if (bufferCheckTimer) clearTimeout(bufferCheckTimer);
