@@ -322,14 +322,14 @@
 	  if (bufferCheckTimer) clearTimeout(bufferCheckTimer);
 	  if (connectionWatchdog) clearTimeout(connectionWatchdog);
 
-	  // 1. Validación inicial de URL vacía/inválida
+	  // 1. Validación inicial de URL vacía o inválida
 	  if (!url || url.trim() === "" || !url.startsWith("http")) {
-		console.warn("[QoS] URL inválida o vacía. Activando fallback...");
+		console.warn("[QoS] URL inválida o vacía. Activando carta de ajuste...");
 		handleStreamError(hlsInstance);
 		return;
 	  }
 
-	  // 2. Timeout estricto de conexión (12 segundos)
+	  // 2. TIMEOUT DE SEGURIDAD (12 Segundos)
 	  connectionWatchdog = setTimeout(() => {
 		if (videoElement.currentTime === 0 || videoElement.readyState < 2) {
 		  console.warn("[QoS] Timeout estricto de conexión (12s sin reproducción). Activando Estática...");
@@ -337,38 +337,45 @@
 		}
 	  }, 12000);
 
-	  // 3. Inicialización HLS
+	  // 3. Inicialización HLS Segura
 	  if (Hls.isSupported()) {
 		if (hlsInstance) {
-		  hlsInstance.destroy();
+		  try { hlsInstance.destroy(); } catch(e) {}
 		  hlsInstance = null;
 		}
 		
-		// DETECCIÓN DE MÚLTIPLES CANALES DE AUDIO
+		// Crear la nueva instancia PRIMERO
+		hlsInstance = new Hls({ enableWorker: true, lowLatencyMode: true });
+		
+		// Cargar fuente y adjuntar video
+		hlsInstance.loadSource(url);
+		hlsInstance.attachMedia(videoElement);
+
+		// Evento de Detección de Audio (Solo si hlsInstance existe)
 		hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
+		  if (!hlsInstance) return;
 		  const audioTracks = hlsInstance.audioTracks;
 		  const container = document.getElementById('audioTrackContainer');
 		  const select = document.getElementById('audioTrackSelect');
 
-		  if (audioTracks && audioTracks.length > 1) {
-			select.innerHTML = '';
-		    audioTracks.forEach((track, index) => {
-		      const opt = document.createElement('option');
-		      opt.value = index;
-		      opt.textContent = track.name || track.lang || `Audio ${index + 1}`;
-		      if (index === hlsInstance.audioTrack) opt.selected = true;
-		      select.appendChild(opt);
-		    });
-		    container.classList.remove('hidden'); // Mostrar selector
-	      } else {
-		    container.classList.add('hidden'); // Ocultar si solo hay 1 audio
-	      }
-	    });
-		
-		hlsInstance = new Hls({ enableWorker: true, lowLatencyMode: true });
-		hlsInstance.loadSource(url);
-		hlsInstance.attachMedia(videoElement);
+		  if (select && container) {
+			if (audioTracks && audioTracks.length > 1) {
+			  select.innerHTML = '';
+			  audioTracks.forEach((track, index) => {
+				const opt = document.createElement('option');
+				opt.value = index;
+				opt.textContent = track.name || track.lang || `Audio ${index + 1}`;
+				if (index === hlsInstance.audioTrack) opt.selected = true;
+				select.appendChild(opt);
+			  });
+			  container.classList.remove('hidden');
+			} else {
+			  container.classList.add('hidden');
+			}
+		  }
+		});
 
+		// Manejo de Errores Fatales
 		hlsInstance.on(Hls.Events.ERROR, (event, data) => {
 		  if (data.fatal) {
 			if (data.type === Hls.ErrorTypes.NETWORK_ERROR || data.type === Hls.ErrorTypes.MEDIA_ERROR) {
