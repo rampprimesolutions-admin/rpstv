@@ -283,20 +283,23 @@
 		  countrySelect.value = savedCountry;
 		}
 		
+		// PRIMERO: Aplicar el filtro para llenar el array 'streams'
 		filterStreams();
+
+		// SEGUNDO: Seleccionar el canal activo desde el array filtrado/maestro
+		const savedChannelId = localStorage.getItem('rpstv_last_channel');
+		const targetChannel = streams.find(s => s.id == savedChannelId) || allStreams.find(s => s.id == savedChannelId);
+
+		if (targetChannel) {
+		  selectStream(targetChannel.id, false);
+		} else if (streams.length > 0) {
+		  selectStream(streams[0].id, false);
+		} else if (allStreams.length > 0) {
+		  selectStream(allStreams[0].id, false);
+		}
 
 	  } catch (error) {
 		console.error("Error cargando Gist", error);
-	  }
-
-	  // Restaurar último canal visto
-	  const savedChannelId = localStorage.getItem('rpstv_last_channel');
-	  const targetChannel = allStreams.find(s => s.id == savedChannelId);
-
-	  if (targetChannel) {
-		selectStream(targetChannel.id, false);
-	  } else if (allStreams.length > 0) {
-		selectStream(allStreams[0].id, false);
 	  }
 
 	  populateScheduleSelect();
@@ -340,21 +343,24 @@
 	  // 3. Inicialización HLS Segura
 	  if (Hls.isSupported()) {
 		if (hlsInstance) {
-		  try { hlsInstance.destroy(); } catch(e) {}
+		  try { 
+			hlsInstance.detachMedia();
+			hlsInstance.destroy(); 
+		  } catch(e) {}
 		  hlsInstance = null;
 		}
 		
-		// Crear la nueva instancia PRIMERO
-		hlsInstance = new Hls({ enableWorker: true, lowLatencyMode: true });
+		// Crear la nueva instancia
+		const newHls = new Hls({ enableWorker: true, lowLatencyMode: true });
+		hlsInstance = newHls;
 		
 		// Cargar fuente y adjuntar video
-		hlsInstance.loadSource(url);
-		hlsInstance.attachMedia(videoElement);
+		newHls.loadSource(url);
+		newHls.attachMedia(videoElement);
 
-		// Evento de Detección de Audio (Solo si hlsInstance existe)
-		hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
-		  if (!hlsInstance) return;
-		  const audioTracks = hlsInstance.audioTracks;
+		// Evento de Detección de Audio
+		newHls.on(Hls.Events.MANIFEST_PARSED, () => {
+		  const audioTracks = newHls.audioTracks;
 		  const container = document.getElementById('audioTrackContainer');
 		  const select = document.getElementById('audioTrackSelect');
 
@@ -365,7 +371,7 @@
 				const opt = document.createElement('option');
 				opt.value = index;
 				opt.textContent = track.name || track.lang || `Audio ${index + 1}`;
-				if (index === hlsInstance.audioTrack) opt.selected = true;
+				if (index === newHls.audioTrack) opt.selected = true;
 				select.appendChild(opt);
 			  });
 			  container.classList.remove('hidden');
@@ -376,11 +382,11 @@
 		});
 
 		// Manejo de Errores Fatales
-		hlsInstance.on(Hls.Events.ERROR, (event, data) => {
+		newHls.on(Hls.Events.ERROR, (event, data) => {
 		  if (data.fatal) {
 			if (data.type === Hls.ErrorTypes.NETWORK_ERROR || data.type === Hls.ErrorTypes.MEDIA_ERROR) {
 			  if (connectionWatchdog) clearTimeout(connectionWatchdog);
-			  handleStreamError(hlsInstance);
+			  handleStreamError(newHls);
 			}
 		  }
 		});
@@ -402,19 +408,22 @@
 	  }
 	});
 
-    function selectStream(id, recordHistory = true) {
+	function selectStream(id, recordHistory = true) {
       if (currentStream && currentStream.id !== id && recordHistory) {
         previousStreamId = currentStream.id;
         document.getElementById('preChannelBtn').disabled = false;
       }
 
+      // Buscar en ambas listas para evitar fallos
+      let target = streams.find(s => s.id === id) || allStreams.find(s => s.id === id);
+      if (!target) return;
+
+      currentStream = target;
       streams.forEach(s => s.active = (s.id === id));
-      currentStream = streams.find(s => s.id === id);
+      allStreams.forEach(s => s.active = (s.id === id));
       
 	  // Guardar inmediatamente el canal actual para persistencia
-	  if (currentStream) {
-		localStorage.setItem('rpstv_last_channel', currentStream.id);
-	  }
+	  localStorage.setItem('rpstv_last_channel', currentStream.id);
 	  
       document.getElementById('activeCategory').textContent = currentStream.location || '';
       document.getElementById('activeTitle').textContent = currentStream.name || '';
