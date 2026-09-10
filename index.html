@@ -174,6 +174,14 @@
         <button onclick="closeScheduleModal()" class="px-3 py-1.5 rounded-lg border border-slate-800 text-xs text-slate-400 hover:bg-slate-800">Cancelar</button>
         <button onclick="setChannelSchedule()" class="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold">Guardar Programación</button>
       </div>
+	  
+	  <!-- SELECTOR DINÁMICO DE PISTAS DE AUDIO -->
+	  <div id="audioTrackContainer" class="hidden flex items-center gap-1.5 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl">
+	    <i data-lucide="volume-2" class="w-4 h-4 text-amber-400"></i>
+	    <select id="audioTrackSelect" onchange="changeAudioTrack(this.value)" class="bg-transparent text-xs font-semibold text-slate-300 focus:outline-none">
+	    </select>
+	  </div>
+	  
     </div>
   </div>
 
@@ -267,6 +275,14 @@
 		});
 
 		populateCountryFilter(allStreams);
+		
+		// Restaurar el filtro guardado previamente
+		const savedCountry = localStorage.getItem('rpstv_last_country');
+		const countrySelect = document.getElementById('countryFilter');
+		if (savedCountry && countrySelect) {
+		  countrySelect.value = savedCountry;
+		}
+		
 		filterStreams();
 
 	  } catch (error) {
@@ -328,6 +344,27 @@
 		  hlsInstance = null;
 		}
 		
+		// DETECCIÓN DE MÚLTIPLES CANALES DE AUDIO
+		hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
+		  const audioTracks = hlsInstance.audioTracks;
+		  const container = document.getElementById('audioTrackContainer');
+		  const select = document.getElementById('audioTrackSelect');
+
+		  if (audioTracks && audioTracks.length > 1) {
+			select.innerHTML = '';
+		    audioTracks.forEach((track, index) => {
+		      const opt = document.createElement('option');
+		      opt.value = index;
+		      opt.textContent = track.name || track.lang || `Audio ${index + 1}`;
+		      if (index === hlsInstance.audioTrack) opt.selected = true;
+		      select.appendChild(opt);
+		    });
+		    container.classList.remove('hidden'); // Mostrar selector
+	      } else {
+		    container.classList.add('hidden'); // Ocultar si solo hay 1 audio
+	      }
+	    });
+		
 		hlsInstance = new Hls({ enableWorker: true, lowLatencyMode: true });
 		hlsInstance.loadSource(url);
 		hlsInstance.attachMedia(videoElement);
@@ -388,7 +425,7 @@
       renderStreams();
     }
 
-    // RENDERIZADO CON BUSCADOR Y CONTADOR DINAÁMICO
+    // RENDERIZADO CON BUSCADOR Y CONTADOR DINÁMICO
     function renderStreams() {
       const container = document.getElementById('streamList');
       container.innerHTML = '';
@@ -452,6 +489,14 @@
       document.getElementById('clearSearchBtn').classList.toggle('hidden', searchQuery === "");
       renderStreams();
     }
+	
+	// SELECCIÓN DEL CANAL DE AUDIO
+	function changeAudioTrack(trackIndex) {
+	  if (hlsInstance && hlsInstance.audioTracks[trackIndex]) {
+		hlsInstance.audioTrack = parseInt(trackIndex);
+		console.log(`[QoS] Pista de audio cambiada a: ${trackIndex}`);
+	  }
+	}
 
     function clearSearch() {
       document.getElementById('searchInput').value = "";
@@ -639,6 +684,9 @@
 	function filterStreams() {
 	  const selectedCountry = document.getElementById('countryFilter')?.value || 'ALL';
 	  const searchInput = (document.getElementById('searchInput')?.value || '').toLowerCase();
+	  
+	  // GUARDAR FILTRO DE PAÍS
+	  localStorage.setItem('rpstv_last_country', selectedCountry);
 
 	  streams = allStreams.filter(stream => {
 		const matchesCountry = (selectedCountry === 'ALL') || (stream.name === selectedCountry);
