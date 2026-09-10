@@ -82,8 +82,8 @@
 		  <video id="hlsPlayer" controls autoplay muted playsinline class="w-full h-full object-contain"></video>
 		</div>
 		
-		<!-- CONTROLES INFERIORES -->
-		<div class="grid grid-cols-4 gap-2">
+		<!-- CONTROLES INFERIORES CON SELECTOR DE AUDIO -->
+		<div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
 		  <button onclick="changeChannelRelative(-1)" class="flex items-center justify-center gap-1 bg-slate-900 hover:bg-slate-800 border border-slate-800 py-2 rounded-xl text-xs font-semibold text-slate-300 transition">
 			<i data-lucide="chevron-left" class="w-4 h-4"></i> Canal Ant.
 		  </button>
@@ -93,9 +93,19 @@
 		  <button onclick="changeChannelRelative(1)" class="flex items-center justify-center gap-1 bg-slate-900 hover:bg-slate-800 border border-slate-800 py-2 rounded-xl text-xs font-semibold text-slate-300 transition">
 			Sig. Canal <i data-lucide="chevron-right" class="w-4 h-4"></i>
 		  </button>
-		  <button onclick="toggleClockVisibility()" class="flex items-center justify-center gap-1 bg-slate-900 hover:bg-slate-800 border border-slate-800 py-2 rounded-xl text-xs font-semibold text-slate-300 transition" title="Mostrar/Ocultar Reloj (Tecla R)">
+		  <button onclick="toggleClockVisibility()" class="flex items-center justify-center gap-1 bg-slate-900 hover:bg-slate-800 border border-slate-800 py-2 rounded-xl text-xs font-semibold text-slate-300 transition" title="Mostrar/Ocultar Reloj">
 			<i data-lucide="clock" class="w-4 h-4 text-amber-400"></i> Reloj
 		  </button>
+		</div>
+
+		<!-- SELECTOR DINÁMICO DE PISTAS DE AUDIO (UBICACIÓN CORRECTA) -->
+		<div id="audioTrackContainer" class="hidden flex items-center justify-between bg-slate-900/90 border border-amber-500/30 px-3 py-2 rounded-xl">
+		  <div class="flex items-center gap-2">
+			<i data-lucide="volume-2" class="w-4 h-4 text-amber-400 animate-pulse"></i>
+			<span class="text-xs font-bold text-amber-400">Audio Múltiple:</span>
+		  </div>
+		  <select id="audioTrackSelect" onchange="changeAudioTrack(this.value)" class="bg-slate-950 border border-slate-800 text-xs font-semibold text-slate-200 rounded-lg px-2 py-1 focus:outline-none focus:border-amber-400">
+		  </select>
 		</div>
 
 		<!-- TARJETA DE CANAL ACTIVO -->
@@ -174,14 +184,6 @@
         <button onclick="closeScheduleModal()" class="px-3 py-1.5 rounded-lg border border-slate-800 text-xs text-slate-400 hover:bg-slate-800">Cancelar</button>
         <button onclick="setChannelSchedule()" class="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold">Guardar Programación</button>
       </div>
-	  
-	  <!-- SELECTOR DINÁMICO DE PISTAS DE AUDIO -->
-	  <div id="audioTrackContainer" class="hidden flex items-center gap-1.5 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl">
-	    <i data-lucide="volume-2" class="w-4 h-4 text-amber-400"></i>
-	    <select id="audioTrackSelect" onchange="changeAudioTrack(this.value)" class="bg-transparent text-xs font-semibold text-slate-300 focus:outline-none">
-	    </select>
-	  </div>
-	  
     </div>
   </div>
 
@@ -358,8 +360,9 @@
 		newHls.loadSource(url);
 		newHls.attachMedia(videoElement);
 
-		// Evento de Detección de Audio
-		newHls.on(Hls.Events.MANIFEST_PARSED, () => {
+		// Evento de Detección de Audio y
+		// Función interna para actualizar el selector de audio
+		const updateAudioTracksUI = () => {
 		  const audioTracks = newHls.audioTracks;
 		  const container = document.getElementById('audioTrackContainer');
 		  const select = document.getElementById('audioTrackSelect');
@@ -370,16 +373,25 @@
 			  audioTracks.forEach((track, index) => {
 				const opt = document.createElement('option');
 				opt.value = index;
-				opt.textContent = track.name || track.lang || `Audio ${index + 1}`;
+				// Extraer nombre, idioma o etiquetar por defecto
+				const langName = track.name || track.lang || `Pista ${index + 1}`;
+				opt.textContent = `${index + 1}. ${langName.toUpperCase()}`;
 				if (index === newHls.audioTrack) opt.selected = true;
 				select.appendChild(opt);
 			  });
 			  container.classList.remove('hidden');
+			  container.classList.add('flex');
+			  lucide.createIcons();
 			} else {
 			  container.classList.add('hidden');
+			  container.classList.remove('flex');
 			}
 		  }
-		});
+		};
+
+		// Escuchar ambos eventos de detección de audio
+		newHls.on(Hls.Events.MANIFEST_PARSED, updateAudioTracksUI);
+		newHls.on(Hls.Events.AUDIO_TRACKS_UPDATED, updateAudioTracksUI);
 
 		// Manejo de Errores Fatales
 		newHls.on(Hls.Events.ERROR, (event, data) => {
