@@ -107,6 +107,16 @@
 		  <select id="audioTrackSelect" onchange="changeAudioTrack(this.value)" class="bg-slate-950 border border-slate-800 text-xs font-semibold text-slate-200 rounded-lg px-2 py-1 focus:outline-none focus:border-amber-400">
 		  </select>
 		</div>
+		
+		<!-- SELECTOR DINÁMICO DE SUBTÍTULOS -->
+		<div id="subtitleTrackContainer" class="hidden flex items-center justify-between bg-slate-900/90 border border-amber-500/30 px-3 py-2 rounded-xl mt-2">
+		  <div class="flex items-center gap-2">
+			<i data-lucide="captions" class="w-4 h-4 text-amber-400"></i>
+			<span class="text-xs font-bold text-amber-400">Subtítulos (CC):</span>
+		  </div>
+		  <select id="subtitleTrackSelect" onchange="changeSubtitleTrack(this.value)" class="bg-slate-950 border border-slate-800 text-xs font-semibold text-slate-200 rounded-lg px-2 py-1 focus:outline-none focus:border-amber-400">
+		  </select>
+		</div>
 
 		<!-- TARJETA DE CANAL ACTIVO -->
 		<div class="bg-slate-900/60 border border-slate-800 rounded-xl p-4 flex items-center justify-between">
@@ -392,6 +402,37 @@
 		// Escuchar ambos eventos de detección de audio
 		newHls.on(Hls.Events.MANIFEST_PARSED, updateAudioTracksUI);
 		newHls.on(Hls.Events.AUDIO_TRACKS_UPDATED, updateAudioTracksUI);
+		
+		// Función interna para actualizar el selector de subtítulos
+		const updateSubtitlesUI = () => {
+		  const tracks = newHls.subtitleTracks;
+		  const container = document.getElementById('subtitleTrackContainer');
+		  const select = document.getElementById('subtitleTrackSelect');
+
+		  if (select && container) {
+			if (tracks && tracks.length > 0) {
+			  select.innerHTML = '<option value="-1">❌ Desactivados</option>';
+			  tracks.forEach((track, index) => {
+				const opt = document.createElement('option');
+				opt.value = index;
+				const langName = track.name || track.lang || `Subtítulo ${index + 1}`;
+				opt.textContent = `${index + 1}. ${langName.toUpperCase()}`;
+				if (index === newHls.subtitleTrack) opt.selected = true;
+				select.appendChild(opt);
+			  });
+			  container.classList.remove('hidden');
+			  container.classList.add('flex');
+			  lucide.createIcons();
+			} else {
+			  container.classList.add('hidden');
+			  container.classList.remove('flex');
+			}
+		  }
+		};
+
+		// Escuchar eventos de subtítulos
+		newHls.on(Hls.Events.MANIFEST_PARSED, updateSubtitlesUI);
+		newHls.on(Hls.Events.SUBTITLE_TRACKS_UPDATED, updateSubtitlesUI);
 
 		// Manejo de Errores Fatales
 		newHls.on(Hls.Events.ERROR, (event, data) => {
@@ -525,6 +566,14 @@
 		console.log(`[QoS] Pista de audio cambiada a: ${trackIndex}`);
 	  }
 	}
+	
+	// FUNCIÓN PARA CONMUTAR SUBTÍTULOS
+	function changeSubtitleTrack(trackIndex) {
+	  if (hlsInstance) {
+		hlsInstance.subtitleTrack = parseInt(trackIndex); // -1 lo desactiva
+		console.log(`[QoS] Subtítulo cambiado a: ${trackIndex}`);
+	  }
+	}
 
     function clearSearch() {
       document.getElementById('searchInput').value = "";
@@ -552,7 +601,7 @@
 
 	  countries.forEach(country => {
 		const optgroup = document.createElement('optgroup');
-		optgroup.label = `📍 ${country}`;
+		optgroup.label = `📌 ${country}`;
 
 		// Obtener canales de este país
 		const countryChannels = allStreams.filter(s => s.name === country);
@@ -670,7 +719,7 @@
       renderStreams();
     }
 	
-	// CONTROL DE VISIBILIDAD DEL RELOJ (TECLA R / BOTÓN)
+	// CONTROL DE VISIBILIDAD DEL RELOJ (TECLA R, H / BOTÓN)
 	function toggleClockVisibility() {
 	  const clockBadge = document.getElementById('digitalClockBadge');
 	  clockBadge.classList.toggle('hidden');
@@ -776,8 +825,8 @@
 	  // Ignora si el usuario está escribiendo en el buscador o inputs
 	  if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
 
-	  if (['ArrowUp', 'PgUp', 'w', 'W'].includes(e.key)) changeChannelRelative(-1);
-	  if (['ArrowDown', 'PgDown', 's', 'S'].includes(e.key)) changeChannelRelative(1);
+	  if (['ArrowUp', 'PageUp', 'w', 'W'].includes(e.key)) changeChannelRelative(-1);
+	  if (['ArrowDown', 'PageDown', 's', 'S'].includes(e.key)) changeChannelRelative(1);
 	  if (['p', 'P', 'Backspace'].includes(e.key)) goToPreviousChannel();
 	  if (['r', 'R', 'h', 'H'].includes(e.key)) toggleClockVisibility();
 	  if (['f', 'F'].includes(e.key)) toggleFullscreenWithClock();
