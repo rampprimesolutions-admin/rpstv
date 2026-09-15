@@ -30,11 +30,11 @@
     <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-4">
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-full bg-amber-500 p-0.5 flex items-center justify-center shadow-lg">
-          <div class="w-full h-full bg-slate-950 rounded-full flex items-center justify-center font-bold text-amber-400">📡</div>
+          <div class="w-full h-full bg-slate-950 rounded-full flex items-center justify-center font-bold text-amber-400">馃摗</div>
         </div>
         <div>
           <h1 class="text-lg font-bold tracking-tight text-amber-400">RPSTV - Streaming VIP v2.3.3</h1>
-          <p class="text-xs text-slate-400">Monitoreo QoS, Telemetría y Auto-Programación</p>
+          <p class="text-xs text-slate-400">La mejor experiencia de Streaming por Demanda y TV en vivo</p>
         </div>
       </div>
       
@@ -158,7 +158,7 @@
 		<!-- FILTRO POR PAÍS / CATEGORÍA (Colocar junto al buscador) -->
 		<div class="mb-3">
 		  <select id="countryFilter" onchange="filterStreams()" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs font-semibold text-slate-300 focus:outline-none focus:border-amber-400">
-			<option value="ALL">🌎 Todos los Países (A-Z)</option>
+			<option value="ALL">馃寧 Todos los Países (A-Z)</option>
 		  </select>
 		</div>
       </div>
@@ -246,14 +246,14 @@
       reportedChannels.add(reportKey);
 
       const payload = {
-        content: "🚩 **ALERTA DE SEÑAL CAÍDA (RPSTV)**",
+        content: "馃毄 **ALERTA DE SEÑAL CAÍDA (RPSTV)**",
         embeds: [{
           title: `**CANAL:** ${channelName}`,
           color: 15158332,
           fields: [
             { name: "**TIPO DE ERROR**", value: errorType, inline: true },
             { name: "**ORIGEN/DISPOSITIVO**", value: getDeviceDetails(), inline: true },
-            { name: "**DETALLES TÉCNICOS**", value: details || "Sin detalles adicionales" }
+            { name: "**DETALLE TÉCNICO**", value: details || "Sin detalle adicional" }
           ],
           timestamp: new Date().toISOString()
         }]
@@ -279,7 +279,7 @@
 		const data = await response.json();
 		let rawStreams = Array.isArray(data) ? data : (data.channels || []);
 		
-		// Guardar y ordenar alfabéticamente A-Z por location
+		// Guardar y ordenar alfab茅ticamente A-Z por location
 		allStreams = rawStreams.sort((a, b) => {
 		  const nameA = (a.location || '').toLowerCase();
 		  const nameB = (b.location || '').toLowerCase();
@@ -339,7 +339,7 @@
 
 	  // 1. Validación inicial de URL vacía o inválida
 	  if (!url || url.trim() === "" || !url.startsWith("http")) {
-		console.warn("[QoS] URL inválida o vacía. Activando carta de ajuste...");
+		console.warn("[QoS] URL inv谩lida o vac铆a. Activando carta de ajuste...");
 		handleStreamError(hlsInstance);
 		return;
 	  }
@@ -411,7 +411,7 @@
 
 		  if (select && container) {
 			if (tracks && tracks.length > 0) {
-			  select.innerHTML = '<option value="-1">❌ Desactivados</option>';
+			  select.innerHTML = '<option value="-1">鉂?Desactivados</option>';
 			  tracks.forEach((track, index) => {
 				const opt = document.createElement('option');
 				opt.value = index;
@@ -567,7 +567,7 @@
 	  }
 	}
 	
-	// FUNCIÓN PARA CONMUTAR SUBTÍTULOS
+	// FUNCIÓN PARA CONMUTAR SUBT脥TULOS
 	function changeSubtitleTrack(trackIndex) {
 	  if (hlsInstance) {
 		hlsInstance.subtitleTrack = parseInt(trackIndex); // -1 lo desactiva
@@ -601,9 +601,9 @@
 
 	  countries.forEach(country => {
 		const optgroup = document.createElement('optgroup');
-		optgroup.label = `📌 ${country}`;
+		optgroup.label = `馃搶 ${country}`;
 
-		// Obtener canales de este país
+		// Obtener canales de este pa铆s
 		const countryChannels = allStreams.filter(s => s.name === country);
 		
 		countryChannels.forEach(s => {
@@ -745,14 +745,14 @@
 	function populateCountryFilter(data) {
 	  const select = document.getElementById('countryFilter');
 	  if (!select) return;
-	  select.innerHTML = '<option value="ALL">🌎 Todos los Países (A-Z)</option>';
+	  select.innerHTML = '<option value="ALL">馃寧 Todos los Países (A-Z)</option>';
 	  
 	  const countries = [...new Set(data.map(item => item.name).filter(Boolean))].sort();
 	  
 	  countries.forEach(country => {
 		const opt = document.createElement('option');
 		opt.value = country;
-		opt.textContent = `📍 ${country}`;
+		opt.textContent = `馃搷 ${country}`;
 		select.appendChild(opt);
 	  });
 	}
@@ -810,7 +810,7 @@
 		playPromise.catch(error => {
 		  console.warn("Autoplay bloqueado o interrupción de reproducción:", error);
 		  // Reintentar reproducción silenciada en caso de políticas del navegador/WebView
-		  video.muted = true;
+		  video.muted = false;
 		  video.play().catch(e => console.error("Error final al reproducir estática:", e));
 		});
 	  }
