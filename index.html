@@ -79,7 +79,7 @@
 			<span id="schedulerNoticeText">Cambio programado activo</span>
 		  </div>
 
-		  <video id="hlsPlayer" controls autoplay playsinline class="w-full h-full object-contain"></video>
+		  <video id="hlsPlayer" controls autoplay muted playsinline class="w-full h-full object-contain"></video>
 		</div>
 		
 		<!-- CONTROLES INFERIORES CON SELECTOR DE AUDIO -->
@@ -810,7 +810,7 @@
 		playPromise.catch(error => {
 		  console.warn("Autoplay bloqueado o interrupción de reproducción:", error);
 		  // Reintentar reproducción silenciada en caso de políticas del navegador/WebView
-		  video.muted = false;
+		  video.muted = true;
 		  video.play().catch(e => console.error("Error final al reproducir estática:", e));
 		});
 	  }
