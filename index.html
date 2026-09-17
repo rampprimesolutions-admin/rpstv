@@ -861,16 +861,47 @@
 	});
 
 	// CAPTURA UNIFICADA DE TECLADO (TODAS LAS TECLAS EN UN SOLO LUGAR)
-	document.addEventListener('keydown', (e) => {
-	  // Ignora si el usuario está escribiendo en el buscador o inputs
-	  if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
+	//document.addEventListener('keydown', (e) => {
+	//  // Ignora si el usuario está escribiendo en el buscador o inputs
+	//  if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
 
-	  if (['ArrowUp', 'w', 'W'].includes(e.key)) changeChannelRelative(-1);
-	  if (['ArrowDown', 's', 'S'].includes(e.key)) changeChannelRelative(1);
-	  if (['p', 'P', 'Backspace'].includes(e.key)) goToPreviousChannel();
-	  if (['r', 'R', 'h', 'H'].includes(e.key)) toggleClockVisibility();
-	  if (['f', 'F'].includes(e.key)) toggleFullscreenWithClock();
-	  if (['i', 'I'].includes(e.key)) togglePictureInPicture();
+	//  if (['ArrowUp', 'w', 'W'].includes(e.key)) changeChannelRelative(-1);
+	//  if (['ArrowDown', 's', 'S'].includes(e.key)) changeChannelRelative(1);
+	//  if (['p', 'P', 'Backspace'].includes(e.key)) goToPreviousChannel();
+	//  if (['r', 'R', 'h', 'H'].includes(e.key)) toggleClockVisibility();
+	//  if (['f', 'F'].includes(e.key)) toggleFullscreenWithClock();
+	//  if (['i', 'I'].includes(e.key)) togglePictureInPicture();
+	//});
+	
+	// --- ATAJOS DE TECLADO GLOBAL (SOLO PARA LAPTOP / PC) ---
+	document.addEventListener('keydown', function (e) {
+	  // Ignorar si el usuario está escribiendo en un input o buscador
+	  if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) {
+		return;
+	  }
+
+	  const key = e.key.toUpperCase();
+
+	  switch (key) {
+		case 'F': // Pantalla completa
+		  if (typeof toggleFullscreenWithClock === 'function') toggleFullscreenWithClock();
+		  break;
+		case 'R': // Reloj (Mostrar/Ocultar)
+		  if (typeof toggleClockVisibility === 'function') toggleClockVisibility();
+		  break;
+		case 'W': // Pre-Canal
+		  if (typeof goToPreviousChannel === 'function') goToPreviousChannel();
+		  break;
+		case 'S': // Canal Siguiente
+		  if (typeof changeChannelRelative === 'function') changeChannelRelative(1);
+		  break;
+		case 'P': // Canal Anterior
+		  if (typeof changeChannelRelative === 'function') changeChannelRelative(-1);
+		  break;
+		case 'I': // Información / Modal
+		  if (typeof openScheduleModal === 'function') openScheduleModal();
+		  break;
+	  }
 	});
 	
 	// --- AUTO-UNMUTE AL PRIMER TOQUE ---
@@ -895,6 +926,30 @@
 	window.addEventListener('click', enableAudioOnFirstInteraction);
 	window.addEventListener('touchstart', enableAudioOnFirstInteraction);
 	window.addEventListener('keydown', enableAudioOnFirstInteraction);
+	
+	// --- GESTOS TÁCTILES PARA MÓVIL (DOBLE TAP -> FULLSCREEN) ---
+	let lastTapTime = 0;
+
+	if (videoElement) {
+	  videoElement.addEventListener('touchend', function (e) {
+		const currentTime = new Date().getTime();
+		const tapLength = currentTime - lastTapTime;
+
+		// Detectar si la diferencia entre toques es menor a 300ms (Doble Tap)
+		if (tapLength < 300 && tapLength > 0) {
+		  e.preventDefault(); // Evita el zoom por defecto del navegador
+		  
+		  // Ejecuta la función de Fullscreen existente
+		  if (typeof toggleFullscreenWithClock === 'function') {
+			toggleFullscreenWithClock();
+		  } else if (typeof toggleFullscreen === 'function') {
+			toggleFullscreen();
+		  }
+		  console.log("[QoS] Pantalla completa alternada por Doble Tap.");
+		}
+		lastTapTime = currentTime;
+	  });
+	}
 
     document.addEventListener('DOMContentLoaded', fetchStreams);
   </script>
