@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RPSTV - Streaming VIP v2.3.3</title>
+  <title>RPSTV Streaming v2.3.4</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 	<style>
-	  /* Elimina bordes y redondeo sólo cuando playerContainer está en Fullscreen */
+	  /* Elimina bordes y redondeo s贸lo cuando playerContainer est谩 en Fullscreen */
 	  #playerContainer:fullscreen {
 		border: none !important;
 		border-radius: 0 !important;
@@ -30,11 +30,11 @@
     <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-4">
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-full bg-amber-500 p-0.5 flex items-center justify-center shadow-lg">
-          <div class="w-full h-full bg-slate-950 rounded-full flex items-center justify-center font-bold text-amber-400">📡</div>
+          <div class="w-full h-full bg-slate-950 rounded-full flex items-center justify-center font-bold text-amber-400">馃摗</div>
         </div>
         <div>
-          <h1 class="text-lg font-bold tracking-tight text-amber-400">RPSTV - Streaming VIP v2.3.3</h1>
-          <p class="text-xs text-slate-400">La mejor experiencia en Streaming y Televisión</p>
+          <h1 class="text-lg font-bold tracking-tight text-amber-400">RPSTV Streaming v2.3.4</h1>
+          <p class="text-xs text-slate-400">Experiencia VIP en Streaming y TV en vivo</p>
         </div>
       </div>
       
@@ -60,7 +60,7 @@
   <!-- CONTENIDO PRINCIPAL -->
   <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full grid grid-cols-1 lg:grid-cols-3 gap-8">
     
-	<!-- SECCIÓN DEL REPRODUCTOR CON CONTENEDOR FULLSCREEN -->
+	<!-- SECCI脫N DEL REPRODUCTOR CON CONTENEDOR FULLSCREEN -->
 	<section class="lg:col-span-2">
 	  <div class="sticky top-20 space-y-4">
 		
@@ -73,7 +73,7 @@
 			<span id="digitalClock">00:00:00</span>
 		  </div>
 
-		  <!-- Banner de Notificación del Programador -->
+		  <!-- Banner de Notificaci贸n del Programador -->
 		  <div id="schedulerNotice" class="hidden absolute top-3 right-3 z-30 bg-amber-500 text-slate-950 px-3 py-1 rounded-lg text-xs font-bold shadow-lg items-center gap-1.5 animate-pulse">
 			<i data-lucide="calendar-check" class="w-3.5 h-3.5"></i>
 			<span id="schedulerNoticeText">Cambio programado activo</span>
@@ -98,21 +98,21 @@
 		  </button>
 		</div>
 
-		<!-- SELECTOR DINÁMICO DE PISTAS DE AUDIO (UBICACIÓN CORRECTA) -->
+		<!-- SELECTOR DIN脕MICO DE PISTAS DE AUDIO (UBICACI脫N CORRECTA) -->
 		<div id="audioTrackContainer" class="hidden flex items-center justify-between bg-slate-900/90 border border-amber-500/30 px-3 py-2 rounded-xl">
 		  <div class="flex items-center gap-2">
 			<i data-lucide="volume-2" class="w-4 h-4 text-amber-400 animate-pulse"></i>
-			<span class="text-xs font-bold text-amber-400">Audio Múltiple:</span>
+			<span class="text-xs font-bold text-amber-400">Audio M煤ltiple:</span>
 		  </div>
 		  <select id="audioTrackSelect" onchange="changeAudioTrack(this.value)" class="bg-slate-950 border border-slate-800 text-xs font-semibold text-slate-200 rounded-lg px-2 py-1 focus:outline-none focus:border-amber-400">
 		  </select>
 		</div>
 		
-		<!-- SELECTOR DINÁMICO DE SUBTÍTULOS -->
+		<!-- SELECTOR DIN脕MICO DE SUBT脥TULOS -->
 		<div id="subtitleTrackContainer" class="hidden flex items-center justify-between bg-slate-900/90 border border-amber-500/30 px-3 py-2 rounded-xl mt-2">
 		  <div class="flex items-center gap-2">
 			<i data-lucide="captions" class="w-4 h-4 text-amber-400"></i>
-			<span class="text-xs font-bold text-amber-400">Subtítulos (CC):</span>
+			<span class="text-xs font-bold text-amber-400">Subt铆tulos (CC):</span>
 		  </div>
 		  <select id="subtitleTrackSelect" onchange="changeSubtitleTrack(this.value)" class="bg-slate-950 border border-slate-800 text-xs font-semibold text-slate-200 rounded-lg px-2 py-1 focus:outline-none focus:border-amber-400">
 		  </select>
@@ -155,10 +155,10 @@
           </button>
         </div>
 		
-		<!-- FILTRO POR PAÍS / CATEGORÍA (Colocar junto al buscador) -->
+		<!-- FILTRO POR PA脥S / CATEGOR脥A (Colocar junto al buscador) -->
 		<div class="mb-3">
 		  <select id="countryFilter" onchange="filterStreams()" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs font-semibold text-slate-300 focus:outline-none focus:border-amber-400">
-			<option value="ALL">馃寧 Todos los Países (A-Z)</option>
+			<option value="ALL">棣冨 Todos los Pa铆ses (A-Z)</option>
 		  </select>
 		</div>
       </div>
@@ -185,14 +185,14 @@
         </div>
 
         <div>
-          <label class="block text-xs text-slate-400 mb-1">HORA DE EJECUCIÓN (HOY)</label>
+          <label class="block text-xs text-slate-400 mb-1">HORA DE EJECUCI脫N (HOY)</label>
           <input type="time" id="scheduleTimeInput" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500" />
         </div>
       </div>
 
       <div class="flex justify-end gap-2 pt-2">
         <button onclick="closeScheduleModal()" class="px-3 py-1.5 rounded-lg border border-slate-800 text-xs text-slate-400 hover:bg-slate-800">Cancelar</button>
-        <button onclick="setChannelSchedule()" class="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold">Guardar Programación</button>
+        <button onclick="setChannelSchedule()" class="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold">Guardar Programaci贸n</button>
       </div>
     </div>
   </div>
@@ -227,17 +227,17 @@
     function getDeviceDetails() {
       const ua = navigator.userAgent;
       if (/Android/i.test(ua)) {
-        return (/wv|Version\/[\d\.]+/i.test(ua)) ? "App Android (APK)" : "Móvil Android (Navegador)";
+        return (/wv|Version\/[\d\.]+/i.test(ua)) ? "App Android (APK)" : "M贸vil Android (Navegador)";
       }
       if (/iPhone|iPad|iPod/i.test(ua)) return "Dispositivo iOS (iPhone/iPad)";
       if (/Windows/i.test(ua)) return "PC/Laptop (Windows)";
       if (/Macintosh|Mac OS X/i.test(ua)) return "Laptop/MAC (macOS)";
-      return "Navegador Web Genérico";
+      return "Navegador Web Gen茅rico";
     }
 
     function sendStreamAlert(channelName, errorType, details) {
       if (!REPORT_WEBHOOK_URL || REPORT_WEBHOOK_URL.includes("TU_WEBHOOK_AQUI")) {
-        console.warn("[Telemetría] URL de Webhook no configurada.");
+        console.warn("[Telemetr铆a] URL de Webhook no configurada.");
         return;
       }
 
@@ -246,14 +246,14 @@
       reportedChannels.add(reportKey);
 
       const payload = {
-        content: "🚨 **ALERTA DE SEÑAL CAÍDA (RPSTV)**",
+        content: "馃毃 **ALERTA DE SE脩AL CA脥DA (RPSTV)**",
         embeds: [{
           title: `**CANAL:** ${channelName}`,
           color: 15158332,
           fields: [
             { name: "**TIPO DE ERROR**", value: errorType, inline: true },
             { name: "**ORIGEN/DISPOSITIVO**", value: getDeviceDetails(), inline: true },
-            { name: "**DETALLE TÉCNICO**", value: details || "Sin detalle adicional" }
+            { name: "**DETALLE T脡CNICO**", value: details || "Sin detalle adicional" }
           ],
           timestamp: new Date().toISOString()
         }]
@@ -265,12 +265,12 @@
         body: JSON.stringify(payload)
       })
       .then(res => {
-        if (res.ok) console.log("[Telemetría] Alerta enviada con éxito a Discord.");
+        if (res.ok) console.log("[Telemetr铆a] Alerta enviada con 茅xito a Discord.");
       })
-      .catch(err => console.error("[Telemetría] Error de red al enviar a Discord:", err));
+      .catch(err => console.error("[Telemetr铆a] Error de red al enviar a Discord:", err));
     }
     
-	// 1. CARGA DE CANALES CON ORDENAMIENTO ALFABÉTICO (A-Z) Y AUTORRESTAURACIÓN
+	// 1. CARGA DE CANALES CON ORDENAMIENTO ALFAB脡TICO (A-Z) Y AUTORRESTAURACI脫N
 	async function fetchStreams() {
 	  const gistRawUrl = 'https://gist.githubusercontent.com/rampprimesolutions-admin/7c2e780742d4285ce388cd18ceacb227/raw/channels.json?v=' + new Date().getTime();
 	  
@@ -279,7 +279,7 @@
 		const data = await response.json();
 		let rawStreams = Array.isArray(data) ? data : (data.channels || []);
 		
-		// Guardar y ordenar alfab茅ticamente A-Z por location
+		// Guardar y ordenar alfab鑼卼icamente A-Z por location
 		allStreams = rawStreams.sort((a, b) => {
 		  const nameA = (a.location || '').toLowerCase();
 		  const nameB = (b.location || '').toLowerCase();
@@ -330,16 +330,54 @@
 	  }
 	}
 
-	let connectionWatchdog = null;
+	// --- MÓDULO AGC: CONTROL AUTOMÁTICO DE GANANCIA (v2.3.4) ---
+	let audioCtx = null;
+	let compressor = null;
 
+	function initAudioNormalization() {
+	  if (audioCtx) return; // Previene duplicar la conexión al reconectar canales
+
+	  try {
+		const AudioContext = window.AudioContext || window.webkitAudioContext;
+		audioCtx = new AudioContext();
+
+		const source = audioCtx.createMediaElementSource(videoElement);
+		compressor = audioCtx.createDynamicsCompressor();
+
+		// Parámetros de compresión para estabilización sonora
+		compressor.threshold.setValueAtTime(-24, audioCtx.currentTime); // Límite donde se activa
+		compressor.knee.setValueAtTime(30, audioCtx.currentTime);        // Curva suave de compresión
+		compressor.ratio.setValueAtTime(12, audioCtx.currentTime);       // Nivel de reducción de picos altos
+		compressor.attack.setValueAtTime(0.003, audioCtx.currentTime);   // Respuesta inmediata
+		compressor.release.setValueAtTime(0.25, audioCtx.currentTime);   // Recuperación suave para tonos bajos
+
+		// Enrutamiento: Reproductor -> Compresor -> Altavoces
+		source.connect(compressor);
+		compressor.connect(audioCtx.destination);
+		console.log("[QoS] Normalizador de Volumen (AGC) activado.");
+	  } catch (e) {
+		console.warn("[QoS] No se pudo activar el AGC (AudioContext):", e);
+	  }
+	}
+
+	// Reactivación automática del contexto tras políticas de autoplay
+	videoElement.addEventListener('play', () => {
+	  initAudioNormalization();
+	  if (audioCtx && audioCtx.state === 'suspended') {
+		audioCtx.resume();
+	  }
+	});
+
+	let connectionWatchdog = null;
+	
 	function loadHlsStream(url) {
 	  // Limpiar temporizadores activos anteriores
 	  if (bufferCheckTimer) clearTimeout(bufferCheckTimer);
 	  if (connectionWatchdog) clearTimeout(connectionWatchdog);
 
-	  // 1. Validación inicial de URL vacía o inválida
+	  // 1. Validaci贸n inicial de URL vac铆a o inv谩lida
 	  if (!url || url.trim() === "" || !url.startsWith("http")) {
-		console.warn("[QoS] URL inválida o vacía. Activando señal de estática...");
+		console.warn("[QoS] URL inv谩lida o vac铆a. Activando se帽al de est谩tica...");
 		handleStreamError(hlsInstance);
 		return;
 	  }
@@ -347,12 +385,12 @@
 	  // 2. TIMEOUT DE SEGURIDAD (12 Segundos)
 	  connectionWatchdog = setTimeout(() => {
 		if (videoElement.currentTime === 0 || videoElement.readyState < 2) {
-		  console.warn("[QoS] Timeout estricto de conexión (12s sin reproducción). Activando estática...");
+		  console.warn("[QoS] Timeout estricto de conexi贸n (12s sin reproducci贸n). Activando est谩tica...");
 		  handleStreamError(hlsInstance);
 		}
 	  }, 12000);
 
-	  // 3. Inicialización HLS Segura
+	  // 3. Inicializaci贸n HLS Segura
 	  if (Hls.isSupported()) {
 		if (hlsInstance) {
 		  try { 
@@ -370,8 +408,8 @@
 		newHls.loadSource(url);
 		newHls.attachMedia(videoElement);
 
-		// Evento de Detección de Audio y
-		// Función interna para actualizar el selector de audio
+		// Evento de Detecci贸n de Audio y
+		// Funci贸n interna para actualizar el selector de audio
 		const updateAudioTracksUI = () => {
 		  const audioTracks = newHls.audioTracks;
 		  const container = document.getElementById('audioTrackContainer');
@@ -399,11 +437,11 @@
 		  }
 		};
 
-		// Escuchar ambos eventos de detección de audio
+		// Escuchar ambos eventos de detecci贸n de audio
 		newHls.on(Hls.Events.MANIFEST_PARSED, updateAudioTracksUI);
 		newHls.on(Hls.Events.AUDIO_TRACKS_UPDATED, updateAudioTracksUI);
 		
-		// Función interna para actualizar el selector de subtítulos
+		// Funci贸n interna para actualizar el selector de subt铆tulos
 		const updateSubtitlesUI = () => {
 		  const tracks = newHls.subtitleTracks;
 		  const container = document.getElementById('subtitleTrackContainer');
@@ -411,11 +449,11 @@
 
 		  if (select && container) {
 			if (tracks && tracks.length > 0) {
-			  select.innerHTML = '<option value="-1">鉂?Desactivados</option>';
+			  select.innerHTML = '<option value="-1">閴?Desactivados</option>';
 			  tracks.forEach((track, index) => {
 				const opt = document.createElement('option');
 				opt.value = index;
-				const langName = track.name || track.lang || `Subtítulo ${index + 1}`;
+				const langName = track.name || track.lang || `Subt铆tulo ${index + 1}`;
 				opt.textContent = `${index + 1}. ${langName.toUpperCase()}`;
 				if (index === newHls.subtitleTrack) opt.selected = true;
 				select.appendChild(opt);
@@ -430,7 +468,7 @@
 		  }
 		};
 
-		// Escuchar eventos de subtítulos
+		// Escuchar eventos de subt铆tulos
 		newHls.on(Hls.Events.MANIFEST_PARSED, updateSubtitlesUI);
 		newHls.on(Hls.Events.SUBTITLE_TRACKS_UPDATED, updateSubtitlesUI);
 
@@ -494,7 +532,7 @@
       renderStreams();
     }
 
-    // RENDERIZADO CON BUSCADOR Y CONTADOR DINÁMICO
+    // RENDERIZADO CON BUSCADOR Y CONTADOR DIN脕MICO
     function renderStreams() {
       const container = document.getElementById('streamList');
       container.innerHTML = '';
@@ -559,7 +597,7 @@
       renderStreams();
     }
 	
-	// SELECCIÓN DEL CANAL DE AUDIO
+	// SELECCI脫N DEL CANAL DE AUDIO
 	function changeAudioTrack(trackIndex) {
 	  if (hlsInstance && hlsInstance.audioTracks[trackIndex]) {
 		hlsInstance.audioTrack = parseInt(trackIndex);
@@ -567,11 +605,11 @@
 	  }
 	}
 	
-	// FUNCIÓN PARA CONMUTAR SUBTÍTULOS
+	// FUNCI脫N PARA CONMUTAR SUBT脥TULOS
 	function changeSubtitleTrack(trackIndex) {
 	  if (hlsInstance) {
 		hlsInstance.subtitleTrack = parseInt(trackIndex); // -1 lo desactiva
-		console.log(`[QoS] Subtítulo cambiado a: ${trackIndex}`);
+		console.log(`[QoS] Subt铆tulo cambiado a: ${trackIndex}`);
 	  }
 	}
 
@@ -596,14 +634,14 @@
 	  if (!select) return;
 	  select.innerHTML = '';
 
-	  // Extraer lista de países únicos desde allStreams
+	  // Extraer lista de pa铆ses 煤nicos desde allStreams
 	  const countries = [...new Set(allStreams.map(item => item.name).filter(Boolean))].sort();
 
 	  countries.forEach(country => {
 		const optgroup = document.createElement('optgroup');
-		optgroup.label = `📌 ${country}`;
+		optgroup.label = `馃搶 ${country}`;
 
-		// Obtener canales de este pa铆s
+		// Obtener canales de este pa閾唖
 		const countryChannels = allStreams.filter(s => s.name === country);
 		
 		countryChannels.forEach(s => {
@@ -622,7 +660,7 @@
 	  const timeValue = document.getElementById('scheduleTimeInput').value;
 
 	  if (!timeValue) {
-		alert("Por favor selecciona una hora válida.");
+		alert("Por favor selecciona una hora v谩lida.");
 		return;
 	  }
 
@@ -631,7 +669,7 @@
 	  const targetTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes, 0);
 
 	  if (targetTime <= now) {
-		alert("La hora seleccionada ya transcurrió hoy. Elige una hora futura.");
+		alert("La hora seleccionada ya transcurri贸 hoy. Elige una hora futura.");
 		return;
 	  }
 
@@ -644,7 +682,7 @@
 
 	  scheduledTimer = setTimeout(() => {
 		if (targetStream) {
-		  // Si hay un filtro activo que ocultaría el canal, reseteamos el filtro a ALL
+		  // Si hay un filtro activo que ocultar铆a el canal, reseteamos el filtro a ALL
 		  const countryFilter = document.getElementById('countryFilter');
 		  if (countryFilter && countryFilter.value !== 'ALL') {
 			countryFilter.value = 'ALL';
@@ -680,7 +718,7 @@
       } else if (videoElement.webkitShowPlaybackTargetPicker) {
         videoElement.webkitShowPlaybackTargetPicker();
       } else {
-        alert("Transmisión a Smart TV: Selecciona la opción 'Enviar/Cast' desde el menú de opciones de tu navegador web/app.");
+        alert("Transmisi贸n a Smart TV: Selecciona la opci贸n 'Enviar/Cast' desde el men煤 de opciones de tu navegador web/app.");
       }
     }
 
@@ -719,7 +757,7 @@
       renderStreams();
     }
 	
-	// CONTROL DE VISIBILIDAD DEL RELOJ (TECLA R, H / BOTÓN)
+	// CONTROL DE VISIBILIDAD DEL RELOJ (TECLA R, H / BOT脫N)
 	function toggleClockVisibility() {
 	  const clockBadge = document.getElementById('digitalClockBadge');
 	  clockBadge.classList.toggle('hidden');
@@ -741,28 +779,28 @@
 	  }
 	}
 	
-	// Llenar el combo desplegable con los países detectados en 'name'
+	// Llenar el combo desplegable con los pa铆ses detectados en 'name'
 	function populateCountryFilter(data) {
 	  const select = document.getElementById('countryFilter');
 	  if (!select) return;
-	  select.innerHTML = '<option value="ALL">🌍 Todos los Países (A-Z)</option>';
+	  select.innerHTML = '<option value="ALL">馃實 Todos los Pa铆ses (A-Z)</option>';
 	  
 	  const countries = [...new Set(data.map(item => item.name).filter(Boolean))].sort();
 	  
 	  countries.forEach(country => {
 		const opt = document.createElement('option');
 		opt.value = country;
-		opt.textContent = `📌 ${country}`;
+		opt.textContent = `馃搶 ${country}`;
 		select.appendChild(opt);
 	  });
 	}
 
-	// Filtrar canales por país + búsqueda de texto
+	// Filtrar canales por pa铆s + b煤squeda de texto
 	function filterStreams() {
 	  const selectedCountry = document.getElementById('countryFilter')?.value || 'ALL';
 	  const searchInput = (document.getElementById('searchInput')?.value || '').toLowerCase();
 	  
-	  // GUARDAR FILTRO DE PAÍS
+	  // GUARDAR FILTRO DE PA脥S
 	  localStorage.setItem('rpstv_last_country', selectedCountry);
 
 	  streams = allStreams.filter(stream => {
@@ -775,12 +813,12 @@
 	  renderStreams();
 	}
 
-	// Cargar video de barras/estática al detectar caída
-	// 1. FUNCIÓN UNIFICADA DE FALLO (ALERTA + CARTA DE AJUSTE)
+	// Cargar video de barras/est谩tica al detectar ca铆da
+	// 1. FUNCI脫N UNIFICADA DE FALLO (ALERTA + CARTA DE AJUSTE)
 	
 	function handleStreamError(hlsInstance) {
 	  if (typeof sendStreamAlert === 'function' && currentStream) {
-		sendStreamAlert(currentStream.location, "Señal Caída / Sin Respuesta", "Se activó la pantalla de estática por timeout o error HLS.");
+		sendStreamAlert(currentStream.location, "Se帽al Ca铆da / Sin Respuesta", "Se activ贸 la pantalla de est谩tica por timeout o error HLS.");
 	  }
 
 	  // 1. Destruir y limpiar la instancia de HLS
@@ -798,7 +836,7 @@
 	  video.removeAttribute('src'); // Remover fuente anterior rota
 	  video.load(); // Forzar reseteo del elemento video HTML5
 
-	  // 3. Asignar el nuevo archivo MP4 de estática
+	  // 3. Asignar el nuevo archivo MP4 de est谩tica
 	  video.src = FALLBACK_VIDEO_URL;
 	  video.loop = true;
 	  
@@ -808,10 +846,10 @@
 	  
 	  if (playPromise !== undefined) {
 		playPromise.catch(error => {
-		  console.warn("Autoplay bloqueado o interrupción de reproducción:", error);
-		  // Reintentar reproducción silenciada en caso de políticas del navegador/WebView
+		  console.warn("Autoplay bloqueado o interrupci贸n de reproducci贸n:", error);
+		  // Reintentar reproducci贸n silenciada en caso de pol铆ticas del navegador/WebView
 		  video.muted = true;
-		  video.play().catch(e => console.error("Error final al reproducir estática:", e));
+		  video.play().catch(e => console.error("Error final al reproducir est谩tica:", e));
 		});
 	  }
 	}
@@ -822,7 +860,7 @@
 
 	// CAPTURA UNIFICADA DE TECLADO (TODAS LAS TECLAS EN UN SOLO LUGAR)
 	document.addEventListener('keydown', (e) => {
-	  // Ignora si el usuario está escribiendo en el buscador o inputs
+	  // Ignora si el usuario est谩 escribiendo en el buscador o inputs
 	  if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
 
 	  if (['ArrowUp', 'w', 'W'].includes(e.key)) changeChannelRelative(-1);
@@ -832,6 +870,29 @@
 	  if (['f', 'F'].includes(e.key)) toggleFullscreenWithClock();
 	  if (['i', 'I'].includes(e.key)) togglePictureInPicture();
 	});
+	
+	// --- AUTO-UNMUTE AL PRIMER TOQUE ---
+	function enableAudioOnFirstInteraction() {
+	  if (videoElement) {
+		videoElement.muted = false; // Le devuelve el sonido
+		
+		// Si el AGC está activo, asegura su reanudación
+		if (audioCtx && audioCtx.state === 'suspended') {
+		  audioCtx.resume();
+		}
+		console.log("[QoS] Sonido activado tras interacción de usuario.");
+	  }
+	  
+	  // Remover los escuchadores para que solo se ejecute una sola vez
+	  window.removeEventListener('click', enableAudioOnFirstInteraction);
+	  window.removeEventListener('touchstart', enableAudioOnFirstInteraction);
+	  window.removeEventListener('keydown', enableAudioOnFirstInteraction);
+	}
+
+	// Escuchar la primera interacción en la pantalla
+	window.addEventListener('click', enableAudioOnFirstInteraction);
+	window.addEventListener('touchstart', enableAudioOnFirstInteraction);
+	window.addEventListener('keydown', enableAudioOnFirstInteraction);
 
     document.addEventListener('DOMContentLoaded', fetchStreams);
   </script>
