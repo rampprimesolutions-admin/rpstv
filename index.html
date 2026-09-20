@@ -1,27 +1,22 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RPSTV Streaming v2.3.4</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RPSTV Streaming VIP v2.3.4</title>
+
+  <!-- 1. PERMITIR PETICIONES MIXTAS Y RECURSOS NO SEGUROS -->
+  <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval' data: gap: content: blob:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'; media-src * blob: data: http: https:;">
+  
+  <!-- 2. NO RESTRINGIR REFERRER PARA EVITAR BLOQUEOS 403 EN CANALES -->
+  <meta name="referrer" content="no-referrer">
+
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- HLS.js -->
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-	<style>
-	  /* Elimina bordes y redondeo sólo cuando playerContainer está en Fullscreen */
-	  #playerContainer:fullscreen {
-		border: none !important;
-		border-radius: 0 !important;
-		width: 100vw !important;
-		height: 100vh !important;
-	  }
-	  #playerContainer:-webkit-full-screen {
-		border: none !important;
-		border-radius: 0 !important;
-		width: 100vw !important;
-		height: 100vh !important;
-	  }
-	</style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
 
@@ -336,30 +331,7 @@
 	let audioSource = null;
 
 	function initAudioNormalization() {
-	  if (audioCtx) return; 
-
-	  try {
-		const AudioContext = window.AudioContext || window.webkitAudioContext;
-		audioCtx = new AudioContext();
-
-		// Permite procesar audio de servidores externos en WebView
-		videoElement.crossOrigin = "anonymous";
-
-		compressor = audioCtx.createDynamicsCompressor();
-		compressor.threshold.setValueAtTime(-24, audioCtx.currentTime);
-		compressor.knee.setValueAtTime(30, audioCtx.currentTime);
-		compressor.ratio.setValueAtTime(12, audioCtx.currentTime);
-		compressor.attack.setValueAtTime(0.003, audioCtx.currentTime);
-		compressor.release.setValueAtTime(0.25, audioCtx.currentTime);
-
-		audioSource = audioCtx.createMediaElementSource(videoElement);
-		audioSource.connect(compressor);
-		compressor.connect(audioCtx.destination);
-		
-		console.log("[QoS] Normalizador de Volumen (AGC) conectado correctamente.");
-	  } catch (e) {
-		console.warn("[QoS] AGC no disponible para este stream (Restricción CORS/WebView):", e);
-	  }
+	  return
 	}
 
 	// Reactivación automática del contexto tras políticas de autoplay
