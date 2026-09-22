@@ -758,8 +758,7 @@
 	window.addEventListener('touchstart', enableAudioOnFirstInteraction);
 	window.addEventListener('keydown', enableAudioOnFirstInteraction);
 
-	// --- MÓDULO DE GESTOS TÁCTILES EN EL VISOR (SWIPE & DOBLE TAP) ---
-	const playerContainer = document.getElementById('playerContainer');
+	// --- MÓDULO DE GESTOS TÁCTILES EN EL VIDEO (SWIPE & DOBLE TAP) ---
 	let touchStartX = 0;
 	let touchStartY = 0;
 	let touchStartTime = 0;
@@ -775,63 +774,65 @@
 
 	  icon.setAttribute('data-lucide', iconName);
 	  label.textContent = text;
-	  lucide.createIcons();
+	  if (typeof lucide !== 'undefined') lucide.createIcons();
 
 	  osd.classList.remove('hidden');
 	  if (osdTimeout) clearTimeout(osdTimeout);
 	  osdTimeout = setTimeout(() => osd.classList.add('hidden'), 1200);
 	}
 
-	playerContainer.addEventListener('touchstart', function (e) {
-	  if (e.touches.length === 1) {
-		touchStartX = e.touches[0].clientX;
-		touchStartY = e.touches[0].clientY;
-		touchStartTime = new Date().getTime();
-	  }
-	}, { passive: true });
+	// Asignamos el oyente DIRECTAMENTE al elemento de video
+	if (videoElement) {
+	  videoElement.addEventListener('touchstart', function (e) {
+		if (e.touches.length === 1) {
+		  touchStartX = e.touches[0].clientX;
+		  touchStartY = e.touches[0].clientY;
+		  touchStartTime = new Date().getTime();
+		}
+	  }, { passive: true });
 
-	playerContainer.addEventListener('touchend', function (e) {
-	  if (e.changedTouches.length !== 1) return;
+	  videoElement.addEventListener('touchend', function (e) {
+		if (e.changedTouches.length !== 1) return;
 
-	  const touchEndX = e.changedTouches[0].clientX;
-	  const touchEndY = e.changedTouches[0].clientY;
-	  const diffX = touchEndX - touchStartX;
-	  const diffY = touchEndY - touchStartY;
-	  const duration = new Date().getTime() - touchStartTime;
+		const touchEndX = e.changedTouches[0].clientX;
+		const touchEndY = e.changedTouches[0].clientY;
+		const diffX = touchEndX - touchStartX;
+		const diffY = touchEndY - touchStartY;
+		const duration = new Date().getTime() - touchStartTime;
 
-	  const rect = playerContainer.getBoundingClientRect();
-	  const isLeftSide = (touchStartX - rect.left) < (rect.width / 2);
+		const rect = videoElement.getBoundingClientRect();
+		const isLeftSide = (touchStartX - rect.left) < (rect.width / 2);
 
-	  // 1. Detección de Gestos por Deslizamiento (Swipe)
-	  if (Math.abs(diffY) > 40 && Math.abs(diffY) > Math.abs(diffX) && duration < 500) {
-		if (isLeftSide) {
-		  // LADO IZQUIERDO: Control de Volumen (Arriba: +Volumen / Abajo: -Volumen)
-		  let newVol = videoElement.volume + (diffY < 0 ? 0.1 : -0.1);
-		  newVol = Math.max(0, Math.min(1, newVol));
-		  videoElement.volume = newVol;
-		  const volPercent = Math.round(newVol * 100);
-		  showOsd(newVol === 0 ? 'volume-x' : 'volume-2', `Volumen: ${volPercent}%`);
-		} else {
-		  // LADO DERECHO: Cambio de Canal (Arriba: Sig. / Abajo: Ant.)
-		  if (diffY < 0) {
-			changeChannelRelative(1);
-			showOsd('chevron-right', 'Canal Siguiente');
+		// 1. Detección de Deslizamiento Vertical (Swipe arriba/abajo > 30px)
+		if (Math.abs(diffY) > 30 && Math.abs(diffY) > Math.abs(diffX) && duration < 600) {
+		  if (isLeftSide) {
+			// Lado Izquierdo: Volumen
+			let newVol = videoElement.volume + (diffY < 0 ? 0.1 : -0.1);
+			newVol = Math.max(0, Math.min(1, newVol));
+			videoElement.volume = newVol;
+			const volPercent = Math.round(newVol * 100);
+			showOsd(newVol === 0 ? 'volume-x' : 'volume-2', `Volumen: ${volPercent}%`);
 		  } else {
-			changeChannelRelative(-1);
-			showOsd('chevron-left', 'Canal Anterior');
+			// Lado Derecho: Cambiar Canal
+			if (diffY < 0) {
+			  changeChannelRelative(1);
+			  showOsd('chevron-right', 'Canal Siguiente');
+			} else {
+			  changeChannelRelative(-1);
+			  showOsd('chevron-left', 'Canal Anterior');
+			}
 		  }
 		}
-	  }
 
-	  // 2. Detección de Doble Tap para Pantalla Completa
-	  const currentTime = new Date().getTime();
-	  const tapLength = currentTime - lastTapTime;
-	  if (tapLength < 300 && tapLength > 0 && Math.abs(diffX) < 10 && Math.abs(diffY) < 10) {
-		e.preventDefault();
-		toggleFullscreenWithClock();
-	  }
-	  lastTapTime = currentTime;
-	});
+		// 2. Doble Tap para Pantalla Completa
+		const currentTime = new Date().getTime();
+		const tapLength = currentTime - lastTapTime;
+		if (tapLength < 300 && tapLength > 0 && Math.abs(diffX) < 15 && Math.abs(diffY) < 15) {
+		  toggleFullscreenWithClock();
+		}
+		lastTapTime = currentTime;
+	  });
+	}
 
     document.addEventListener('DOMContentLoaded', fetchStreams);
   </script>
