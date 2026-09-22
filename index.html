@@ -5,20 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RPSTV Streaming VIP v2.3.4</title>
 
-  <!-- 1. PERMITIR PETICIONES MIXTAS Y RECURSOS NO SEGUROS -->
+  <!-- PERMITIR PETICIONES MIXTAS Y RECURSOS NO SEGUROS -->
   <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval' data: gap: content: blob:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'; media-src * blob: data: http: https:;">
-  
-  <!-- 2. NO RESTRINGIR REFERRER PARA EVITAR BLOQUEOS 403 EN CANALES -->
   <meta name="referrer" content="no-referrer">
+  
+  <style>
+    /* Quita bordes redondeados al estar en Pantalla Completa */
+    #playerContainer:fullscreen,
+    #playerContainer:-webkit-full-screen {
+  	  border-radius: 0 !important;
+	  border: none !important;
+    }
+  </style>
 
-  <!-- Tailwind CSS -->
+  <!-- CDNs -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- HLS.js -->
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans select-none">
 
   <!-- ENCABEZADO -->
   <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
@@ -29,7 +34,7 @@
         </div>
         <div>
           <h1 class="text-lg font-bold tracking-tight text-amber-400">RPSTV Streaming v2.3.4</h1>
-          <p class="text-xs text-slate-400">Experiencia VIP en Streaming y TV en vivo</p>
+          <p class="text-xs text-slate-400">Experiencia VIP en Streaming y TV en VIVO</p>
         </div>
       </div>
       
@@ -59,13 +64,19 @@
 	<section class="lg:col-span-2">
 	  <div class="sticky top-20 space-y-4">
 		
-		<!-- CONTENEDOR PRINCIPAL CON EL ID CORRECTO -->
-		<div id="playerContainer" class="relative w-full aspect-video bg-black rounded-2xl overflow-hidden border border-slate-800 shadow-2xl flex items-center justify-center">
+		<!-- CONTENEDOR PRINCIPAL -->
+		<div id="playerContainer" class="relative w-full aspect-video bg-black rounded-2xl overflow-hidden border border-slate-800 shadow-2xl flex items-center justify-center touch-none">
 		  
 		  <!-- Reloj Digital (Superior Izquierda) -->
 		  <div id="digitalClockBadge" class="absolute top-3 left-3 z-30 bg-slate-950/80 backdrop-blur-md border border-slate-800 px-3 py-1.5 rounded-xl text-amber-400 font-mono text-xs tracking-wider shadow-xl flex items-center gap-2 pointer-events-none transition-opacity duration-300">
 			<i data-lucide="clock" class="w-3.5 h-3.5 text-amber-400"></i>
 			<span id="digitalClock">00:00:00</span>
+		  </div>
+
+		  <!-- OSD / Feedback Visual de Gestos Táctiles -->
+		  <div id="gestureOsd" class="hidden absolute z-40 bg-slate-950/85 text-amber-400 px-4 py-2 rounded-2xl font-bold text-sm tracking-wide shadow-2xl backdrop-blur border border-amber-500/30 flex items-center gap-2 pointer-events-none transition-all duration-200">
+			<i id="gestureOsdIcon" data-lucide="volume-2" class="w-5 h-5"></i>
+			<span id="gestureOsdText">--</span>
 		  </div>
 
 		  <!-- Banner de Notificación del Programador -->
@@ -74,10 +85,10 @@
 			<span id="schedulerNoticeText">Cambio programado activo</span>
 		  </div>
 
-		  <video id="hlsPlayer" controls autoplay muted playsinline class="w-full h-full object-contain"></video>
+		  <video id="hlsPlayer" controls autoplay muted playsinline class="w-full h-full object-contain pointer-events-auto"></video>
 		</div>
 		
-		<!-- CONTROLES INFERIORES CON SELECTOR DE AUDIO -->
+		<!-- CONTROLES INFERIORES -->
 		<div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
 		  <button onclick="changeChannelRelative(-1)" class="flex items-center justify-center gap-1 bg-slate-900 hover:bg-slate-800 border border-slate-800 py-2 rounded-xl text-xs font-semibold text-slate-300 transition">
 			<i data-lucide="chevron-left" class="w-4 h-4"></i> Canal Ant.
@@ -93,7 +104,7 @@
 		  </button>
 		</div>
 
-		<!-- SELECTOR DINÁMICO DE PISTAS DE AUDIO (UBICACIÓN CORRECTA) -->
+		<!-- SELECTOR DINÁMICO DE PISTAS DE AUDIO -->
 		<div id="audioTrackContainer" class="hidden flex items-center justify-between bg-slate-900/90 border border-amber-500/30 px-3 py-2 rounded-xl">
 		  <div class="flex items-center gap-2">
 			<i data-lucide="volume-2" class="w-4 h-4 text-amber-400 animate-pulse"></i>
@@ -141,7 +152,7 @@
           <span id="channelCount" class="text-xs font-semibold text-amber-400/90 bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/20">0 canales</span>
         </div>
 
-        <!-- BUSCADOR DE CANALES EN TIEMPO REAL -->
+        <!-- BUSCADOR EN TIEMPO REAL -->
         <div class="relative">
           <i data-lucide="search" class="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2"></i>
           <input type="text" id="searchInput" oninput="handleSearch()" placeholder="Buscar canal por nombre..." class="w-full bg-slate-900 border border-slate-800 rounded-xl pl-9 pr-8 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500/50 transition" />
@@ -150,7 +161,7 @@
           </button>
         </div>
 		
-		<!-- FILTRO POR PAÍS / CATEGORÍA (Colocar junto al buscador) -->
+		<!-- FILTRO POR PAÍS -->
 		<div class="mb-3">
 		  <select id="countryFilter" onchange="filterStreams()" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs font-semibold text-slate-300 focus:outline-none focus:border-amber-400">
 			<option value="ALL">🌎 Todos los Países (A-Z)</option>
@@ -196,6 +207,7 @@
     const REPORT_WEBHOOK_URL = "https://discordapp.com/api/webhooks/1545153044843462766/Ksj7pXq78kwQNrQTUEPzVRRfiq0PymD2VoZZPixFYTqXPTFmbbTmt7BqIafa93oTWG33";
 
     let streams = [];
+    let allStreams = [];
     let hlsInstance = null;
     let currentStream = null;
     let previousStreamId = null;
@@ -207,9 +219,7 @@
 
     let favorites = JSON.parse(localStorage.getItem('rpstv_favorites')) || [];
     const videoElement = document.getElementById('hlsPlayer');
-	
-	let allStreams = []; // Guarda la lista completa sin filtrar
-	const FALLBACK_VIDEO_URL = "https://cdn.jsdelivr.net/gh/rampprimesolutions-admin/rpstv@main/estatica.mp4";
+    const FALLBACK_VIDEO_URL = "https://cdn.jsdelivr.net/gh/rampprimesolutions-admin/rpstv@main/estatica.mp4";
 
     // RELOJ EN TIEMPO REAL
     function updateClock() {
@@ -231,10 +241,7 @@
     }
 
     function sendStreamAlert(channelName, errorType, details) {
-      if (!REPORT_WEBHOOK_URL || REPORT_WEBHOOK_URL.includes("TU_WEBHOOK_AQUI")) {
-        console.warn("[Telemetría] URL de Webhook no configurada.");
-        return;
-      }
+      if (!REPORT_WEBHOOK_URL || REPORT_WEBHOOK_URL.includes("TU_WEBHOOK_AQUI")) return;
 
       const reportKey = `${channelName}_${errorType}`;
       if (reportedChannels.has(reportKey)) return;
@@ -258,14 +265,10 @@
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
-      })
-      .then(res => {
-        if (res.ok) console.log("[Telemetría] Alerta enviada con éxito a Discord.");
-      })
-      .catch(err => console.error("[Telemetría] Error de red al enviar a Discord:", err));
+      }).catch(err => console.error("[Telemetría] Error de red:", err));
     }
     
-	// 1. CARGA DE CANALES CON ORDENAMIENTO ALFABÉTICO (A-Z) Y AUTORRESTAURACIÓN
+	// CARGA DE CANALES
 	async function fetchStreams() {
 	  const gistRawUrl = 'https://gist.githubusercontent.com/rampprimesolutions-admin/7c2e780742d4285ce388cd18ceacb227/raw/channels.json?v=' + new Date().getTime();
 	  
@@ -274,7 +277,6 @@
 		const data = await response.json();
 		let rawStreams = Array.isArray(data) ? data : (data.channels || []);
 		
-		// Guardar y ordenar alfabéticamente A-Z por location
 		allStreams = rawStreams.sort((a, b) => {
 		  const nameA = (a.location || '').toLowerCase();
 		  const nameB = (b.location || '').toLowerCase();
@@ -283,17 +285,14 @@
 
 		populateCountryFilter(allStreams);
 		
-		// Restaurar el filtro guardado previamente
 		const savedCountry = localStorage.getItem('rpstv_last_country');
 		const countrySelect = document.getElementById('countryFilter');
 		if (savedCountry && countrySelect) {
 		  countrySelect.value = savedCountry;
 		}
 		
-		// PRIMERO: Aplicar el filtro para llenar el array 'streams'
 		filterStreams();
 
-		// SEGUNDO: Seleccionar el canal activo desde el array filtrado/maestro
 		const savedChannelId = localStorage.getItem('rpstv_last_channel');
 		const targetChannel = streams.find(s => s.id == savedChannelId) || allStreams.find(s => s.id == savedChannelId);
 
@@ -312,59 +311,23 @@
 	  populateScheduleSelect();
 	}
 	
-	// FORZAR MODO IMAGEN EN IMAGEN (PiP)
-	async function togglePictureInPicture() {
-	  try {
-		if (document.pictureInPictureElement) {
-		  await document.exitPictureInPicture();
-		} else if (document.pictureInPictureEnabled) {
-		  await videoElement.requestPictureInPicture();
-		}
-	  } catch (error) {
-		console.error("Error al activar Picture-in-Picture:", error);
-	  }
-	}
-
-	// --- MÓDULO AGC BLINDADO CONTRA CORS (v2.3.4) ---
-	let audioCtx = null;
-	let compressor = null;
-	let audioSource = null;
-
-	function initAudioNormalization() {
-	  return
-	}
-
-	// Reactivación automática del contexto tras políticas de autoplay
-	videoElement.addEventListener('play', () => {
-	  initAudioNormalization();
-	  if (audioCtx && audioCtx.state === 'suspended') {
-		audioCtx.resume();
-	  }
-	});
-
 	let connectionWatchdog = null;
 	
 	function loadHlsStream(url) {
-	  // Limpiar temporizadores activos anteriores
 	  if (bufferCheckTimer) clearTimeout(bufferCheckTimer);
 	  if (connectionWatchdog) clearTimeout(connectionWatchdog);
 
-	  // 1. Validación inicial de URL vacía o inválida
 	  if (!url || url.trim() === "" || !url.startsWith("http")) {
-		console.warn("[QoS] URL inválida o vacía. Activando señal de estética...");
 		handleStreamError(hlsInstance);
 		return;
 	  }
 
-	  // 2. TIMEOUT DE SEGURIDAD (12 Segundos)
 	  connectionWatchdog = setTimeout(() => {
 		if (videoElement.currentTime === 0 || videoElement.readyState < 2) {
-		  console.warn("[QoS] Timeout estricto de conexión (12s sin reproducción). Activando estática...");
 		  handleStreamError(hlsInstance);
 		}
 	  }, 12000);
 
-	  // 3. Inicialización HLS Segura
 	  if (Hls.isSupported()) {
 		if (hlsInstance) {
 		  try { 
@@ -374,16 +337,12 @@
 		  hlsInstance = null;
 		}
 		
-		// Crear la nueva instancia
 		const newHls = new Hls({ enableWorker: true, lowLatencyMode: true });
 		hlsInstance = newHls;
 		
-		// Cargar fuente y adjuntar video
 		newHls.loadSource(url);
 		newHls.attachMedia(videoElement);
 
-		// Evento de Detección de Audio y
-		// Función interna para actualizar el selector de audio
 		const updateAudioTracksUI = () => {
 		  const audioTracks = newHls.audioTracks;
 		  const container = document.getElementById('audioTrackContainer');
@@ -395,7 +354,6 @@
 			  audioTracks.forEach((track, index) => {
 				const opt = document.createElement('option');
 				opt.value = index;
-				// Extraer nombre, idioma o etiquetar por defecto
 				const langName = track.name || track.lang || `Pista ${index + 1}`;
 				opt.textContent = `${index + 1}. ${langName.toUpperCase()}`;
 				if (index === newHls.audioTrack) opt.selected = true;
@@ -411,11 +369,9 @@
 		  }
 		};
 
-		// Escuchar ambos eventos de detección de audio
 		newHls.on(Hls.Events.MANIFEST_PARSED, updateAudioTracksUI);
 		newHls.on(Hls.Events.AUDIO_TRACKS_UPDATED, updateAudioTracksUI);
 		
-		// Función interna para actualizar el selector de subtítulos
 		const updateSubtitlesUI = () => {
 		  const tracks = newHls.subtitleTracks;
 		  const container = document.getElementById('subtitleTrackContainer');
@@ -442,11 +398,9 @@
 		  }
 		};
 
-		// Escuchar eventos de subtítulos
 		newHls.on(Hls.Events.MANIFEST_PARSED, updateSubtitlesUI);
 		newHls.on(Hls.Events.SUBTITLE_TRACKS_UPDATED, updateSubtitlesUI);
 
-		// Manejo de Errores Fatales
 		newHls.on(Hls.Events.ERROR, (event, data) => {
 		  if (data.fatal) {
 			if (data.type === Hls.ErrorTypes.NETWORK_ERROR || data.type === Hls.ErrorTypes.MEDIA_ERROR) {
@@ -461,7 +415,6 @@
 	  }
 	}
 
-	// Cancelar el Watchdog en cuanto el video empiece a reproducir
 	videoElement.addEventListener('playing', () => {
 	  if (connectionWatchdog) clearTimeout(connectionWatchdog);
 	  if (bufferCheckTimer) clearTimeout(bufferCheckTimer);
@@ -479,7 +432,6 @@
         document.getElementById('preChannelBtn').disabled = false;
       }
 
-      // Buscar en ambas listas para evitar fallos
       let target = streams.find(s => s.id === id) || allStreams.find(s => s.id === id);
       if (!target) return;
 
@@ -487,7 +439,6 @@
       streams.forEach(s => s.active = (s.id === id));
       allStreams.forEach(s => s.active = (s.id === id));
       
-	  // Guardar inmediatamente el canal actual para persistencia
 	  localStorage.setItem('rpstv_last_channel', currentStream.id);
 	  
       document.getElementById('activeCategory').textContent = currentStream.location || '';
@@ -506,7 +457,6 @@
       renderStreams();
     }
 
-    // RENDERIZADO CON BUSCADOR Y CONTADOR DINÁMICO
     function renderStreams() {
       const container = document.getElementById('streamList');
       container.innerHTML = '';
@@ -521,7 +471,6 @@
         );
       }
 
-      // Actualizacion del contador inteligente
       const countLabel = showingOnlyFavorites ? `${filtered.length} favoritos` : `${filtered.length} canales`;
       document.getElementById('channelCount').textContent = countLabel;
 
@@ -563,7 +512,6 @@
       lucide.createIcons();
     }
 
-    // FUNCIONES DEL BUSCADOR
     function handleSearch() {
       const input = document.getElementById('searchInput');
       searchQuery = input.value;
@@ -571,19 +519,15 @@
       renderStreams();
     }
 	
-	// SELECCIÓN DEL CANAL DE AUDIO
 	function changeAudioTrack(trackIndex) {
 	  if (hlsInstance && hlsInstance.audioTracks[trackIndex]) {
 		hlsInstance.audioTrack = parseInt(trackIndex);
-		console.log(`[QoS] Pista de audio cambiada a: ${trackIndex}`);
 	  }
 	}
 	
-	// FUNCIÓN PARA CONMUTAR SUBTÍTULOS
 	function changeSubtitleTrack(trackIndex) {
 	  if (hlsInstance) {
-		hlsInstance.subtitleTrack = parseInt(trackIndex); // -1 lo desactiva
-		console.log(`[QoS] Subt铆tulo cambiado a: ${trackIndex}`);
+		hlsInstance.subtitleTrack = parseInt(trackIndex);
 	  }
 	}
 
@@ -594,7 +538,6 @@
       renderStreams();
     }
 
-    // PROGRAMADOR DE CANALES (AUTO-SWITCH)
     function openScheduleModal() {
       document.getElementById('scheduleModal').classList.remove('hidden');
     }
@@ -608,23 +551,18 @@
 	  if (!select) return;
 	  select.innerHTML = '';
 
-	  // Extraer lista de países únicos desde allStreams
 	  const countries = [...new Set(allStreams.map(item => item.name).filter(Boolean))].sort();
 
 	  countries.forEach(country => {
 		const optgroup = document.createElement('optgroup');
 		optgroup.label = `📌 ${country}`;
-
-		// Obtener canales de este país
 		const countryChannels = allStreams.filter(s => s.name === country);
-		
 		countryChannels.forEach(s => {
 		  const opt = document.createElement('option');
 		  opt.value = s.id;
 		  opt.textContent = `${s.location}`;
 		  optgroup.appendChild(opt);
 		});
-
 		select.appendChild(optgroup);
 	  });
 	}
@@ -633,36 +571,26 @@
 	  const channelId = parseInt(document.getElementById('scheduleChannelSelect').value);
 	  const timeValue = document.getElementById('scheduleTimeInput').value;
 
-	  if (!timeValue) {
-		alert("Por favor selecciona una hora válida.");
-		return;
-	  }
+	  if (!timeValue) return alert("Selecciona una hora válida.");
 
 	  const [hours, minutes] = timeValue.split(':').map(Number);
 	  const now = new Date();
 	  const targetTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes, 0);
 
-	  if (targetTime <= now) {
-		alert("La hora seleccionada ya transcurrió HOY. Elige una hora futura.");
-		return;
-	  }
+	  if (targetTime <= now) return alert("Selecciona una hora futura.");
 
 	  const msToWait = targetTime - now;
-
 	  if (scheduledTimer) clearTimeout(scheduledTimer);
 
-	  // Buscar siempre en el arreglo maestro allStreams
 	  const targetStream = allStreams.find(s => s.id === channelId);
 
 	  scheduledTimer = setTimeout(() => {
 		if (targetStream) {
-		  // Si hay un filtro activo que ocultaría el canal, reseteamos el filtro a ALL
 		  const countryFilter = document.getElementById('countryFilter');
 		  if (countryFilter && countryFilter.value !== 'ALL') {
 			countryFilter.value = 'ALL';
 			filterStreams();
 		  }
-		  
 		  selectStream(targetStream.id);
 		  showScheduleNotice(`Auto-Switch ejecutado: ${targetStream.location}`);
 		  setTimeout(hideScheduleNotice, 8000);
@@ -692,14 +620,14 @@
       } else if (videoElement.webkitShowPlaybackTargetPicker) {
         videoElement.webkitShowPlaybackTargetPicker();
       } else {
-        alert("Transmisión a Smart TV: Selecciona la opci贸n 'Enviar/Cast' desde el menú de opciones de tu navegador web/app.");
+        alert("Transmisión a Smart TV: Usa la opción 'Enviar/Cast' del menú de tu navegador o WebView.");
       }
     }
 
     function changeChannelRelative(offset) {
       const list = showingOnlyFavorites ? streams.filter(s => favorites.includes(s.id)) : streams;
       if (list.length === 0) return;
-      const currentIndex = list.findIndex(s => s.id === currentStream.id);
+      const currentIndex = list.findIndex(s => s.id === currentStream?.id);
       let newIndex = (currentIndex + offset + list.length) % list.length;
       selectStream(list[newIndex].id);
     }
@@ -730,37 +658,27 @@
       document.getElementById('listTitle').textContent = showingOnlyFavorites ? 'Canales Favoritos' : 'Lista de Canales';
       renderStreams();
     }
-	
-	// CONTROL DE VISIBILIDAD DEL RELOJ (TECLA R, H / BOTÓN)
+
 	function toggleClockVisibility() {
-	  const clockBadge = document.getElementById('digitalClockBadge');
-	  clockBadge.classList.toggle('hidden');
+	  document.getElementById('digitalClockBadge').classList.toggle('hidden');
 	}
 
-	// ACTIVAR PANTALLA COMPLETA CON RELOJ EN PANTALLA (TECLA 'F' O DOBLE CLIC)
 	function toggleFullscreenWithClock() {
 	  const container = document.getElementById('playerContainer');
 	  if (!document.fullscreenElement) {
-		if (container.requestFullscreen) {
-		  container.requestFullscreen();
-		} else if (container.webkitRequestFullscreen) {
-		  container.webkitRequestFullscreen();
-		}
+		if (container.requestFullscreen) container.requestFullscreen();
+		else if (container.webkitRequestFullscreen) container.webkitRequestFullscreen();
 	  } else {
-		if (document.exitFullscreen) {
-		  document.exitFullscreen();
-		}
+		if (document.exitFullscreen) document.exitFullscreen();
 	  }
 	}
 	
-	// Llenar el combo desplegable con los países detectados en 'name'
 	function populateCountryFilter(data) {
 	  const select = document.getElementById('countryFilter');
 	  if (!select) return;
 	  select.innerHTML = '<option value="ALL">🌍 Todos los países (A-Z)</option>';
 	  
 	  const countries = [...new Set(data.map(item => item.name).filter(Boolean))].sort();
-	  
 	  countries.forEach(country => {
 		const opt = document.createElement('option');
 		opt.value = country;
@@ -769,12 +687,10 @@
 	  });
 	}
 
-	// Filtrar canales por país + búsqueda de texto
 	function filterStreams() {
 	  const selectedCountry = document.getElementById('countryFilter')?.value || 'ALL';
 	  const searchInput = (document.getElementById('searchInput')?.value || '').toLowerCase();
 	  
-	  // GUARDAR FILTRO DE PAÍS
 	  localStorage.setItem('rpstv_last_country', selectedCountry);
 
 	  streams = allStreams.filter(stream => {
@@ -787,15 +703,11 @@
 	  renderStreams();
 	}
 
-	// Cargar video de barras/estática al detectar caída
-	// 1. FUNCIÓN UNIFICADA DE FALLO (ALERTA + CARTA DE AJUSTE)
-	
 	function handleStreamError(hlsInstance) {
 	  if (typeof sendStreamAlert === 'function' && currentStream) {
-		sendStreamAlert(currentStream.location, "Señal Caída / Sin Respuesta", "Se activó la pantalla de estática por timeout o error HLS.");
+		sendStreamAlert(currentStream.location, "Señal Caída", "Activación de estática por error HLS/Timeout.");
 	  }
 
-	  // 1. Destruir y limpiar la instancia de HLS
 	  if (hlsInstance) {
 		try {
 		  hlsInstance.detachMedia();
@@ -804,124 +716,122 @@
 	  }
 	  
 	  const video = document.getElementById('hlsPlayer');
-	  
-	  // 2. Limpieza profunda del reproductor
 	  video.pause();
-	  video.removeAttribute('src'); // Remover fuente anterior rota
-	  video.load(); // Forzar reseteo del elemento video HTML5
+	  video.removeAttribute('src');
+	  video.load();
 
-	  // 3. Asignar el nuevo archivo MP4 de estática
 	  video.src = FALLBACK_VIDEO_URL;
 	  video.loop = true;
-	  
-	  // 4. Cargar y reproducir con manejo de promesa
 	  video.load();
-	  const playPromise = video.play();
 	  
+	  const playPromise = video.play();
 	  if (playPromise !== undefined) {
-		playPromise.catch(error => {
-		  console.warn("Autoplay bloqueado o interrupci贸n de reproducción:", error);
-		  // Reintentar reproducción silenciada en caso de políticas del navegador/WebView
+		playPromise.catch(() => {
 		  video.muted = true;
-		  video.play().catch(e => console.error("Error final al reproducir estática:", e));
+		  video.play().catch(e => console.error("Error reproduciendo estática:", e));
 		});
 	  }
 	}
 
-	videoElement.addEventListener('playing', () => {
-	  if (bufferCheckTimer) clearTimeout(bufferCheckTimer);
-	});
-
-	// CAPTURA UNIFICADA DE TECLADO (TODAS LAS TECLAS EN UN SOLO LUGAR)
-	//document.addEventListener('keydown', (e) => {
-	//  // Ignora si el usuario está escribiendo en el buscador o inputs
-	//  if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
-
-	//  if (['ArrowUp', 'w', 'W'].includes(e.key)) changeChannelRelative(-1);
-	//  if (['ArrowDown', 's', 'S'].includes(e.key)) changeChannelRelative(1);
-	//  if (['p', 'P', 'Backspace'].includes(e.key)) goToPreviousChannel();
-	//  if (['r', 'R', 'h', 'H'].includes(e.key)) toggleClockVisibility();
-	//  if (['f', 'F'].includes(e.key)) toggleFullscreenWithClock();
-	//  if (['i', 'I'].includes(e.key)) togglePictureInPicture();
-	//});
-	
-	// --- ATAJOS DE TECLADO GLOBAL (SOLO PARA LAPTOP / PC) ---
+	// --- ATAJOS DE TECLADO GLOBAL ---
 	document.addEventListener('keydown', function (e) {
-	  // Ignorar si el usuario está escribiendo en un input o buscador
-	  if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) {
-		return;
-	  }
-
+	  if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
 	  const key = e.key.toUpperCase();
-
 	  switch (key) {
-		case 'F': // Pantalla completa
-		  if (typeof toggleFullscreenWithClock === 'function') toggleFullscreenWithClock();
-		  break;
-		case 'R': // Reloj (Mostrar/Ocultar)
-		  if (typeof toggleClockVisibility === 'function') toggleClockVisibility();
-		  break;
-		case 'W': // Pre-Canal
-		  if (typeof goToPreviousChannel === 'function') goToPreviousChannel();
-		  break;
-		case 'S': // Canal Siguiente
-		  if (typeof changeChannelRelative === 'function') changeChannelRelative(1);
-		  break;
-		case 'P': // Canal Anterior
-		  if (typeof changeChannelRelative === 'function') changeChannelRelative(-1);
-		  break;
-		case 'I': // Información / Modal
-		  if (typeof openScheduleModal === 'function') openScheduleModal();
-		  break;
+		case 'F': toggleFullscreenWithClock(); break;
+		case 'R': toggleClockVisibility(); break;
+		case 'W': goToPreviousChannel(); break;
+		case 'S': changeChannelRelative(1); break;
+		case 'P': changeChannelRelative(-1); break;
+		case 'I': openScheduleModal(); break;
 	  }
 	});
-	
+
 	// --- AUTO-UNMUTE AL PRIMER TOQUE ---
 	function enableAudioOnFirstInteraction() {
-	  if (videoElement) {
-		videoElement.muted = false; // Le devuelve el sonido
-		
-		// Si el AGC está activo, asegura su reanudación
-		if (audioCtx && audioCtx.state === 'suspended') {
-		  audioCtx.resume();
-		}
-		console.log("[QoS] Sonido activado tras interacción de usuario.");
-	  }
-	  
-	  // Remover los escuchadores para que solo se ejecute una sola vez
+	  if (videoElement) videoElement.muted = false;
 	  window.removeEventListener('click', enableAudioOnFirstInteraction);
 	  window.removeEventListener('touchstart', enableAudioOnFirstInteraction);
 	  window.removeEventListener('keydown', enableAudioOnFirstInteraction);
 	}
-
-	// Escuchar la primera interacción en la pantalla
 	window.addEventListener('click', enableAudioOnFirstInteraction);
 	window.addEventListener('touchstart', enableAudioOnFirstInteraction);
 	window.addEventListener('keydown', enableAudioOnFirstInteraction);
-	
-	// --- GESTOS TÁCTILES PARA MÓVIL (DOBLE TAP -> FULLSCREEN) ---
+
+	// --- MÓDULO DE GESTOS TÁCTILES EN EL VISOR (SWIPE & DOBLE TAP) ---
+	const playerContainer = document.getElementById('playerContainer');
+	let touchStartX = 0;
+	let touchStartY = 0;
+	let touchStartTime = 0;
 	let lastTapTime = 0;
+	let osdTimeout = null;
 
-	if (videoElement) {
-	  videoElement.addEventListener('touchend', function (e) {
-		const currentTime = new Date().getTime();
-		const tapLength = currentTime - lastTapTime;
+	function showOsd(iconName, text) {
+	  const osd = document.getElementById('gestureOsd');
+	  const icon = document.getElementById('gestureOsdIcon');
+	  const label = document.getElementById('gestureOsdText');
 
-		// Detectar si la diferencia entre toques es menor a 300ms (Doble Tap)
-		if (tapLength < 300 && tapLength > 0) {
-		  e.preventDefault(); // Evita el zoom por defecto del navegador
-		  
-		  // Ejecuta la función de Fullscreen existente
-		  if (typeof toggleFullscreenWithClock === 'function') {
-			toggleFullscreenWithClock();
-		  } else if (typeof toggleFullscreen === 'function') {
-			toggleFullscreen();
-		  }
-		  console.log("[QoS] Pantalla completa alternada por Doble Tap.");
-		}
-		lastTapTime = currentTime;
-	  });
+	  if (!osd || !icon || !label) return;
+
+	  icon.setAttribute('data-lucide', iconName);
+	  label.textContent = text;
+	  lucide.createIcons();
+
+	  osd.classList.remove('hidden');
+	  if (osdTimeout) clearTimeout(osdTimeout);
+	  osdTimeout = setTimeout(() => osd.classList.add('hidden'), 1200);
 	}
+
+	playerContainer.addEventListener('touchstart', function (e) {
+	  if (e.touches.length === 1) {
+		touchStartX = e.touches[0].clientX;
+		touchStartY = e.touches[0].clientY;
+		touchStartTime = new Date().getTime();
+	  }
+	}, { passive: true });
+
+	playerContainer.addEventListener('touchend', function (e) {
+	  if (e.changedTouches.length !== 1) return;
+
+	  const touchEndX = e.changedTouches[0].clientX;
+	  const touchEndY = e.changedTouches[0].clientY;
+	  const diffX = touchEndX - touchStartX;
+	  const diffY = touchEndY - touchStartY;
+	  const duration = new Date().getTime() - touchStartTime;
+
+	  const rect = playerContainer.getBoundingClientRect();
+	  const isLeftSide = (touchStartX - rect.left) < (rect.width / 2);
+
+	  // 1. Detección de Gestos por Deslizamiento (Swipe)
+	  if (Math.abs(diffY) > 40 && Math.abs(diffY) > Math.abs(diffX) && duration < 500) {
+		if (isLeftSide) {
+		  // LADO IZQUIERDO: Control de Volumen (Arriba: +Volumen / Abajo: -Volumen)
+		  let newVol = videoElement.volume + (diffY < 0 ? 0.1 : -0.1);
+		  newVol = Math.max(0, Math.min(1, newVol));
+		  videoElement.volume = newVol;
+		  const volPercent = Math.round(newVol * 100);
+		  showOsd(newVol === 0 ? 'volume-x' : 'volume-2', `Volumen: ${volPercent}%`);
+		} else {
+		  // LADO DERECHO: Cambio de Canal (Arriba: Sig. / Abajo: Ant.)
+		  if (diffY < 0) {
+			changeChannelRelative(1);
+			showOsd('chevron-right', 'Canal Siguiente');
+		  } else {
+			changeChannelRelative(-1);
+			showOsd('chevron-left', 'Canal Anterior');
+		  }
+		}
+	  }
+
+	  // 2. Detección de Doble Tap para Pantalla Completa
+	  const currentTime = new Date().getTime();
+	  const tapLength = currentTime - lastTapTime;
+	  if (tapLength < 300 && tapLength > 0 && Math.abs(diffX) < 10 && Math.abs(diffY) < 10) {
+		e.preventDefault();
+		toggleFullscreenWithClock();
+	  }
+	  lastTapTime = currentTime;
+	});
 
     document.addEventListener('DOMContentLoaded', fetchStreams);
   </script>
