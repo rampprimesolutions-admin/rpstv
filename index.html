@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RPSTV Streaming VIP v2.3.5</title>
+  <title>RPSTV Streaming VIP v2.3.6</title>
 
   <!-- PERMITIR PETICIONES MIXTAS Y RECURSOS NO SEGUROS -->
   <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval' data: gap: content: blob:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'; media-src * blob: data: http: https:;">
@@ -21,20 +21,10 @@
       border-radius: 0 !important;
       border: none !important;
     }
-	/* Estilos para la etiqueta video */
-	video.aspect-contain {
-	  object-fit: contain !important; /* Proporción original (16:9 con franjas) */
-	}
-	video.aspect-fill {
-	  object-fit: fill !important;    /* Estirar a toda la pantalla */
-	}
-	video.aspect-cover {
-	  object-fit: cover !important;   /* Llenar pantalla recortando bordes */
-	}
-	/* Modos de ajuste de imagen */
-	video.aspect-contain { object-fit: contain !important; }
-	video.aspect-fill { object-fit: fill !important; }
-	video.aspect-cover { object-fit: cover !important; }
+    /* Modos de ajuste de imagen */
+    video.aspect-contain { object-fit: contain !important; }
+    video.aspect-fill { object-fit: fill !important; }
+    video.aspect-cover { object-fit: cover !important; }
   </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans select-none">
@@ -44,10 +34,10 @@
     <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-4">
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-full bg-amber-500 p-0.5 flex items-center justify-center shadow-lg">
-          <div class="w-full h-full bg-slate-950 rounded-full flex items-center justify-center font-bold text-amber-400">馃摗</div>
+          <div class="w-full h-full bg-slate-950 rounded-full flex items-center justify-center font-bold text-amber-400">📺</div>
         </div>
         <div>
-          <h1 class="text-lg font-bold tracking-tight text-amber-400">RPSTV Streaming v2.3.5</h1>
+          <h1 class="text-lg font-bold tracking-tight text-amber-400">RPSTV Streaming v2.3.6</h1>
           <p class="text-xs text-slate-400">Experiencia VIP en Streaming y TV en vivo</p>
         </div>
       </div>
@@ -74,91 +64,91 @@
   <!-- CONTENIDO PRINCIPAL -->
   <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full grid grid-cols-1 lg:grid-cols-3 gap-8">
     
-	<!-- SECCI脫N DEL REPRODUCTOR CON CONTENEDOR FULLSCREEN -->
-	<section class="lg:col-span-2">
-	  <div class="sticky top-20 space-y-4">
-		
-		<!-- CONTENEDOR PRINCIPAL -->
-		<div id="playerContainer" class="relative w-full aspect-video bg-black rounded-2xl overflow-hidden border border-slate-800 shadow-2xl flex items-center justify-center touch-none">
-		  
-		  <!-- Reloj Digital (Superior Izquierda) -->
-		  <div id="digitalClockBadge" class="absolute top-3 left-3 z-30 bg-slate-950/80 backdrop-blur-md border border-slate-800 px-3 py-1.5 rounded-xl text-amber-400 font-mono text-xs tracking-wider shadow-xl flex items-center gap-2 pointer-events-none transition-opacity duration-300">
-			<i data-lucide="clock" class="w-3.5 h-3.5 text-amber-400"></i>
-			<span id="digitalClock">00:00:00</span>
-		  </div>
+    <!-- SECCIÓN DEL REPRODUCTOR CON CONTENEDOR FULLSCREEN -->
+    <section class="lg:col-span-2">
+      <div class="sticky top-20 space-y-4">
+        
+        <!-- CONTENEDOR PRINCIPAL -->
+        <div id="playerContainer" class="relative w-full aspect-video bg-black rounded-2xl overflow-hidden border border-slate-800 shadow-2xl flex items-center justify-center touch-none">
+          
+          <!-- Reloj Digital (Superior Izquierda) -->
+          <div id="digitalClockBadge" class="absolute top-3 left-3 z-30 bg-slate-950/80 backdrop-blur-md border border-slate-800 px-3 py-1.5 rounded-xl text-amber-400 font-mono text-xs tracking-wider shadow-xl flex items-center gap-2 pointer-events-none transition-opacity duration-300">
+            <i data-lucide="clock" class="w-3.5 h-3.5 text-amber-400"></i>
+            <span id="digitalClock">00:00:00</span>
+          </div>
 
-		  <!-- OSD INFOCARD DE CAMBIO DE CANAL / VOLUMEN (Feedback Visual en Pantalla Completa) -->
-		  <div id="gestureOsd" class="hidden absolute top-12 left-1/2 -translate-x-1/2 z-40 bg-slate-950/90 text-amber-400 px-4 py-2.5 rounded-2xl shadow-2xl backdrop-blur-md border border-amber-500/40 flex items-center gap-3 pointer-events-none transition-all duration-200">
-			<img id="osdLogo" src="" class="w-9 h-9 object-contain rounded-md bg-slate-900 p-0.5 border border-slate-800 hidden" alt="Logo">
-			<div class="flex flex-col">
-			  <span id="osdTitle" class="text-sm font-extrabold text-amber-400 tracking-wide uppercase leading-none">--</span>
-			  <span id="osdSubtitle" class="text-xs font-semibold text-slate-300 tracking-wider mt-1 leading-none">--</span>
-			</div>
-		  </div>
+          <!-- OSD INFOCARD DE CAMBIO DE CANAL / VOLUMEN -->
+          <div id="gestureOsd" class="hidden absolute top-12 left-1/2 -translate-x-1/2 z-40 bg-slate-950/90 text-amber-400 px-4 py-2.5 rounded-2xl shadow-2xl backdrop-blur-md border border-amber-500/40 flex items-center gap-3 pointer-events-none transition-all duration-200">
+            <img id="osdLogo" src="" class="w-9 h-9 object-contain rounded-md bg-slate-900 p-0.5 border border-slate-800 hidden" alt="Logo">
+            <div class="flex flex-col">
+              <span id="osdTitle" class="text-sm font-extrabold text-amber-400 tracking-wide uppercase leading-none">--</span>
+              <span id="osdSubtitle" class="text-xs font-semibold text-slate-300 tracking-wider mt-1 leading-none">--</span>
+            </div>
+          </div>
 
-		  <!-- Banner de Notificaci贸n del Programador -->
-		  <div id="schedulerNotice" class="hidden absolute top-3 right-3 z-30 bg-amber-500 text-slate-950 px-3 py-1 rounded-lg text-xs font-bold shadow-lg items-center gap-1.5 animate-pulse">
-			<i data-lucide="calendar-check" class="w-3.5 h-3.5"></i>
-			<span id="schedulerNoticeText">Cambio programado activo</span>
-		  </div>
+          <!-- Banner de Notificación del Programador -->
+          <div id="schedulerNotice" class="hidden absolute top-3 right-3 z-30 bg-amber-500 text-slate-950 px-3 py-1 rounded-lg text-xs font-bold shadow-lg items-center gap-1.5 animate-pulse">
+            <i data-lucide="calendar-check" class="w-3.5 h-3.5"></i>
+            <span id="schedulerNoticeText">Cambio programado activo</span>
+          </div>
 
-		  <video id="hlsPlayer" controls autoplay muted playsinline class="w-full h-full object-contain pointer-events-auto"></video>
-		</div>
-		
-		<!-- CONTROLES INFERIORES -->
-		<div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-		  <button onclick="changeChannelRelative(-1)" class="flex items-center justify-center gap-1 bg-slate-900 hover:bg-slate-800 border border-slate-800 py-2 rounded-xl text-xs font-semibold text-slate-300 transition">
-			<i data-lucide="chevron-left" class="w-4 h-4"></i> Canal Ant.
-		  </button>
-		  <button id="preChannelBtn" onclick="goToPreviousChannel()" disabled class="flex items-center justify-center gap-1 bg-slate-900 hover:bg-slate-800 border border-slate-800 py-2 rounded-xl text-xs font-semibold text-amber-400 disabled:opacity-40 disabled:cursor-not-allowed transition">
-			<i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Pre-Canal
-		  </button>
-		  <button onclick="changeChannelRelative(1)" class="flex items-center justify-center gap-1 bg-slate-900 hover:bg-slate-800 border border-slate-800 py-2 rounded-xl text-xs font-semibold text-slate-300 transition">
-			Sig. Canal <i data-lucide="chevron-right" class="w-4 h-4"></i>
-		  </button>
-		  <button onclick="toggleClockVisibility()" class="flex items-center justify-center gap-1 bg-slate-900 hover:bg-slate-800 border border-slate-800 py-2 rounded-xl text-xs font-semibold text-slate-300 transition" title="Mostrar/Ocultar Reloj">
-			<i data-lucide="clock" class="w-4 h-4 text-amber-400"></i> Reloj
-		  </button>
-		</div>
+          <video id="hlsPlayer" controls autoplay muted playsinline class="w-full h-full object-contain pointer-events-auto"></video>
+        </div>
+        
+        <!-- CONTROLES INFERIORES -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <button onclick="changeChannelRelative(-1)" class="flex items-center justify-center gap-1 bg-slate-900 hover:bg-slate-800 border border-slate-800 py-2 rounded-xl text-xs font-semibold text-slate-300 transition">
+            <i data-lucide="chevron-left" class="w-4 h-4"></i> Canal Ant.
+          </button>
+          <button id="preChannelBtn" onclick="goToPreviousChannel()" disabled class="flex items-center justify-center gap-1 bg-slate-900 hover:bg-slate-800 border border-slate-800 py-2 rounded-xl text-xs font-semibold text-amber-400 disabled:opacity-40 disabled:cursor-not-allowed transition">
+            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Pre-Canal
+          </button>
+          <button onclick="changeChannelRelative(1)" class="flex items-center justify-center gap-1 bg-slate-900 hover:bg-slate-800 border border-slate-800 py-2 rounded-xl text-xs font-semibold text-slate-300 transition">
+            Sig. Canal <i data-lucide="chevron-right" class="w-4 h-4"></i>
+          </button>
+          <button onclick="toggleClockVisibility()" class="flex items-center justify-center gap-1 bg-slate-900 hover:bg-slate-800 border border-slate-800 py-2 rounded-xl text-xs font-semibold text-slate-300 transition" title="Mostrar/Ocultar Reloj">
+            <i data-lucide="clock" class="w-4 h-4 text-amber-400"></i> Reloj
+          </button>
+        </div>
 
-		<!-- SELECTOR DIN脕MICO DE PISTAS DE AUDIO -->
-		<div id="audioTrackContainer" class="hidden flex items-center justify-between bg-slate-900/90 border border-amber-500/30 px-3 py-2 rounded-xl">
-		  <div class="flex items-center gap-2">
-			<i data-lucide="volume-2" class="w-4 h-4 text-amber-400 animate-pulse"></i>
-			<span class="text-xs font-bold text-amber-400">Audio M煤ltiple:</span>
-		  </div>
-		  <select id="audioTrackSelect" onchange="changeAudioTrack(this.value)" class="bg-slate-950 border border-slate-800 text-xs font-semibold text-slate-200 rounded-lg px-2 py-1 focus:outline-none focus:border-amber-400">
-		  </select>
-		</div>
-		
-		<!-- SELECTOR DIN脕MICO DE SUBT脥TULOS -->
-		<div id="subtitleTrackContainer" class="hidden flex items-center justify-between bg-slate-900/90 border border-amber-500/30 px-3 py-2 rounded-xl mt-2">
-		  <div class="flex items-center gap-2">
-			<i data-lucide="captions" class="w-4 h-4 text-amber-400"></i>
-			<span class="text-xs font-bold text-amber-400">Subt铆tulos (CC):</span>
-		  </div>
-		  <select id="subtitleTrackSelect" onchange="changeSubtitleTrack(this.value)" class="bg-slate-950 border border-slate-800 text-xs font-semibold text-slate-200 rounded-lg px-2 py-1 focus:outline-none focus:border-amber-400">
-		  </select>
-		</div>
+        <!-- SELECTOR DINÁMICO DE PISTAS DE AUDIO -->
+        <div id="audioTrackContainer" class="hidden flex items-center justify-between bg-slate-900/90 border border-amber-500/30 px-3 py-2 rounded-xl">
+          <div class="flex items-center gap-2">
+            <i data-lucide="volume-2" class="w-4 h-4 text-amber-400 animate-pulse"></i>
+            <span class="text-xs font-bold text-amber-400">Audio Múltiple:</span>
+          </div>
+          <select id="audioTrackSelect" onchange="changeAudioTrack(this.value)" class="bg-slate-950 border border-slate-800 text-xs font-semibold text-slate-200 rounded-lg px-2 py-1 focus:outline-none focus:border-amber-400">
+          </select>
+        </div>
+        
+        <!-- SELECTOR DINÁMICO DE SUBTÍTULOS -->
+        <div id="subtitleTrackContainer" class="hidden flex items-center justify-between bg-slate-900/90 border border-amber-500/30 px-3 py-2 rounded-xl mt-2">
+          <div class="flex items-center gap-2">
+            <i data-lucide="captions" class="w-4 h-4 text-amber-400"></i>
+            <span class="text-xs font-bold text-amber-400">Subtítulos (CC):</span>
+          </div>
+          <select id="subtitleTrackSelect" onchange="changeSubtitleTrack(this.value)" class="bg-slate-950 border border-slate-800 text-xs font-semibold text-slate-200 rounded-lg px-2 py-1 focus:outline-none focus:border-amber-400">
+          </select>
+        </div>
 
-		<!-- TARJETA DE CANAL ACTIVO -->
-		<div class="bg-slate-900/60 border border-slate-800 rounded-xl p-4 flex items-center justify-between">
-		  <div class="flex items-center gap-3">
-			<img id="activeLogo" src="" class="w-12 h-12 object-contain rounded-md bg-slate-800/50 p-1 hidden" alt="Logo" />
-			<div>
-			  <span id="activeCategory" class="text-xl font-extrabold text-amber-400 block tracking-wide uppercase">CARGANDO...</span>
-			  <h2 id="activeTitle" class="text-xs font-semibold text-slate-300 tracking-wider mt-0.5">Seleccione un canal</h2>
-			</div>
-		  </div>
-		  
-		  <button id="activeFavBtn" onclick="toggleFavorite(currentStream?.id)" class="p-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-400 hover:text-amber-400 transition">
-			<i data-lucide="star" class="w-5 h-5"></i>
-		  </button>
-		</div>
+        <!-- TARJETA DE CANAL ACTIVO -->
+        <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-4 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <img id="activeLogo" src="" class="w-12 h-12 object-contain rounded-md bg-slate-800/50 p-1 hidden" alt="Logo" />
+            <div>
+              <span id="activeCategory" class="text-xl font-extrabold text-amber-400 block tracking-wide uppercase">CARGANDO...</span>
+              <h2 id="activeTitle" class="text-xs font-semibold text-slate-300 tracking-wider mt-0.5">Seleccione un canal</h2>
+            </div>
+          </div>
+          
+          <button id="activeFavBtn" onclick="toggleFavorite(currentStream?.id)" class="p-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-400 hover:text-amber-400 transition">
+            <i data-lucide="star" class="w-5 h-5"></i>
+          </button>
+        </div>
 
-	  </div>
-	</section>
-	
+      </div>
+    </section>
+    
     <!-- PANEL LATERAL CON BUSCADOR Y LISTA -->
     <aside class="space-y-4">
       <div class="flex flex-col gap-2">
@@ -177,13 +167,13 @@
             <i data-lucide="x" class="w-3.5 h-3.5"></i>
           </button>
         </div>
-		
-		<!-- FILTRO POR PA脥S -->
-		<div class="mb-3">
-		  <select id="countryFilter" onchange="filterStreams()" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs font-semibold text-slate-300 focus:outline-none focus:border-amber-400">
-			<option value="ALL">馃寧 Todos los Pa铆ses (A-Z)</option>
-		  </select>
-		</div>
+        
+        <!-- FILTRO POR PAÍS -->
+        <div class="mb-3">
+          <select id="countryFilter" onchange="filterStreams()" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs font-semibold text-slate-300 focus:outline-none focus:border-amber-400">
+            <option value="ALL">🌐 Todos los Países (A-Z)</option>
+          </select>
+        </div>
       </div>
 
       <div class="space-y-2.5 max-h-[calc(100vh-16rem)] overflow-y-auto pr-1" id="streamList"></div>
@@ -191,7 +181,7 @@
 
   </main>
 
-  <!-- MODAL DE PROGRAMACION DE CANALES -->
+  <!-- MODAL DE PROGRAMACIÓN DE CANALES -->
   <div id="scheduleModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -208,14 +198,14 @@
         </div>
 
         <div>
-          <label class="block text-xs text-slate-400 mb-1">HORA DE EJECUCI脫N (HOY)</label>
+          <label class="block text-xs text-slate-400 mb-1">HORA DE EJECUCIÓN (HOY)</label>
           <input type="time" id="scheduleTimeInput" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500" />
         </div>
       </div>
 
       <div class="flex justify-end gap-2 pt-2">
         <button onclick="closeScheduleModal()" class="px-3 py-1.5 rounded-lg border border-slate-800 text-xs text-slate-400 hover:bg-slate-800">Cancelar</button>
-        <button onclick="setChannelSchedule()" class="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold">Guardar Programaci贸n</button>
+        <button onclick="setChannelSchedule()" class="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold">Guardar Programación</button>
       </div>
     </div>
   </div>
@@ -238,6 +228,15 @@
     const videoElement = document.getElementById('hlsPlayer');
     const FALLBACK_VIDEO_URL = "https://cdn.jsdelivr.net/gh/rampprimesolutions-admin/rpstv@main/estatica.mp4";
 
+    // MODOS DE ASPECTO DE PANTALLA
+    const MODOS_ASPECTO = ['contain', 'fill', 'cover'];
+    const NOMBRES_MODOS = {
+      'contain': 'Ajustar (Original 16:9)',
+      'fill': 'Estirar (Pantalla Completa)',
+      'cover': 'Zoom (Llenar Pantalla)'
+    };
+    let modoAspectoIndex = 0;
+
     // RELOJ EN TIEMPO REAL
     function updateClock() {
       const now = new Date();
@@ -249,12 +248,12 @@
     function getDeviceDetails() {
       const ua = navigator.userAgent;
       if (/Android/i.test(ua)) {
-        return (/wv|Version\/[\d\.]+/i.test(ua)) ? "App Android (APK)" : "M贸vil Android (Navegador)";
+        return (/wv|Version\/[\d\.]+/i.test(ua)) ? "App Android (APK)" : "Móvil Android (Navegador)";
       }
       if (/iPhone|iPad|iPod/i.test(ua)) return "Dispositivo iOS (iPhone/iPad)";
       if (/Windows/i.test(ua)) return "PC/Laptop (Windows)";
       if (/Macintosh|Mac OS X/i.test(ua)) return "Laptop/MAC (macOS)";
-      return "Navegador Web Gen茅rico";
+      return "Navegador Web Genérico";
     }
 
     function sendStreamAlert(channelName, errorType, details) {
@@ -265,14 +264,14 @@
       reportedChannels.add(reportKey);
 
       const payload = {
-        content: "馃毃 **ALERTA DE SE脩AL CA脥DA (RPSTV)**",
+        content: "🚨 **ALERTA DE SEÑAL CAÍDA (RPSTV)**",
         embeds: [{
           title: `**CANAL:** ${channelName}`,
           color: 15158332,
           fields: [
             { name: "**TIPO DE ERROR**", value: errorType, inline: true },
             { name: "**ORIGEN/DISPOSITIVO**", value: getDeviceDetails(), inline: true },
-            { name: "**DETALLE T脡CNICO**", value: details || "Sin detalle adicional" }
+            { name: "**DETALLE TÉCNICO**", value: details || "Sin detalle adicional" }
           ],
           timestamp: new Date().toISOString()
         }]
@@ -282,168 +281,168 @@
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
-      }).catch(err => console.error("[Telemetr铆a] Error de red:", err));
+      }).catch(err => console.error("[Telemetría] Error de red:", err));
     }
     
-	// CARGA DE CANALES
-	async function fetchStreams() {
-	  const gistRawUrl = 'https://gist.githubusercontent.com/rampprimesolutions-admin/7c2e780742d4285ce388cd18ceacb227/raw/channels.json?v=' + new Date().getTime();
-	  
-	  try {
-		let response = await fetch(gistRawUrl, { cache: 'no-store' });
-		const data = await response.json();
-		let rawStreams = Array.isArray(data) ? data : (data.channels || []);
-		
-		allStreams = rawStreams.sort((a, b) => {
-		  const nameA = (a.location || '').toLowerCase();
-		  const nameB = (b.location || '').toLowerCase();
-		  return nameA.localeCompare(nameB, 'es', { sensitivity: 'base' });
-		});
+    // CARGA DE CANALES
+    async function fetchStreams() {
+      const gistRawUrl = 'https://gist.githubusercontent.com/rampprimesolutions-admin/7c2e780742d4285ce388cd18ceacb227/raw/channels.json?v=' + new Date().getTime();
+      
+      try {
+        let response = await fetch(gistRawUrl, { cache: 'no-store' });
+        const data = await response.json();
+        let rawStreams = Array.isArray(data) ? data : (data.channels || []);
+        
+        allStreams = rawStreams.sort((a, b) => {
+          const nameA = (a.location || '').toLowerCase();
+          const nameB = (b.location || '').toLowerCase();
+          return nameA.localeCompare(nameB, 'es', { sensitivity: 'base' });
+        });
 
-		populateCountryFilter(allStreams);
-		
-		const savedCountry = localStorage.getItem('rpstv_last_country');
-		const countrySelect = document.getElementById('countryFilter');
-		if (savedCountry && countrySelect) {
-		  countrySelect.value = savedCountry;
-		}
-		
-		filterStreams();
+        populateCountryFilter(allStreams);
+        
+        const savedCountry = localStorage.getItem('rpstv_last_country');
+        const countrySelect = document.getElementById('countryFilter');
+        if (savedCountry && countrySelect) {
+          countrySelect.value = savedCountry;
+        }
+        
+        filterStreams();
 
-		const savedChannelId = localStorage.getItem('rpstv_last_channel');
-		const targetChannel = streams.find(s => s.id == savedChannelId) || allStreams.find(s => s.id == savedChannelId);
+        const savedChannelId = localStorage.getItem('rpstv_last_channel');
+        const targetChannel = streams.find(s => s.id == savedChannelId) || allStreams.find(s => s.id == savedChannelId);
 
-		if (targetChannel) {
-		  selectStream(targetChannel.id, false);
-		} else if (streams.length > 0) {
-		  selectStream(streams[0].id, false);
-		} else if (allStreams.length > 0) {
-		  selectStream(allStreams[0].id, false);
-		}
+        if (targetChannel) {
+          selectStream(targetChannel.id, false);
+        } else if (streams.length > 0) {
+          selectStream(streams[0].id, false);
+        } else if (allStreams.length > 0) {
+          selectStream(allStreams[0].id, false);
+        }
 
-	  } catch (error) {
-		console.error("Error cargando Gist", error);
-	  }
+      } catch (error) {
+        console.error("Error cargando Gist", error);
+      }
 
-	  populateScheduleSelect();
-	}
-	
-	let connectionWatchdog = null;
-	
-	function loadHlsStream(url) {
-	  if (bufferCheckTimer) clearTimeout(bufferCheckTimer);
-	  if (connectionWatchdog) clearTimeout(connectionWatchdog);
+      populateScheduleSelect();
+    }
+    
+    let connectionWatchdog = null;
+    
+    function loadHlsStream(url) {
+      if (bufferCheckTimer) clearTimeout(bufferCheckTimer);
+      if (connectionWatchdog) clearTimeout(connectionWatchdog);
 
-	  if (!url || url.trim() === "" || !url.startsWith("http")) {
-		handleStreamError(hlsInstance);
-		return;
-	  }
+      if (!url || url.trim() === "" || !url.startsWith("http")) {
+        handleStreamError(hlsInstance);
+        return;
+      }
 
-	  connectionWatchdog = setTimeout(() => {
-		if (videoElement.currentTime === 0 || videoElement.readyState < 2) {
-		  handleStreamError(hlsInstance);
-		}
-	  }, 12000);
+      connectionWatchdog = setTimeout(() => {
+        if (videoElement.currentTime === 0 || videoElement.readyState < 2) {
+          handleStreamError(hlsInstance);
+        }
+      }, 12000);
 
-	  if (Hls.isSupported()) {
-		if (hlsInstance) {
-		  try { 
-			hlsInstance.detachMedia();
-			hlsInstance.destroy(); 
-		  } catch(e) {}
-		  hlsInstance = null;
-		}
-		
-		const newHls = new Hls({ enableWorker: true, lowLatencyMode: true });
-		hlsInstance = newHls;
-		
-		newHls.loadSource(url);
-		newHls.attachMedia(videoElement);
+      if (Hls.isSupported()) {
+        if (hlsInstance) {
+          try { 
+            hlsInstance.detachMedia();
+            hlsInstance.destroy(); 
+          } catch(e) {}
+          hlsInstance = null;
+        }
+        
+        const newHls = new Hls({ enableWorker: true, lowLatencyMode: true });
+        hlsInstance = newHls;
+        
+        newHls.loadSource(url);
+        newHls.attachMedia(videoElement);
 
-		const updateAudioTracksUI = () => {
-		  const audioTracks = newHls.audioTracks;
-		  const container = document.getElementById('audioTrackContainer');
-		  const select = document.getElementById('audioTrackSelect');
+        const updateAudioTracksUI = () => {
+          const audioTracks = newHls.audioTracks;
+          const container = document.getElementById('audioTrackContainer');
+          const select = document.getElementById('audioTrackSelect');
 
-		  if (select && container) {
-			if (audioTracks && audioTracks.length > 1) {
-			  select.innerHTML = '';
-			  audioTracks.forEach((track, index) => {
-				const opt = document.createElement('option');
-				opt.value = index;
-				const langName = track.name || track.lang || `Pista ${index + 1}`;
-				opt.textContent = `${index + 1}. ${langName.toUpperCase()}`;
-				if (index === newHls.audioTrack) opt.selected = true;
-				select.appendChild(opt);
-			  });
-			  container.classList.remove('hidden');
-			  container.classList.add('flex');
-			  lucide.createIcons();
-			} else {
-			  container.classList.add('hidden');
-			  container.classList.remove('flex');
-			}
-		  }
-		};
+          if (select && container) {
+            if (audioTracks && audioTracks.length > 1) {
+              select.innerHTML = '';
+              audioTracks.forEach((track, index) => {
+                const opt = document.createElement('option');
+                opt.value = index;
+                const langName = track.name || track.lang || `Pista ${index + 1}`;
+                opt.textContent = `${index + 1}. ${langName.toUpperCase()}`;
+                if (index === newHls.audioTrack) opt.selected = true;
+                select.appendChild(opt);
+              });
+              container.classList.remove('hidden');
+              container.classList.add('flex');
+              lucide.createIcons();
+            } else {
+              container.classList.add('hidden');
+              container.classList.remove('flex');
+            }
+          }
+        };
 
-		newHls.on(Hls.Events.MANIFEST_PARSED, updateAudioTracksUI);
-		newHls.on(Hls.Events.AUDIO_TRACKS_UPDATED, updateAudioTracksUI);
-		
-		const updateSubtitlesUI = () => {
-		  const tracks = newHls.subtitleTracks;
-		  const container = document.getElementById('subtitleTrackContainer');
-		  const select = document.getElementById('subtitleTrackSelect');
+        newHls.on(Hls.Events.MANIFEST_PARSED, updateAudioTracksUI);
+        newHls.on(Hls.Events.AUDIO_TRACKS_UPDATED, updateAudioTracksUI);
+        
+        const updateSubtitlesUI = () => {
+          const tracks = newHls.subtitleTracks;
+          const container = document.getElementById('subtitleTrackContainer');
+          const select = document.getElementById('subtitleTrackSelect');
 
-		  if (select && container) {
-			if (tracks && tracks.length > 0) {
-			  select.innerHTML = '<option value="-1">馃彺 Desactivados</option>';
-			  tracks.forEach((track, index) => {
-				const opt = document.createElement('option');
-				opt.value = index;
-				const langName = track.name || track.lang || `Subt铆tulo ${index + 1}`;
-				opt.textContent = `${index + 1}. ${langName.toUpperCase()}`;
-				if (index === newHls.subtitleTrack) opt.selected = true;
-				select.appendChild(opt);
-			  });
-			  container.classList.remove('hidden');
-			  container.classList.add('flex');
-			  lucide.createIcons();
-			} else {
-			  container.classList.add('hidden');
-			  container.classList.remove('flex');
-			}
-		  }
-		};
+          if (select && container) {
+            if (tracks && tracks.length > 0) {
+              select.innerHTML = '<option value="-1">🚫 Desactivados</option>';
+              tracks.forEach((track, index) => {
+                const opt = document.createElement('option');
+                opt.value = index;
+                const langName = track.name || track.lang || `Subtítulo ${index + 1}`;
+                opt.textContent = `${index + 1}. ${langName.toUpperCase()}`;
+                if (index === newHls.subtitleTrack) opt.selected = true;
+                select.appendChild(opt);
+              });
+              container.classList.remove('hidden');
+              container.classList.add('flex');
+              lucide.createIcons();
+            } else {
+              container.classList.add('hidden');
+              container.classList.remove('flex');
+            }
+          }
+        };
 
-		newHls.on(Hls.Events.MANIFEST_PARSED, updateSubtitlesUI);
-		newHls.on(Hls.Events.SUBTITLE_TRACKS_UPDATED, updateSubtitlesUI);
+        newHls.on(Hls.Events.MANIFEST_PARSED, updateSubtitlesUI);
+        newHls.on(Hls.Events.SUBTITLE_TRACKS_UPDATED, updateSubtitlesUI);
 
-		newHls.on(Hls.Events.ERROR, (event, data) => {
-		  if (data.fatal) {
-			if (data.type === Hls.ErrorTypes.NETWORK_ERROR || data.type === Hls.ErrorTypes.MEDIA_ERROR) {
-			  if (connectionWatchdog) clearTimeout(connectionWatchdog);
-			  handleStreamError(newHls);
-			}
-		  }
-		});
+        newHls.on(Hls.Events.ERROR, (event, data) => {
+          if (data.fatal) {
+            if (data.type === Hls.ErrorTypes.NETWORK_ERROR || data.type === Hls.ErrorTypes.MEDIA_ERROR) {
+              if (connectionWatchdog) clearTimeout(connectionWatchdog);
+              handleStreamError(newHls);
+            }
+          }
+        });
 
-	  } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
-		videoElement.src = url;
-	  }
-	}
+      } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+        videoElement.src = url;
+      }
+    }
 
-	videoElement.addEventListener('playing', () => {
-	  if (connectionWatchdog) clearTimeout(connectionWatchdog);
-	  if (bufferCheckTimer) clearTimeout(bufferCheckTimer);
-	});
+    videoElement.addEventListener('playing', () => {
+      if (connectionWatchdog) clearTimeout(connectionWatchdog);
+      if (bufferCheckTimer) clearTimeout(bufferCheckTimer);
+    });
 
-	videoElement.addEventListener('timeupdate', () => {
-	  if (videoElement.currentTime > 0 && connectionWatchdog) {
-		clearTimeout(connectionWatchdog);
-	  }
-	});
+    videoElement.addEventListener('timeupdate', () => {
+      if (videoElement.currentTime > 0 && connectionWatchdog) {
+        clearTimeout(connectionWatchdog);
+      }
+    });
 
-	function selectStream(id, recordHistory = true, showOsdOverlay = true) {
+    function selectStream(id, recordHistory = true, showOsdOverlay = true) {
       if (currentStream && currentStream.id !== id && recordHistory) {
         previousStreamId = currentStream.id;
         document.getElementById('preChannelBtn').disabled = false;
@@ -456,8 +455,8 @@
       streams.forEach(s => s.active = (s.id === id));
       allStreams.forEach(s => s.active = (s.id === id));
       
-	  localStorage.setItem('rpstv_last_channel', currentStream.id);
-	  
+      localStorage.setItem('rpstv_last_channel', currentStream.id);
+      
       document.getElementById('activeCategory').textContent = currentStream.location || '';
       document.getElementById('activeTitle').textContent = currentStream.name || '';
 
@@ -539,18 +538,18 @@
       document.getElementById('clearSearchBtn').classList.toggle('hidden', searchQuery === "");
       renderStreams();
     }
-	
-	function changeAudioTrack(trackIndex) {
-	  if (hlsInstance && hlsInstance.audioTracks[trackIndex]) {
-		hlsInstance.audioTrack = parseInt(trackIndex);
-	  }
-	}
-	
-	function changeSubtitleTrack(trackIndex) {
-	  if (hlsInstance) {
-		hlsInstance.subtitleTrack = parseInt(trackIndex);
-	  }
-	}
+    
+    function changeAudioTrack(trackIndex) {
+      if (hlsInstance && hlsInstance.audioTracks[trackIndex]) {
+        hlsInstance.audioTrack = parseInt(trackIndex);
+      }
+    }
+    
+    function changeSubtitleTrack(trackIndex) {
+      if (hlsInstance) {
+        hlsInstance.subtitleTrack = parseInt(trackIndex);
+      }
+    }
 
     function clearSearch() {
       document.getElementById('searchInput').value = "";
@@ -567,60 +566,60 @@
       document.getElementById('scheduleModal').classList.add('hidden');
     }
 
-	function populateScheduleSelect() {
-	  const select = document.getElementById('scheduleChannelSelect');
-	  if (!select) return;
-	  select.innerHTML = '';
+    function populateScheduleSelect() {
+      const select = document.getElementById('scheduleChannelSelect');
+      if (!select) return;
+      select.innerHTML = '';
 
-	  const countries = [...new Set(allStreams.map(item => item.name).filter(Boolean))].sort();
+      const countries = [...new Set(allStreams.map(item => item.name).filter(Boolean))].sort();
 
-	  countries.forEach(country => {
-		const optgroup = document.createElement('optgroup');
-		optgroup.label = `馃搶 ${country}`;
-		const countryChannels = allStreams.filter(s => s.name === country);
-		countryChannels.forEach(s => {
-		  const opt = document.createElement('option');
-		  opt.value = s.id;
-		  opt.textContent = `${s.location}`;
-		  optgroup.appendChild(opt);
-		});
-		select.appendChild(optgroup);
-	  });
-	}
+      countries.forEach(country => {
+        const optgroup = document.createElement('optgroup');
+        optgroup.label = `📍 ${country}`;
+        const countryChannels = allStreams.filter(s => s.name === country);
+        countryChannels.forEach(s => {
+          const opt = document.createElement('option');
+          opt.value = s.id;
+          opt.textContent = `${s.location}`;
+          optgroup.appendChild(opt);
+        });
+        select.appendChild(optgroup);
+      });
+    }
 
-	function setChannelSchedule() {
-	  const channelId = parseInt(document.getElementById('scheduleChannelSelect').value);
-	  const timeValue = document.getElementById('scheduleTimeInput').value;
+    function setChannelSchedule() {
+      const channelId = parseInt(document.getElementById('scheduleChannelSelect').value);
+      const timeValue = document.getElementById('scheduleTimeInput').value;
 
-	  if (!timeValue) return alert("Selecciona una hora v谩lida.");
+      if (!timeValue) return alert("Selecciona una hora válida.");
 
-	  const [hours, minutes] = timeValue.split(':').map(Number);
-	  const now = new Date();
-	  const targetTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes, 0);
+      const [hours, minutes] = timeValue.split(':').map(Number);
+      const now = new Date();
+      const targetTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes, 0);
 
-	  if (targetTime <= now) return alert("Selecciona una hora futura.");
+      if (targetTime <= now) return alert("Selecciona una hora futura.");
 
-	  const msToWait = targetTime - now;
-	  if (scheduledTimer) clearTimeout(scheduledTimer);
+      const msToWait = targetTime - now;
+      if (scheduledTimer) clearTimeout(scheduledTimer);
 
-	  const targetStream = allStreams.find(s => s.id === channelId);
+      const targetStream = allStreams.find(s => s.id === channelId);
 
-	  scheduledTimer = setTimeout(() => {
-		if (targetStream) {
-		  const countryFilter = document.getElementById('countryFilter');
-		  if (countryFilter && countryFilter.value !== 'ALL') {
-			countryFilter.value = 'ALL';
-			filterStreams();
-		  }
-		  selectStream(targetStream.id);
-		  showScheduleNotice(`Auto-Switch ejecutado: ${targetStream.location}`);
-		  setTimeout(hideScheduleNotice, 8000);
-		}
-	  }, msToWait);
+      scheduledTimer = setTimeout(() => {
+        if (targetStream) {
+          const countryFilter = document.getElementById('countryFilter');
+          if (countryFilter && countryFilter.value !== 'ALL') {
+            countryFilter.value = 'ALL';
+            filterStreams();
+          }
+          selectStream(targetStream.id);
+          showScheduleNotice(`Auto-Switch ejecutado: ${targetStream.location}`);
+          setTimeout(hideScheduleNotice, 8000);
+        }
+      }, msToWait);
 
-	  showScheduleNotice(`Programado: ${targetStream ? targetStream.location : 'Canal'} a las ${timeValue}`);
-	  closeScheduleModal();
-	}
+      showScheduleNotice(`Programado: ${targetStream ? targetStream.location : 'Canal'} a las ${timeValue}`);
+      closeScheduleModal();
+    }
 
     function showScheduleNotice(text) {
       const notice = document.getElementById('schedulerNotice');
@@ -641,7 +640,7 @@
       } else if (videoElement.webkitShowPlaybackTargetPicker) {
         videoElement.webkitShowPlaybackTargetPicker();
       } else {
-        alert("Transmisi贸n a Smart TV: Usa la opci贸n 'Enviar/Cast' del men煤 de tu navegador o WebView.");
+        alert("Transmisión a Smart TV: Usa la opción 'Enviar/Cast' del menú de tu navegador o WebView.");
       }
     }
 
@@ -680,306 +679,225 @@
       renderStreams();
     }
 
-	function toggleClockVisibility() {
-	  document.getElementById('digitalClockBadge').classList.toggle('hidden');
-	}
+    function toggleClockVisibility() {
+      document.getElementById('digitalClockBadge').classList.toggle('hidden');
+    }
 
-	function toggleFullscreenWithClock() {
-	  const container = document.getElementById('playerContainer');
-	  if (!document.fullscreenElement) {
-		if (container.requestFullscreen) container.requestFullscreen();
-		else if (container.webkitRequestFullscreen) container.webkitRequestFullscreen();
-	  } else {
-		if (document.exitFullscreen) document.exitFullscreen();
-	  }
-	}
-	
-	function populateCountryFilter(data) {
-	  const select = document.getElementById('countryFilter');
-	  if (!select) return;
-	  select.innerHTML = '<option value="ALL">馃實 Todos los pa铆ses (A-Z)</option>';
-	  
-	  const countries = [...new Set(data.map(item => item.name).filter(Boolean))].sort();
-	  countries.forEach(country => {
-		const opt = document.createElement('option');
-		opt.value = country;
-		opt.textContent = `馃毄 ${country}`;
-		select.appendChild(opt);
-	  });
-	}
+    function toggleFullscreenWithClock() {
+      const container = document.getElementById('playerContainer');
+      if (!document.fullscreenElement) {
+        if (container.requestFullscreen) container.requestFullscreen();
+        else if (container.webkitRequestFullscreen) container.webkitRequestFullscreen();
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+      }
+    }
+    
+    function populateCountryFilter(data) {
+      const select = document.getElementById('countryFilter');
+      if (!select) return;
+      select.innerHTML = '<option value="ALL">🌐 Todos los países (A-Z)</option>';
+      
+      const countries = [...new Set(data.map(item => item.name).filter(Boolean))].sort();
+      countries.forEach(country => {
+        const opt = document.createElement('option');
+        opt.value = country;
+        opt.textContent = `📍 ${country}`;
+        select.appendChild(opt);
+      });
+    }
 
-	function filterStreams() {
-	  const selectedCountry = document.getElementById('countryFilter')?.value || 'ALL';
-	  const searchInput = (document.getElementById('searchInput')?.value || '').toLowerCase();
-	  
-	  localStorage.setItem('rpstv_last_country', selectedCountry);
+    function filterStreams() {
+      const selectedCountry = document.getElementById('countryFilter')?.value || 'ALL';
+      const searchInput = (document.getElementById('searchInput')?.value || '').toLowerCase();
+      
+      localStorage.setItem('rpstv_last_country', selectedCountry);
 
-	  streams = allStreams.filter(stream => {
-		const matchesCountry = (selectedCountry === 'ALL') || (stream.name === selectedCountry);
-		const matchesSearch = (stream.location || '').toLowerCase().includes(searchInput) ||
-							  (stream.name || '').toLowerCase().includes(searchInput);
-		return matchesCountry && matchesSearch;
-	  });
+      streams = allStreams.filter(stream => {
+        const matchesCountry = (selectedCountry === 'ALL') || (stream.name === selectedCountry);
+        const matchesSearch = (stream.location || '').toLowerCase().includes(searchInput) ||
+                              (stream.name || '').toLowerCase().includes(searchInput);
+        return matchesCountry && matchesSearch;
+      });
 
-	  renderStreams();
-	}
+      renderStreams();
+    }
 
-	function handleStreamError(hlsInstance) {
-	  if (typeof sendStreamAlert === 'function' && currentStream) {
-		sendStreamAlert(currentStream.location, "Se帽al Ca铆da", "Activaci贸n de est谩tica por error HLS/Timeout.");
-	  }
+    function handleStreamError(hlsInstance) {
+      if (typeof sendStreamAlert === 'function' && currentStream) {
+        sendStreamAlert(currentStream.location, "Señal Caída", "Activación de estática por error HLS/Timeout.");
+      }
 
-	  if (hlsInstance) {
-		try {
-		  hlsInstance.detachMedia();
-		  hlsInstance.destroy();
-		} catch(e) {}
-	  }
-	  
-	  const video = document.getElementById('hlsPlayer');
-	  video.pause();
-	  video.removeAttribute('src');
-	  video.load();
+      if (hlsInstance) {
+        try {
+          hlsInstance.detachMedia();
+          hlsInstance.destroy();
+        } catch(e) {}
+      }
+      
+      const video = document.getElementById('hlsPlayer');
+      video.pause();
+      video.removeAttribute('src');
+      video.load();
 
-	  video.src = FALLBACK_VIDEO_URL;
-	  video.loop = true;
-	  video.load();
-	  
-	  const playPromise = video.play();
-	  if (playPromise !== undefined) {
-		playPromise.catch(() => {
-		  video.muted = true;
-		  video.play().catch(e => console.error("Error reproduciendo est谩tica:", e));
-		});
-	  }
-	}
+      video.src = FALLBACK_VIDEO_URL;
+      video.loop = true;
+      video.load();
+      
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          video.muted = true;
+          video.play().catch(e => console.error("Error reproduciendo estática:", e));
+        });
+      }
+    }
 
-	// --- ATAJOS DE TECLADO GLOBAL ---
-	document.addEventListener('keydown', function (e) {
-	  if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
-	  const key = e.key.toUpperCase();
-	  switch (key) {
-		case 'F': toggleFullscreenWithClock(); break;
-		case 'R': toggleClockVisibility(); break;
-		case 'W': goToPreviousChannel(); break;
-		case 'S': changeChannelRelative(1); break;
-		case 'P': changeChannelRelative(-1); break;
-		case 'I': openScheduleModal(); break;
-	  }
-	});
+    // --- CAMBIO DE ASPECTO DE VIDEO ---
+    function cambiarAspectoVideo() {
+      const video = document.getElementById('hlsPlayer');
+      if (!video) return;
 
-	// --- AUTO-UNMUTE AL PRIMER TOQUE ---
-	function enableAudioOnFirstInteraction() {
-	  if (videoElement) videoElement.muted = false;
-	  window.removeEventListener('click', enableAudioOnFirstInteraction);
-	  window.removeEventListener('touchstart', enableAudioOnFirstInteraction);
-	  window.removeEventListener('keydown', enableAudioOnFirstInteraction);
-	}
-	window.addEventListener('click', enableAudioOnFirstInteraction);
-	window.addEventListener('touchstart', enableAudioOnFirstInteraction);
-	window.addEventListener('keydown', enableAudioOnFirstInteraction);
+      video.classList.remove(`aspect-${MODOS_ASPECTO[modoAspectoIndex]}`);
+      modoAspectoIndex = (modoAspectoIndex + 1) % MODOS_ASPECTO.length;
+      const nuevoModo = MODOS_ASPECTO[modoAspectoIndex];
+      video.classList.add(`aspect-${nuevoModo}`);
 
-	// --- M脫DULO MEJORADO DE GESTOS T脕CTILES ---
-	let touchStartX = 0;
-	let touchStartY = 0;
-	let lastTapTime = 0;
-	let osdTimeout = null;
+      showTextOsd(`Pantalla: ${NOMBRES_MODOS[nuevoModo]}`);
+    }
 
-	function showChannelOsd(title, subtitle, logoUrl) {
-	  const osd = document.getElementById('gestureOsd');
-	  const osdTitle = document.getElementById('osdTitle');
-	  const osdSubtitle = document.getElementById('osdSubtitle');
-	  const osdLogo = document.getElementById('osdLogo');
+    // --- ATAJOS DE TECLADO GLOBAL ---
+    document.addEventListener('keydown', function (e) {
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
+      const key = e.key.toUpperCase();
+      switch (key) {
+        case 'F': toggleFullscreenWithClock(); break;
+        case 'R': toggleClockVisibility(); break;
+        case 'W': goToPreviousChannel(); break;
+        case 'S': changeChannelRelative(1); break;
+        case 'P': changeChannelRelative(-1); break;
+        case 'I': openScheduleModal(); break;
+        case 'A': cambiarAspectoVideo(); break;
+      }
+    });
 
-	  if (!osd || !osdTitle || !osdSubtitle || !osdLogo) return;
+    // --- AUTO-UNMUTE AL PRIMER TOQUE ---
+    function enableAudioOnFirstInteraction() {
+      if (videoElement) videoElement.muted = false;
+      window.removeEventListener('click', enableAudioOnFirstInteraction);
+      window.removeEventListener('touchstart', enableAudioOnFirstInteraction);
+      window.removeEventListener('keydown', enableAudioOnFirstInteraction);
+    }
+    window.addEventListener('click', enableAudioOnFirstInteraction);
+    window.addEventListener('touchstart', enableAudioOnFirstInteraction);
+    window.addEventListener('keydown', enableAudioOnFirstInteraction);
 
-	  osdTitle.textContent = title || 'SIN NOMBRE';
-	  osdSubtitle.textContent = subtitle || 'GENERAL';
+    // --- MÓDULO DE GESTOS TÁCTILES UNIFICADO ---
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let lastTapTime = 0;
+    let osdTimeout = null;
 
-	  if (logoUrl) {
-		osdLogo.src = logoUrl;
-		osdLogo.classList.remove('hidden');
-	  } else {
-		osdLogo.classList.add('hidden');
-	  }
+    function showChannelOsd(title, subtitle, logoUrl) {
+      const osd = document.getElementById('gestureOsd');
+      const osdTitle = document.getElementById('osdTitle');
+      const osdSubtitle = document.getElementById('osdSubtitle');
+      const osdLogo = document.getElementById('osdLogo');
 
-	  osd.classList.remove('hidden');
-	  if (osdTimeout) clearTimeout(osdTimeout);
-	  osdTimeout = setTimeout(() => osd.classList.add('hidden'), 2500);
-	}
+      if (!osd || !osdTitle || !osdSubtitle || !osdLogo) return;
 
-	function showTextOsd(text) {
-	  const osd = document.getElementById('gestureOsd');
-	  const osdTitle = document.getElementById('osdTitle');
-	  const osdSubtitle = document.getElementById('osdSubtitle');
-	  const osdLogo = document.getElementById('osdLogo');
+      osdTitle.textContent = title || 'SIN NOMBRE';
+      osdSubtitle.textContent = subtitle || 'GENERAL';
 
-	  if (!osd) return;
+      if (logoUrl) {
+        osdLogo.src = logoUrl;
+        osdLogo.classList.remove('hidden');
+      } else {
+        osdLogo.classList.add('hidden');
+      }
 
-	  osdTitle.textContent = text;
-	  osdSubtitle.textContent = 'RPSTV';
-	  osdLogo.classList.add('hidden');
+      osd.classList.remove('hidden');
+      if (osdTimeout) clearTimeout(osdTimeout);
+      osdTimeout = setTimeout(() => osd.classList.add('hidden'), 2500);
+    }
 
-	  osd.classList.remove('hidden');
-	  if (osdTimeout) clearTimeout(osdTimeout);
-	  osdTimeout = setTimeout(() => osd.classList.add('hidden'), 1200);
-	}
+    function showTextOsd(text) {
+      const osd = document.getElementById('gestureOsd');
+      const osdTitle = document.getElementById('osdTitle');
+      const osdSubtitle = document.getElementById('osdSubtitle');
+      const osdLogo = document.getElementById('osdLogo');
 
-	if (videoElement) {
-	  videoElement.addEventListener('touchstart', function (e) {
-		if (e.touches.length === 1) {
-		  touchStartX = e.touches[0].clientX;
-		  touchStartY = e.touches[0].clientY;
-		}
-	  }, { passive: true });
+      if (!osd) return;
 
-	  videoElement.addEventListener('touchend', function (e) {
-		if (e.changedTouches.length !== 1) return;
+      osdTitle.textContent = text;
+      osdSubtitle.textContent = 'RPSTV';
+      osdLogo.classList.add('hidden');
 
-		const touchEndX = e.changedTouches[0].clientX;
-		const touchEndY = e.changedTouches[0].clientY;
-		const diffX = touchEndX - touchStartX;
-		const diffY = touchEndY - touchStartY;
+      osd.classList.remove('hidden');
+      if (osdTimeout) clearTimeout(osdTimeout);
+      osdTimeout = setTimeout(() => osd.classList.add('hidden'), 1500);
+    }
 
-		const rect = videoElement.getBoundingClientRect();
-		const touchRelativeX = touchStartX - rect.left;
-		const widthRatio = touchRelativeX / rect.width;
+    if (videoElement) {
+      videoElement.addEventListener('touchstart', function (e) {
+        if (e.touches.length === 1) {
+          touchStartX = e.touches[0].clientX;
+          touchStartY = e.touches[0].clientY;
+        }
+      }, { passive: true });
 
-		// 1. Detecci贸n de Deslizamiento Horizontal (Swipe Izquierda -> PRE-CANAL)
-		if (diffX < -50 && Math.abs(diffX) > Math.abs(diffY) * 1.5) {
-		  if (previousStreamId) {
-			goToPreviousChannel();
-		  } else {
-			showTextOsd("Pre-Canal no disponible");
-		  }
-		  return;
-		}
+      videoElement.addEventListener('touchend', function (e) {
+        if (e.changedTouches.length !== 1) return;
 
-		// 2. Detecci贸n de Deslizamiento Vertical (Swipe Arriba / Abajo)
-		if (Math.abs(diffY) > 15 && Math.abs(diffY) > Math.abs(diffX)) {
-		  if (widthRatio < 0.40) {
-			// LADO IZQUIERDO (40% de la pantalla): Ajustar Volumen
-			let newVol = videoElement.volume + (diffY < 0 ? 0.1 : -0.1);
-			newVol = Math.max(0, Math.min(1, newVol));
-			videoElement.volume = newVol;
-			const volPercent = Math.round(newVol * 100);
-			showTextOsd(`Volumen: ${volPercent}%`);
-		  } else if (widthRatio > 0.60) {
-			// LADO DERECHO (40% de la pantalla): Cambiar Canal
-			if (diffY < 0) {
-			  changeChannelRelative(1);
-			} else {
-			  changeChannelRelative(-1);
-			}
-		  }
-		}
+        const touchEndX = e.changedTouches[0].clientX;
+        const touchEndY = e.changedTouches[0].clientY;
+        const diffX = touchEndX - touchStartX;
+        const diffY = touchEndY - touchStartY;
 
-		// 3. Doble Tap para Pantalla Completa
-		const currentTime = new Date().getTime();
-		const tapLength = currentTime - lastTapTime;
-		if (tapLength < 300 && tapLength > 0 && Math.abs(diffX) < 15 && Math.abs(diffY) < 15) {
-		  toggleFullscreenWithClock();
-		}
-		lastTapTime = currentTime;
-	  });
-	}
-	
-	const MODOS_ASPECTO = ['contain', 'fill', 'cover'];
-	const NOMBRES_MODOS = {
-	  'contain': 'Ajustar (Original 16:9)',
-	  'fill': 'Estirar (Pantalla Completa)',
-	  'cover': 'Zoom (Llenar Pantalla)'
-	};
-	let modoIndex = 0;
+        const rect = videoElement.getBoundingClientRect();
+        const touchRelativeX = touchStartX - rect.left;
+        const widthRatio = touchRelativeX / rect.width;
 
-	function cambiarAspectoVideo() {
-	  const video = document.querySelector('video');
-	  if (!video) return;
+        // 1. Swipe Horizontal hacia la DERECHA -> Cambiar Aspecto de Pantalla
+        if (diffX > 70 && Math.abs(diffX) > Math.abs(diffY) * 1.5) {
+          cambiarAspectoVideo();
+          return;
+        }
 
-	  // Quitar modo anterior
-	  video.classList.remove(`aspect-${MODOS_ASPECTO[modoIndex]}`);
+        // 2. Swipe Horizontal hacia la IZQUIERDA -> Pre-Canal
+        if (diffX < -70 && Math.abs(diffX) > Math.abs(diffY) * 1.5) {
+          if (previousStreamId) {
+            goToPreviousChannel();
+          } else {
+            showTextOsd("Pre-Canal no disponible");
+          }
+          return;
+        }
 
-	  // Siguiente modo
-	  modoIndex = (modoIndex + 1) % MODOS_ASPECTO.length;
+        // 3. Swipe Vertical (Arriba / Abajo)
+        if (Math.abs(diffY) > 20 && Math.abs(diffY) > Math.abs(diffX)) {
+          if (widthRatio < 0.40) {
+            // LADO IZQUIERDO: Volumen
+            let newVol = videoElement.volume + (diffY < 0 ? 0.1 : -0.1);
+            newVol = Math.max(0, Math.min(1, newVol));
+            videoElement.volume = newVol;
+            showTextOsd(`Volumen: ${Math.round(newVol * 100)}%`);
+          } else if (widthRatio > 0.60) {
+            // LADO DERECHO: Cambiar Canal
+            if (diffY < 0) changeChannelRelative(1);
+            else changeChannelRelative(-1);
+          }
+        }
 
-	  // Aplicar nuevo modo
-	  const nuevoModo = MODOS_ASPECTO[modoIndex];
-	  video.classList.add(`aspect-${nuevoModo}`);
-
-	  // Mostrar mensaje temporal en pantalla (Toast/OSD)
-	  mostrarAvisoOSD(`Pantalla: ${NOMBRES_MODOS[nuevoModo]}`);
-	}
-
-	// Función auxiliar para mostrar el mensaje en pantalla
-	function mostrarAvisoOSD(mensaje) {
-	  let osd = document.getElementById('osd-toast');
-	  if (!osd) {
-		osd = document.createElement('div');
-		osd.id = 'osd-toast';
-		osd.style.cssText = 'position:fixed; top:20px; right:20px; background:rgba(0,0,0,0.8); color:#fff; padding:8px 15px; border-radius:5px; z-index:9999; font-family:sans-serif; font-size:14px; pointer-events:none;';
-		document.body.appendChild(osd);
-	  }
-	  osd.innerText = mensaje;
-	  osd.style.display = 'block';
-	  setTimeout(() => { osd.style.display = 'none'; }, 2000);
-	}
-	
-	// Lista de modos
-	const MODOS_ASPECTO = ['contain', 'fill', 'cover'];
-	const NOMBRES_MODOS = {
-	  'contain': 'Ajustar (Original 16:9)',
-	  'fill': 'Estirar (Pantalla Completa)',
-	  'cover': 'Zoom (Llenar)'
-	};
-	let modoAspectoIndex = 0;
-
-	function cambiarAspectoVideo() {
-	  const video = document.querySelector('video');
-	  if (!video) return;
-
-	  video.classList.remove(`aspect-${MODOS_ASPECTO[modoAspectoIndex]}`);
-	  modoAspectoIndex = (modoAspectoIndex + 1) % MODOS_ASPECTO.length;
-	  const nuevoModo = MODOS_ASPECTO[modoAspectoIndex];
-	  video.classList.add(`aspect-${nuevoModo}`);
-
-	  mostrarAvisoOSD(`Pantalla: ${NOMBRES_MODOS[nuevoModo]}`);
-	}
-
-	function mostrarAvisoOSD(msg) {
-	  let osd = document.getElementById('osd-toast');
-	  if (!osd) {
-		osd = document.createElement('div');
-		osd.id = 'osd-toast';
-		osd.style.cssText = 'position:fixed; top:20px; right:20px; background:rgba(0,0,0,0.8); color:#fff; padding:8px 15px; border-radius:5px; z-index:9999; font-family:sans-serif; font-size:14px; pointer-events:none;';
-		document.body.appendChild(osd);
-	  }
-	  osd.innerText = msg;
-	  osd.style.display = 'block';
-	  setTimeout(() => { osd.style.display = 'none'; }, 2000);
-	}
-
-	// Detección de Swipe a la Derecha
-	let touchStartX = 0;
-	let touchStartY = 0;
-
-	document.addEventListener('touchstart', e => {
-	  touchStartX = e.changedTouches[0].screenX;
-	  touchStartY = e.changedTouches[0].screenY;
-	}, false);
-
-	document.addEventListener('touchend', e => {
-	  let touchEndX = e.changedTouches[0].screenX;
-	  let touchEndY = e.changedTouches[0].screenY;
-	  
-	  let diffX = touchEndX - touchStartX;
-	  let diffY = touchEndY - touchStartY;
-
-	  // Si el movimiento horizontal es mayor a 80px y el vertical es pequeño
-	  if (diffX > 80 && Math.abs(diffY) < 50) {
-		// Swipe hacia la DERECHA detectado
-		cambiarAspectoVideo();
-	  }
-	}, false);
+        // 4. Doble Tap -> Pantalla Completa
+        const currentTime = new Date().getTime();
+        const tapLength = currentTime - lastTapTime;
+        if (tapLength < 300 && tapLength > 0 && Math.abs(diffX) < 15 && Math.abs(diffY) < 15) {
+          toggleFullscreenWithClock();
+        }
+        lastTapTime = currentTime;
+      });
+    }
 
     document.addEventListener('DOMContentLoaded', fetchStreams);
   </script>
