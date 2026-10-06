@@ -21,6 +21,20 @@
       border-radius: 0 !important;
       border: none !important;
     }
+	/* Estilos para la etiqueta video */
+	video.aspect-contain {
+	  object-fit: contain !important; /* Proporción original (16:9 con franjas) */
+	}
+	video.aspect-fill {
+	  object-fit: fill !important;    /* Estirar a toda la pantalla */
+	}
+	video.aspect-cover {
+	  object-fit: cover !important;   /* Llenar pantalla recortando bordes */
+	}
+	/* Modos de ajuste de imagen */
+	video.aspect-contain { object-fit: contain !important; }
+	video.aspect-fill { object-fit: fill !important; }
+	video.aspect-cover { object-fit: cover !important; }
   </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans select-none">
@@ -30,7 +44,7 @@
     <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-4">
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-full bg-amber-500 p-0.5 flex items-center justify-center shadow-lg">
-          <div class="w-full h-full bg-slate-950 rounded-full flex items-center justify-center font-bold text-amber-400">📡</div>
+          <div class="w-full h-full bg-slate-950 rounded-full flex items-center justify-center font-bold text-amber-400">馃摗</div>
         </div>
         <div>
           <h1 class="text-lg font-bold tracking-tight text-amber-400">RPSTV Streaming v2.3.5</h1>
@@ -60,7 +74,7 @@
   <!-- CONTENIDO PRINCIPAL -->
   <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full grid grid-cols-1 lg:grid-cols-3 gap-8">
     
-	<!-- SECCIÓN DEL REPRODUCTOR CON CONTENEDOR FULLSCREEN -->
+	<!-- SECCI脫N DEL REPRODUCTOR CON CONTENEDOR FULLSCREEN -->
 	<section class="lg:col-span-2">
 	  <div class="sticky top-20 space-y-4">
 		
@@ -82,7 +96,7 @@
 			</div>
 		  </div>
 
-		  <!-- Banner de Notificación del Programador -->
+		  <!-- Banner de Notificaci贸n del Programador -->
 		  <div id="schedulerNotice" class="hidden absolute top-3 right-3 z-30 bg-amber-500 text-slate-950 px-3 py-1 rounded-lg text-xs font-bold shadow-lg items-center gap-1.5 animate-pulse">
 			<i data-lucide="calendar-check" class="w-3.5 h-3.5"></i>
 			<span id="schedulerNoticeText">Cambio programado activo</span>
@@ -107,21 +121,21 @@
 		  </button>
 		</div>
 
-		<!-- SELECTOR DINÁMICO DE PISTAS DE AUDIO -->
+		<!-- SELECTOR DIN脕MICO DE PISTAS DE AUDIO -->
 		<div id="audioTrackContainer" class="hidden flex items-center justify-between bg-slate-900/90 border border-amber-500/30 px-3 py-2 rounded-xl">
 		  <div class="flex items-center gap-2">
 			<i data-lucide="volume-2" class="w-4 h-4 text-amber-400 animate-pulse"></i>
-			<span class="text-xs font-bold text-amber-400">Audio Múltiple:</span>
+			<span class="text-xs font-bold text-amber-400">Audio M煤ltiple:</span>
 		  </div>
 		  <select id="audioTrackSelect" onchange="changeAudioTrack(this.value)" class="bg-slate-950 border border-slate-800 text-xs font-semibold text-slate-200 rounded-lg px-2 py-1 focus:outline-none focus:border-amber-400">
 		  </select>
 		</div>
 		
-		<!-- SELECTOR DINÁMICO DE SUBTÍTULOS -->
+		<!-- SELECTOR DIN脕MICO DE SUBT脥TULOS -->
 		<div id="subtitleTrackContainer" class="hidden flex items-center justify-between bg-slate-900/90 border border-amber-500/30 px-3 py-2 rounded-xl mt-2">
 		  <div class="flex items-center gap-2">
 			<i data-lucide="captions" class="w-4 h-4 text-amber-400"></i>
-			<span class="text-xs font-bold text-amber-400">Subtítulos (CC):</span>
+			<span class="text-xs font-bold text-amber-400">Subt铆tulos (CC):</span>
 		  </div>
 		  <select id="subtitleTrackSelect" onchange="changeSubtitleTrack(this.value)" class="bg-slate-950 border border-slate-800 text-xs font-semibold text-slate-200 rounded-lg px-2 py-1 focus:outline-none focus:border-amber-400">
 		  </select>
@@ -164,10 +178,10 @@
           </button>
         </div>
 		
-		<!-- FILTRO POR PAÍS -->
+		<!-- FILTRO POR PA脥S -->
 		<div class="mb-3">
 		  <select id="countryFilter" onchange="filterStreams()" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs font-semibold text-slate-300 focus:outline-none focus:border-amber-400">
-			<option value="ALL">🌎 Todos los Países (A-Z)</option>
+			<option value="ALL">馃寧 Todos los Pa铆ses (A-Z)</option>
 		  </select>
 		</div>
       </div>
@@ -194,14 +208,14 @@
         </div>
 
         <div>
-          <label class="block text-xs text-slate-400 mb-1">HORA DE EJECUCIÓN (HOY)</label>
+          <label class="block text-xs text-slate-400 mb-1">HORA DE EJECUCI脫N (HOY)</label>
           <input type="time" id="scheduleTimeInput" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500" />
         </div>
       </div>
 
       <div class="flex justify-end gap-2 pt-2">
         <button onclick="closeScheduleModal()" class="px-3 py-1.5 rounded-lg border border-slate-800 text-xs text-slate-400 hover:bg-slate-800">Cancelar</button>
-        <button onclick="setChannelSchedule()" class="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold">Guardar Programación</button>
+        <button onclick="setChannelSchedule()" class="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold">Guardar Programaci贸n</button>
       </div>
     </div>
   </div>
@@ -235,12 +249,12 @@
     function getDeviceDetails() {
       const ua = navigator.userAgent;
       if (/Android/i.test(ua)) {
-        return (/wv|Version\/[\d\.]+/i.test(ua)) ? "App Android (APK)" : "Móvil Android (Navegador)";
+        return (/wv|Version\/[\d\.]+/i.test(ua)) ? "App Android (APK)" : "M贸vil Android (Navegador)";
       }
       if (/iPhone|iPad|iPod/i.test(ua)) return "Dispositivo iOS (iPhone/iPad)";
       if (/Windows/i.test(ua)) return "PC/Laptop (Windows)";
       if (/Macintosh|Mac OS X/i.test(ua)) return "Laptop/MAC (macOS)";
-      return "Navegador Web Genérico";
+      return "Navegador Web Gen茅rico";
     }
 
     function sendStreamAlert(channelName, errorType, details) {
@@ -251,14 +265,14 @@
       reportedChannels.add(reportKey);
 
       const payload = {
-        content: "🚨 **ALERTA DE SEÑAL CAÍDA (RPSTV)**",
+        content: "馃毃 **ALERTA DE SE脩AL CA脥DA (RPSTV)**",
         embeds: [{
           title: `**CANAL:** ${channelName}`,
           color: 15158332,
           fields: [
             { name: "**TIPO DE ERROR**", value: errorType, inline: true },
             { name: "**ORIGEN/DISPOSITIVO**", value: getDeviceDetails(), inline: true },
-            { name: "**DETALLE TÉCNICO**", value: details || "Sin detalle adicional" }
+            { name: "**DETALLE T脡CNICO**", value: details || "Sin detalle adicional" }
           ],
           timestamp: new Date().toISOString()
         }]
@@ -268,7 +282,7 @@
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
-      }).catch(err => console.error("[Telemetría] Error de red:", err));
+      }).catch(err => console.error("[Telemetr铆a] Error de red:", err));
     }
     
 	// CARGA DE CANALES
@@ -382,11 +396,11 @@
 
 		  if (select && container) {
 			if (tracks && tracks.length > 0) {
-			  select.innerHTML = '<option value="-1">🏴 Desactivados</option>';
+			  select.innerHTML = '<option value="-1">馃彺 Desactivados</option>';
 			  tracks.forEach((track, index) => {
 				const opt = document.createElement('option');
 				opt.value = index;
-				const langName = track.name || track.lang || `Subtítulo ${index + 1}`;
+				const langName = track.name || track.lang || `Subt铆tulo ${index + 1}`;
 				opt.textContent = `${index + 1}. ${langName.toUpperCase()}`;
 				if (index === newHls.subtitleTrack) opt.selected = true;
 				select.appendChild(opt);
@@ -562,7 +576,7 @@
 
 	  countries.forEach(country => {
 		const optgroup = document.createElement('optgroup');
-		optgroup.label = `📌 ${country}`;
+		optgroup.label = `馃搶 ${country}`;
 		const countryChannels = allStreams.filter(s => s.name === country);
 		countryChannels.forEach(s => {
 		  const opt = document.createElement('option');
@@ -578,7 +592,7 @@
 	  const channelId = parseInt(document.getElementById('scheduleChannelSelect').value);
 	  const timeValue = document.getElementById('scheduleTimeInput').value;
 
-	  if (!timeValue) return alert("Selecciona una hora válida.");
+	  if (!timeValue) return alert("Selecciona una hora v谩lida.");
 
 	  const [hours, minutes] = timeValue.split(':').map(Number);
 	  const now = new Date();
@@ -627,7 +641,7 @@
       } else if (videoElement.webkitShowPlaybackTargetPicker) {
         videoElement.webkitShowPlaybackTargetPicker();
       } else {
-        alert("Transmisión a Smart TV: Usa la opción 'Enviar/Cast' del menú de tu navegador o WebView.");
+        alert("Transmisi贸n a Smart TV: Usa la opci贸n 'Enviar/Cast' del men煤 de tu navegador o WebView.");
       }
     }
 
@@ -683,13 +697,13 @@
 	function populateCountryFilter(data) {
 	  const select = document.getElementById('countryFilter');
 	  if (!select) return;
-	  select.innerHTML = '<option value="ALL">🌍 Todos los países (A-Z)</option>';
+	  select.innerHTML = '<option value="ALL">馃實 Todos los pa铆ses (A-Z)</option>';
 	  
 	  const countries = [...new Set(data.map(item => item.name).filter(Boolean))].sort();
 	  countries.forEach(country => {
 		const opt = document.createElement('option');
 		opt.value = country;
-		opt.textContent = `🚩 ${country}`;
+		opt.textContent = `馃毄 ${country}`;
 		select.appendChild(opt);
 	  });
 	}
@@ -712,7 +726,7 @@
 
 	function handleStreamError(hlsInstance) {
 	  if (typeof sendStreamAlert === 'function' && currentStream) {
-		sendStreamAlert(currentStream.location, "Señal Caída", "Activación de estática por error HLS/Timeout.");
+		sendStreamAlert(currentStream.location, "Se帽al Ca铆da", "Activaci贸n de est谩tica por error HLS/Timeout.");
 	  }
 
 	  if (hlsInstance) {
@@ -735,7 +749,7 @@
 	  if (playPromise !== undefined) {
 		playPromise.catch(() => {
 		  video.muted = true;
-		  video.play().catch(e => console.error("Error reproduciendo estática:", e));
+		  video.play().catch(e => console.error("Error reproduciendo est谩tica:", e));
 		});
 	  }
 	}
@@ -765,7 +779,7 @@
 	window.addEventListener('touchstart', enableAudioOnFirstInteraction);
 	window.addEventListener('keydown', enableAudioOnFirstInteraction);
 
-	// --- MÓDULO MEJORADO DE GESTOS TÁCTILES ---
+	// --- M脫DULO MEJORADO DE GESTOS T脕CTILES ---
 	let touchStartX = 0;
 	let touchStartY = 0;
 	let lastTapTime = 0;
@@ -831,7 +845,7 @@
 		const touchRelativeX = touchStartX - rect.left;
 		const widthRatio = touchRelativeX / rect.width;
 
-		// 1. Detección de Deslizamiento Horizontal (Swipe Izquierda -> PRE-CANAL)
+		// 1. Detecci贸n de Deslizamiento Horizontal (Swipe Izquierda -> PRE-CANAL)
 		if (diffX < -50 && Math.abs(diffX) > Math.abs(diffY) * 1.5) {
 		  if (previousStreamId) {
 			goToPreviousChannel();
@@ -841,7 +855,7 @@
 		  return;
 		}
 
-		// 2. Detección de Deslizamiento Vertical (Swipe Arriba / Abajo)
+		// 2. Detecci贸n de Deslizamiento Vertical (Swipe Arriba / Abajo)
 		if (Math.abs(diffY) > 15 && Math.abs(diffY) > Math.abs(diffX)) {
 		  if (widthRatio < 0.40) {
 			// LADO IZQUIERDO (40% de la pantalla): Ajustar Volumen
@@ -869,6 +883,103 @@
 		lastTapTime = currentTime;
 	  });
 	}
+	
+	const MODOS_ASPECTO = ['contain', 'fill', 'cover'];
+	const NOMBRES_MODOS = {
+	  'contain': 'Ajustar (Original 16:9)',
+	  'fill': 'Estirar (Pantalla Completa)',
+	  'cover': 'Zoom (Llenar Pantalla)'
+	};
+	let modoIndex = 0;
+
+	function cambiarAspectoVideo() {
+	  const video = document.querySelector('video');
+	  if (!video) return;
+
+	  // Quitar modo anterior
+	  video.classList.remove(`aspect-${MODOS_ASPECTO[modoIndex]}`);
+
+	  // Siguiente modo
+	  modoIndex = (modoIndex + 1) % MODOS_ASPECTO.length;
+
+	  // Aplicar nuevo modo
+	  const nuevoModo = MODOS_ASPECTO[modoIndex];
+	  video.classList.add(`aspect-${nuevoModo}`);
+
+	  // Mostrar mensaje temporal en pantalla (Toast/OSD)
+	  mostrarAvisoOSD(`Pantalla: ${NOMBRES_MODOS[nuevoModo]}`);
+	}
+
+	// Función auxiliar para mostrar el mensaje en pantalla
+	function mostrarAvisoOSD(mensaje) {
+	  let osd = document.getElementById('osd-toast');
+	  if (!osd) {
+		osd = document.createElement('div');
+		osd.id = 'osd-toast';
+		osd.style.cssText = 'position:fixed; top:20px; right:20px; background:rgba(0,0,0,0.8); color:#fff; padding:8px 15px; border-radius:5px; z-index:9999; font-family:sans-serif; font-size:14px; pointer-events:none;';
+		document.body.appendChild(osd);
+	  }
+	  osd.innerText = mensaje;
+	  osd.style.display = 'block';
+	  setTimeout(() => { osd.style.display = 'none'; }, 2000);
+	}
+	
+	// Lista de modos
+	const MODOS_ASPECTO = ['contain', 'fill', 'cover'];
+	const NOMBRES_MODOS = {
+	  'contain': 'Ajustar (Original 16:9)',
+	  'fill': 'Estirar (Pantalla Completa)',
+	  'cover': 'Zoom (Llenar)'
+	};
+	let modoAspectoIndex = 0;
+
+	function cambiarAspectoVideo() {
+	  const video = document.querySelector('video');
+	  if (!video) return;
+
+	  video.classList.remove(`aspect-${MODOS_ASPECTO[modoAspectoIndex]}`);
+	  modoAspectoIndex = (modoAspectoIndex + 1) % MODOS_ASPECTO.length;
+	  const nuevoModo = MODOS_ASPECTO[modoAspectoIndex];
+	  video.classList.add(`aspect-${nuevoModo}`);
+
+	  mostrarAvisoOSD(`Pantalla: ${NOMBRES_MODOS[nuevoModo]}`);
+	}
+
+	function mostrarAvisoOSD(msg) {
+	  let osd = document.getElementById('osd-toast');
+	  if (!osd) {
+		osd = document.createElement('div');
+		osd.id = 'osd-toast';
+		osd.style.cssText = 'position:fixed; top:20px; right:20px; background:rgba(0,0,0,0.8); color:#fff; padding:8px 15px; border-radius:5px; z-index:9999; font-family:sans-serif; font-size:14px; pointer-events:none;';
+		document.body.appendChild(osd);
+	  }
+	  osd.innerText = msg;
+	  osd.style.display = 'block';
+	  setTimeout(() => { osd.style.display = 'none'; }, 2000);
+	}
+
+	// Detección de Swipe a la Derecha
+	let touchStartX = 0;
+	let touchStartY = 0;
+
+	document.addEventListener('touchstart', e => {
+	  touchStartX = e.changedTouches[0].screenX;
+	  touchStartY = e.changedTouches[0].screenY;
+	}, false);
+
+	document.addEventListener('touchend', e => {
+	  let touchEndX = e.changedTouches[0].screenX;
+	  let touchEndY = e.changedTouches[0].screenY;
+	  
+	  let diffX = touchEndX - touchStartX;
+	  let diffY = touchEndY - touchStartY;
+
+	  // Si el movimiento horizontal es mayor a 80px y el vertical es pequeño
+	  if (diffX > 80 && Math.abs(diffY) < 50) {
+		// Swipe hacia la DERECHA detectado
+		cambiarAspectoVideo();
+	  }
+	}, false);
 
     document.addEventListener('DOMContentLoaded', fetchStreams);
   </script>
