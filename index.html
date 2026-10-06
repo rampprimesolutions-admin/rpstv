@@ -6,7 +6,7 @@
   <title>RPSTV Streaming VIP v2.3.6</title>
 
   <!-- PERMITIR PETICIONES MIXTAS Y RECURSOS NO SEGUROS -->
-  <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval' data: gap: content: blob:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'; media-src * blob: data: http: https:;">
+  <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval' data: gap: content: blob:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval' blob:; worker-src 'self' blob: data:; media-src * blob: data: http: https:;">
   <meta name="referrer" content="no-referrer">
 
   <!-- CDNs -->
@@ -34,7 +34,7 @@
     <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-4">
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-full bg-amber-500 p-0.5 flex items-center justify-center shadow-lg">
-          <div class="w-full h-full bg-slate-950 rounded-full flex items-center justify-center font-bold text-amber-400">📺</div>
+          <div class="w-full h-full bg-slate-950 rounded-full flex items-center justify-center font-bold text-amber-400">📡</div>
         </div>
         <div>
           <h1 class="text-lg font-bold tracking-tight text-amber-400">RPSTV Streaming v2.3.6</h1>
